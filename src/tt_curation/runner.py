@@ -54,7 +54,7 @@ def run_all(data: LoadedDataset, results_dir: Path, models: Iterable[str], condi
         split = split_dataset(dataset, fold=fold, size=size)
         for condition in conditions:
             pending = [m for m in models
-                       if overwrite or not (runs_dir / f"{run_name(m, condition, size, fold)}.json").exists()]
+                       if overwrite or not _succeeded(runs_dir / f"{run_name(m, condition, size, fold)}.json")]
             if not pending:
                 continue
             with shared_tar_encoder(split, data.text_columns, data.spec.is_cls, device,
@@ -70,6 +70,11 @@ def run_all(data: LoadedDataset, results_dir: Path, models: Iterable[str], condi
             gc.collect()
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
+
+
+def _succeeded(path: Path) -> bool:
+    """A run is done only if its JSON exists with status ok; failed runs are retried."""
+    return path.exists() and json.loads(path.read_text()).get("status") == "ok"
 
 
 def run_one(model: str, split, task, data: LoadedDataset, condition: Condition, fold: int, size: str,
