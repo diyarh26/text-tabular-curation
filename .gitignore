@@ -30,6 +30,7 @@ paper/*.blg
 paper/*.synctex.gz
 
 catboost_info/
+*.log
 .ipynb_checkpoints/
 .DS_Store
 .vscode/
