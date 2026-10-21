@@ -44,6 +44,13 @@ def main():
     run.add_argument("--overwrite", action="store_true", help="rerun runs whose JSON already exists")
     args = parser.parse_args()
 
+    # HF_TOKEN (TabPFN 2.5's gated weights) from the repo's .env, before MulTaBench reads the environment.
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(REPO_ROOT / ".env")
+    except ImportError:
+        pass
+
     from tt_curation.spec import load_spec
     spec = load_spec(args.config)
     results_dir = results_dir_for(spec, args.results_root)

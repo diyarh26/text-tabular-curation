@@ -36,9 +36,12 @@ def run_all(data: LoadedDataset, results_dir: Path, models: Iterable[str], condi
     from multabench.utils.devices import get_device
 
     device = get_device(device)
+    models, conditions = list(models), list(conditions)
+    if Condition.JOINT_TAR in conditions and device.type == "cpu":
+        raise RuntimeError("joint_tar LoRA-tunes E5, which needs a GPU; run it on the GPU machine, or leave it out "
+                           "with --conditions structured,unstructured,joint_frozen (or --preset screen)")
     runs_dir = results_dir / "runs"
     runs_dir.mkdir(parents=True, exist_ok=True)
-    models, conditions = list(models), list(conditions)
     if data.spec.is_cls:
         task = SupervisedTask.BINARY if data.y.nunique() == 2 else SupervisedTask.MULTICLASS
     else:

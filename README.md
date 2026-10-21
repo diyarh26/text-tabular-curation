@@ -57,7 +57,8 @@ python -m tt_curation run configs/my_dataset.yaml                      # full: 5
 python -m tt_curation report configs/my_dataset.yaml                   # rebuild the CSVs from the run JSONs
 ```
 
-The full run needs a GPU (TabPFN, TabM and the LoRA tuning): use `notebooks/run_on_colab.ipynb`. TabPFN 2.5's weights
+The full run needs a GPU (TabPFN, TabM and the LoRA tuning; `joint_tar` refuses to run on CPU): on a Linux GPU
+machine run `bash scripts/setup_gpu_vm.sh`, or use `notebooks/run_on_colab.ipynb`. TabPFN 2.5's weights
 are gated: accept their license on Hugging Face and set `HF_TOKEN` (in `.env` locally, or as a Colab secret). Runs are
 resumable: an interrupted run is picked up where it stopped.
 
