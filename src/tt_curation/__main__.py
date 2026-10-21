@@ -6,7 +6,12 @@
     python -m tt_curation report configs/my_dataset.yaml
 """
 import argparse
+import sys
 from pathlib import Path
+
+# MulTaBench prints emoji, which the Windows console's default codepage can't encode.
+for stream in (sys.stdout, sys.stderr):
+    stream.reconfigure(encoding="utf-8", errors="replace")
 
 from tt_curation import REPO_ROOT
 from tt_curation.conditions import Condition, MODELS

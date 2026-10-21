@@ -11,6 +11,7 @@ import contextlib
 import gc
 import json
 import subprocess
+import sys
 import time
 import traceback
 from pathlib import Path
@@ -122,7 +123,11 @@ def shared_tar_encoder(split, text_columns: List[str], is_cls: bool, device, ena
     from multabench.baselines.preprocessing import text_embeddings
     from multabench.baselines.preprocessing.feature_types import transform_feature_types
     from multabench.e5.constants import E5_SMALL_V2
+    from multabench.finetune import lora
 
+    if sys.platform == "win32":
+        # Windows spawns DataLoader workers, which can't pickle MulTaBench's local featurize function.
+        lora.DATALOADER_WORKERS = 0
     columns = sorted(text_columns)
     # The texts exactly as the wrappers embed them, after their missing-text fill.
     texts = transform_feature_types(split.x_train[columns], numerical_features=set(), image_features=set())
