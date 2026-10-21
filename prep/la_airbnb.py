@@ -37,6 +37,9 @@ DATES = {"host_since": "host_days", "first_review": "days_since_first_review",
 
 # Rare categories (fewer rows than this) are merged into "Other", so no category exists in one fold only.
 MIN_CATEGORY_ROWS = 20
+MIN_DESCRIPTION_WORDS = 15
+MIN_PRICE = 20
+MAX_PRICE_PER_GUEST = 1000
 EMAIL = re.compile(r"\S+@\S+\.\S+")
 PHONE = re.compile(r"\+?\d[\d\s().-]{8,}\d")
 
@@ -86,6 +89,26 @@ def main():
     n = len(df)
     df = df[df["description"].notna() & df["price"].notna()]
     print(f"Dropped {n - len(df)} listings without a description or price")
+    # Quality filters. MulTaBench uses at most 10K train + 5K test rows per fold, so there is room to be strict.
+    quality = {
+        # Never booked: an unvalidated asking price (all the $10,000/night listings) and no rating.
+        "never booked (0 reviews)": df["number_of_reviews"] == 0,
+        "description under 15 words": df["description"].str.split().str.len() < MIN_DESCRIPTION_WORDS,
+        # E5-small-v2 is an English encoder.
+        "non-Latin-script description": df["description"].map(
+            lambda t: sum(ord(c) > 0x24F for c in t) / len(t) > 0.2),
+        "price under $20 (placeholder)": df["price"] < MIN_PRICE,
+        # Typos such as $9,000 for a 1-bedroom in Mid City, while keeping the real mansions ($10,000 for 10 guests).
+        "over $1,000 per guest (price typo)": df["price"] / df["accommodates"] > MAX_PRICE_PER_GUEST,
+        "monthly rental (minimum stay over 30 nights)": df["minimum_nights"] > 30,
+        "no guests or bedrooms": (df["accommodates"] == 0) | df["bedrooms"].isna(),
+    }
+    for reason, mask in quality.items():
+        print(f"  {reason}: {mask.sum()}")
+    n = len(df)
+    df = df[~pd.concat(quality.values(), axis=1).any(axis=1)]
+    print(f"Dropped {n - len(df)} listings by the quality filters above")
+
     n = len(df)
     # A repeated description is mostly one host advertising near-identical units (89% share a host_id), whose copies
     # would sit in train and test at once; keep the first.
