@@ -1,0 +1,21 @@
+# Los Angeles Airbnb: predict whether the host is a Superhost. Alternative target, not the current choice.
+name: la_airbnb_superhost
+csv: data/processed/la_airbnb.csv
+target: host_is_superhost
+task: classification
+
+text_columns: [name, description, neighborhood_overview, transit, house_rules, host_about]
+categorical_columns: [host_response_time, neighbourhood_cleansed, property_type, room_type, bed_type,
+                      cancellation_policy]
+numerical_columns: [host_has_profile_pic, host_identity_verified, is_location_exact, instant_bookable,
+                    require_guest_profile_picture, require_guest_phone_verification, requires_license, price,
+                    security_deposit, cleaning_fee, extra_people, host_listings_count, latitude, longitude,
+                    accommodates, bathrooms, bedrooms, beds, guests_included, minimum_nights, maximum_nights,
+                    availability_30, availability_60, availability_90, availability_365, number_of_reviews,
+                    review_scores_rating, review_scores_accuracy, review_scores_cleanliness,
+                    review_scores_checkin, review_scores_communication, review_scores_location,
+                    review_scores_value, calculated_host_listings_count, reviews_per_month, host_days,
+                    days_since_first_review, days_since_last_review, host_response_rate, amenities_count,
+                    host_verifications_count]
+
+drop_columns: [log_price, weekly_price, monthly_price]
