@@ -1,0 +1,171 @@
+\documentclass{article}
+
+% On Overleaf, switch to the NeurIPS 2026 template's style (the course's template) and keep the same option.
+\usepackage[preprint]{neurips_2025}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+% Placeholders for numbers that come from the evaluation run; none may remain in the submitted version.
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{LA-Airbnb: A Text-Tabular Price Prediction Dataset\\Curated with the MulTaBench Pipeline}
+
+\author{
+  Diyar Hasian \\
+  Technion -- Israel Institute of Technology \\
+  \texttt{hasian.diyar@gmail.com}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Tabular datasets whose features include free text are common in practice, yet few public benchmarks verify that
+their text actually matters for prediction. We curate \emph{LA-Airbnb}, a regression dataset of 22,569 Los Angeles
+Airbnb listings that pairs 47 structured features with six free-text fields written by hosts, and predict the
+logarithm of the nightly price. We evaluate it with the MulTaBench curation pipeline: five tabular learners (TabM,
+CatBoost, LightGBM, TabPFN~2.0 and TabPFN~2.5), each under four conditions (structured features only, text only,
+both with frozen E5 embeddings, and both with target-aware LoRA-tuned embeddings). \todo{one sentence with the verdict:
+how many learners satisfy joint signal and TAR gain, and the average gains}. Data, code and per-run results are public.
+\end{abstract}
+
+\section{Introduction}
+
+Many real-world tables mix modalities: next to numerical and categorical columns, they hold free text such as product
+descriptions, clinical notes or reviews. Standard tabular learners---gradient-boosted decision trees
+\cite{chen2016xgboost,prokhorenkova2018catboost,ke2017lightgbm} and tabular foundation models
+\cite{hollmann2025accurate,grinsztajn2025tabpfn25,qu2025tabicl}---cannot read raw text, so text is typically encoded
+by a pretrained sentence encoder such as E5 \cite{wang2022e5} and appended as numerical features. Joint models such as
+TabSTAR \cite{arazi2025tabstar} go further and adapt the text encoder to the prediction target.
+
+Comparing such methods requires datasets in which both modalities carry complementary signal, and in which the task
+rewards adapting the text representation. MulTaBench \cite{arazi2026multabench} formalizes these requirements as a
+\emph{curation pipeline}: a dataset is admitted only if joint models beat both unimodal baselines (\emph{joint signal})
+and target-aware representations beat frozen ones (\emph{TAR gain}). Many candidate datasets fail: in particular, the
+Airbnb datasets already in MulTaBench (Melbourne, Seattle and New York) appear only in its extended tier, which
+requires joint signal alone.
+
+We contribute \emph{LA-Airbnb}, a cleaned text-tabular dataset built from the Inside Airbnb scrape of Los Angeles
+\cite{insideairbnb}, together with a documented cleaning procedure and a full evaluation under the MulTaBench
+protocol (5 learners $\times$ 4 conditions $\times$ 6 folds). \todo{what the project achieves: passes or not, and
+the headline deltas}.
+
+\section{Related Work}
+
+\textbf{Tabular learners.} Gradient-boosted trees, including XGBoost \cite{chen2016xgboost}, CatBoost
+\cite{prokhorenkova2018catboost} and LightGBM \cite{ke2017lightgbm}, remain strong defaults on tabular data. TabM
+\cite{gorishniy2024tabm} is an efficiently ensembled MLP. Tabular foundation models such as TabPFN
+\cite{hollmann2023tabpfn,hollmann2025accurate}, TabPFN~2.5 \cite{grinsztajn2025tabpfn25} and TabICL
+\cite{qu2025tabicl} predict in-context after pretraining on synthetic tables. All of these are unimodal: they consume
+text only through precomputed embeddings.
+
+\textbf{Text-tabular learning.} The common recipe embeds each text column with a frozen encoder like E5
+\cite{wang2022e5}, compresses it and concatenates it with the structured features. TabSTAR
+\cite{arazi2025tabstar} instead learns target-aware text representations; parameter-efficient fine-tuning with LoRA
+\cite{hu2022lora} makes such adaptation cheap.
+
+\textbf{Benchmarks.} MulTaBench \cite{arazi2026multabench} collects 80 text- and image-tabular datasets, of which 40
+form its core after passing both curation criteria. Our work applies its pipeline to a new dataset.
+
+\section{The LA-Airbnb Dataset}
+
+\textbf{Source.} We start from the Inside Airbnb scrape of Los Angeles of 2--4 May 2017 \cite{insideairbnb}, as
+distributed on Kaggle: 31,253 listings with 95 columns. Los Angeles is not among MulTaBench's datasets.
+
+\textbf{Columns.} We keep six free-text fields written by the host: the listing title (\texttt{name}, median 6
+words), \texttt{description} (164), \texttt{neighborhood\_overview} (47), \texttt{transit} (32),
+\texttt{house\_rules} (43) and \texttt{host\_about} (49). The \texttt{summary} and \texttt{space} fields are dropped,
+since \texttt{description} contains them in 97\% and 99.7\% of listings respectively. The 47 structured features
+cover the property (type, room type, capacity, bedrooms, bathrooms, beds, amenity count), location (neighbourhood,
+latitude, longitude), host (tenure, response time and rate, Superhost status, verifications, number of listings),
+booking terms (fees, minimum and maximum nights, cancellation policy, instant booking), availability and reviews
+(counts, recency and the seven review scores). Dates become days before the scrape and prices become numbers;
+categories with fewer than 20 listings are merged. We drop identifiers, URLs, host names, constant or empty columns,
+redundant location fields (street, city, zip code), and mask e-mail addresses and phone numbers in the text.
+
+\textbf{Row filters.} We drop listings that were never booked (7,200; their asking price is unvalidated, and they
+include all \$10,000-per-night listings), whose description has fewer than 15 words (1,163) or is mostly in a
+non-Latin script (741; E5-small-v2 is an English encoder), priced under \$20 (144) or above \$1,000 per guest
+(24, e.g.\ \$9,000 for a one-bedroom apartment), requiring stays over 30 nights (169), or listing no guests or
+bedrooms (35); filters overlap, removing 8,177 listings in total. Finally, we drop 492 listings whose description
+duplicates another listing's (mostly one host's near-identical units), which would otherwise appear in both train and
+test splits. The result has 22,569 listings.
+
+\textbf{Target.} We predict $\log(\text{price})$ per night. Prices span \$20--\$10,000 (median \$100) with skewness
+12.9, and the top 1\% of listings hold 72\% of the variance; on the log scale the skewness is 0.8 and errors are
+relative, so every listing contributes comparably to the RMSE. Weekly and monthly prices, set from the nightly price,
+are removed.
+
+\section{Experimental Setup}
+
+We use the official MulTaBench code (commit \texttt{ff0c9c8}) and its protocol: three-fold cross-validation repeated
+twice with a fixed seed (6 folds), each fold capped at 10,000 training and 5,000 test rows, and default
+hyperparameters for TabM, CatBoost, LightGBM, TabPFN~2.0 and TabPFN~2.5. Each learner runs under four conditions:
+\emph{Structured} (the 47 structured features), \emph{Unstructured} (the six text fields only), \emph{Joint Frozen}
+(all features, text embedded by frozen E5-small-v2) and \emph{Joint TAR} (all features, text embedded by E5-small-v2
+fine-tuned on the target). Each text column is embedded as ``\texttt{passage: <column>: <text>}'', standardized
+and reduced to 30 principal components fitted on the training rows. For TAR, LoRA \cite{hu2022lora} (rank 16) tunes
+the last three layers of one shared E5 on every text column of the fold's training rows, with the target
+discretized into 20 bins, for up to 50 epochs with early stopping on a validation split; as in MulTaBench, one tuned
+encoder per fold serves all five learners. The score is MulTaBench's negative RMSE on $\log(\text{price})$ (higher
+is better); we also report $R^2$. Following the course's criteria, a learner passes if Joint Frozen strictly beats
+both unimodal conditions and Joint TAR strictly beats Joint Frozen, on the mean over folds; the dataset passes if at
+least three of the five learners do.
+
+\section{Results}
+
+\todo{Table~\ref{tab:results}: mean $R^2$ (and RMSE) $\pm$ std over 6 folds, per learner and condition, from
+results/la\_airbnb\_price/evaluation\_report.csv}
+
+\begin{table}[h]
+  \caption{$R^2$ on $\log(\text{price})$, mean $\pm$ std over 6 folds. Bold: best condition per learner.}
+  \label{tab:results}
+  \centering
+  \begin{tabular}{lcccc}
+    \toprule
+    Learner & Structured & Unstructured & Joint Frozen & Joint TAR \\
+    \midrule
+    TabM        & \todo{} & \todo{} & \todo{} & \todo{} \\
+    CatBoost    & \todo{} & \todo{} & \todo{} & \todo{} \\
+    LightGBM    & \todo{} & \todo{} & \todo{} & \todo{} \\
+    TabPFN 2.0  & \todo{} & \todo{} & \todo{} & \todo{} \\
+    TabPFN 2.5  & \todo{} & \todo{} & \todo{} & \todo{} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\todo{Curation verdict per learner (from curation\_verdict.csv): joint signal, TAR gain, their margins and on how
+many of the 6 folds each held. State whether the dataset passes (at least 3 of 5).}
+
+\todo{Analysis: how much text adds over structured features (Joint Frozen $-$ Structured), how much the structured
+features add over text, and how large the TAR gain is relative to fold-to-fold variation.}
+
+\section{Conclusion}
+
+We curated LA-Airbnb, a text-tabular price prediction dataset of 22,569 listings with six host-written text fields,
+and evaluated it with the MulTaBench curation pipeline across five learners and four conditions.
+\todo{summary of the outcome}.
+
+\textbf{Limitations.} The data covers one city at one point in time (May 2017). Like MulTaBench, we split IID, so
+hosts with several listings can appear in both train and test splits, which may overstate performance, although
+removing duplicated descriptions mitigates the most direct overlap. Asking prices are not transaction prices, and
+the filters on reviews and language shift the population toward established, English-language listings.
+
+\textbf{Future work.} Group-aware splits by host, other targets from the same table (review rating, Superhost
+status), other cities and scrapes of Inside Airbnb, and adding the listing photos as a third modality.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
