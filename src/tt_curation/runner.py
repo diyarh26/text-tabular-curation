@@ -29,7 +29,8 @@ def run_name(model: str, condition: Condition, size: str, fold: int) -> str:
 
 
 def run_all(data: LoadedDataset, results_dir: Path, models: Iterable[str], conditions: Iterable[Condition],
-            folds: Iterable[int], size: str = "10k", device: Optional[str] = None, overwrite: bool = False):
+            folds: Iterable[int], size: str = "10k", device: Optional[str] = None, overwrite: bool = False,
+            frozen_encoder: str = "e5-small"):
     import torch
     from multabench.benchmark.load import split_dataset
     from multabench.datasets.objects import MultimodalDataset, SupervisedTask
@@ -59,7 +60,7 @@ def run_all(data: LoadedDataset, results_dir: Path, models: Iterable[str], condi
             with shared_tar_encoder(split, data.text_columns, data.spec.is_cls, device,
                                     enabled=condition == Condition.JOINT_TAR) as tar_stats:
                 for model in pending:
-                    result = run_one(model, split, task, data, condition, fold, size, device)
+                    result = run_one(model, split, task, data, condition, fold, size, device, frozen_encoder)
                     result["tar_finetune"] = tar_stats or None
                     path = runs_dir / f"{run_name(model, condition, size, fold)}.json"
                     path.write_text(json.dumps(result, indent=2, default=str))
@@ -72,23 +73,26 @@ def run_all(data: LoadedDataset, results_dir: Path, models: Iterable[str], condi
 
 
 def run_one(model: str, split, task, data: LoadedDataset, condition: Condition, fold: int, size: str,
-            device) -> Dict:
+            device, frozen_encoder: str = "e5-small") -> Dict:
+    """frozen_encoder replaces e5-small in the frozen conditions; "tfidf" makes a cheap CPU screen of a candidate."""
     from multabench.baselines.preprocessing.target import transform_preprocess_y
     from multabench.baselines.training.metrics import calculate_metric
 
     start = time.time()
+    encoder = CONDITION_ENCODER[condition]
+    if encoder == "e5-small":
+        encoder = frozen_encoder
     x_train = condition_features(split.x_train, data.text_columns, condition)
     x_test = condition_features(split.x_test, data.text_columns, condition)
     result = {
         "dataset": data.spec.name, "model": MODELS[model], "short_name": model, "condition": str(condition),
-        "text_encoder": CONDITION_ENCODER[condition], "fold": fold, "size": size, "task": str(task.name).lower(),
+        "text_encoder": encoder, "fold": fold, "size": size, "task": str(task.name).lower(),
         "n_train": len(x_train), "n_test": len(x_test), "n_features": x_train.shape[1],
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"), "device": str(device),
         "multabench_commit": MULTABENCH_COMMIT, "git": _git_commit(),
     }
     try:
         model_cls = _model_class(model)
-        encoder = CONDITION_ENCODER[condition]
         wrapper = model_cls(problem_type=task, device=device, dataset=None, text_encoder=encoder, fold=fold,
                             size=size)
         wrapper.fit(x_train, split.y_train)

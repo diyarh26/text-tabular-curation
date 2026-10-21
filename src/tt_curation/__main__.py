@@ -42,6 +42,8 @@ def main():
     run.add_argument("--size", default="10k", choices=["10k", "full"])
     run.add_argument("--device", default=None, help="e.g. cuda, cpu; default: cuda if available")
     run.add_argument("--overwrite", action="store_true", help="rerun runs whose JSON already exists")
+    run.add_argument("--frozen_encoder", default="e5-small", choices=["e5-small", "tfidf"],
+                     help="tfidf: a cheap CPU screen of a candidate, saved apart from the real results")
     args = parser.parse_args()
 
     # HF_TOKEN (TabPFN 2.5's gated weights) from the repo's .env, before MulTaBench reads the environment.
@@ -54,6 +56,8 @@ def main():
     from tt_curation.spec import load_spec
     spec = load_spec(args.config)
     results_dir = results_dir_for(spec, args.results_root)
+    if getattr(args, "frozen_encoder", "e5-small") != "e5-small":
+        results_dir = results_dir.with_name(f"{results_dir.name}_screen_{args.frozen_encoder}")
 
     if args.command in ("validate", "run"):
         from tt_curation.data import describe, load_dataset
@@ -69,7 +73,7 @@ def main():
             conditions = [Condition(c) for c in (args.conditions or preset["conditions"]).split(",")]
             folds = [int(f) for f in (args.folds or preset["folds"]).split(",")]
             run_all(data, results_dir, models=models, conditions=conditions, folds=folds, size=args.size,
-                    device=args.device, overwrite=args.overwrite)
+                    device=args.device, overwrite=args.overwrite, frozen_encoder=args.frozen_encoder)
             report(results_dir)
     else:
         report(results_dir)
