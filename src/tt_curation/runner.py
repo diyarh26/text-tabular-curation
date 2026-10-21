@@ -31,8 +31,6 @@ def run_name(model: str, condition: Condition, size: str, fold: int) -> str:
 def run_all(data: LoadedDataset, results_dir: Path, models: Iterable[str], conditions: Iterable[Condition],
             folds: Iterable[int], size: str = "10k", device: Optional[str] = None, overwrite: bool = False,
             frozen_encoder: str = "e5-small"):
-    import torch
-    from multabench.benchmark.load import split_dataset
     from multabench.datasets.objects import MultimodalDataset, SupervisedTask
     from multabench.utils.devices import get_device
 
@@ -49,6 +47,14 @@ def run_all(data: LoadedDataset, results_dir: Path, models: Iterable[str], condi
         task = SupervisedTask.REGRESSION
     dataset = MultimodalDataset(x=data.x, y=data.y, task_type=task, dataset_id=None)
     print(f"🚀 {data.spec.name}: {len(models)} models x {len(conditions)} conditions x folds {list(folds)} on {device}")
+
+    with embedding_cache():
+        _run_folds(data, dataset, task, runs_dir, models, conditions, folds, size, device, overwrite, frozen_encoder)
+
+
+def _run_folds(data, dataset, task, runs_dir, models, conditions, folds, size, device, overwrite, frozen_encoder):
+    import torch
+    from multabench.benchmark.load import split_dataset
 
     for fold in folds:
         split = split_dataset(dataset, fold=fold, size=size)
@@ -161,6 +167,39 @@ def shared_tar_encoder(split, text_columns: List[str], is_cls: bool, device, ena
         yield stats
     finally:
         text_embeddings.finetune_e5 = original
+        _EMBEDDINGS.pop(id(backbone), None)
+
+
+# Every learner embeds the same texts with the same E5, so each distinct text is encoded once per model: the frozen
+# model's entries serve every fold, the fold's tuned model's are dropped with it. {id(model): (model, {passage: emb})};
+# the model is kept so its id can't be reused while its entries exist.
+_EMBEDDINGS: Dict[int, tuple] = {}
+
+
+@contextlib.contextmanager
+def embedding_cache():
+    from multabench.baselines.preprocessing import text_embeddings
+    from multabench.e5.constants import format_e5_passage
+
+    original = text_embeddings.encode_texts_with_e5
+
+    def cached(texts, col_name, model, tokenizer, device, **kwargs):
+        _, cache = _EMBEDDINGS.setdefault(id(model), (model, {}))
+        keys = [format_e5_passage(col_name, col_val=t) for t in texts]
+        missing = list(dict.fromkeys(k for k in keys if k not in cache))
+        if missing:
+            todo = {format_e5_passage(col_name, col_val=t): t for t in texts}
+            encoded = original([todo[k] for k in missing], col_name=col_name, model=model, tokenizer=tokenizer,
+                               device=device, **kwargs)
+            cache.update(zip(missing, encoded))
+        return np.stack([cache[k] for k in keys]).astype(np.float32)
+
+    text_embeddings.encode_texts_with_e5 = cached
+    try:
+        yield
+    finally:
+        text_embeddings.encode_texts_with_e5 = original
+        _EMBEDDINGS.clear()
 
 
 def _model_class(short_name: str):
