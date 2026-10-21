@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tt-curation"
+version = "0.1.0"
+description = "Curating a new text-tabular dataset with the MulTaBench curation pipeline"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "pandas >= 2.2.2",
+    "pyyaml",
+    "scikit-learn",
+]
+
+[project.optional-dependencies]
+# The learners and encoders, from MulTaBench at a pinned commit; install with -c requirements/constraints.txt.
+bench = [
+    "multabench[bench,catboost,lightgbm,pytabkit,tabpfn] @ git+https://github.com/alanarazi7/MulTaBench@ff0c9c8b40a2085a06a7771190e53a261341802f",
+]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["bench: needs MulTaBench and its learners installed (downloads E5)"]

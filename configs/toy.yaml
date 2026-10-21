@@ -1,0 +1,9 @@
+# Synthetic smoke-test dataset (python prep/make_toy_dataset.py). Not a deliverable.
+name: toy
+csv: data/toy/toy.csv
+target: recommended
+task: classification
+text_columns: [review]
+categorical_columns: [category]
+numerical_columns: [price]
+drop_columns: [id]

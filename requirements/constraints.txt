@@ -1,0 +1,27 @@
+# Versions pinned to match MulTaBench's own lock (requirements.txt at the pinned commit below),
+# so our runs use the same packages as the official benchmark.
+# MulTaBench commit: ff0c9c8b40a2085a06a7771190e53a261341802f
+accelerate==1.12.0
+autogluon-common==1.5.0
+autogluon-core==1.5.0
+autogluon-features==1.5.0
+catboost==1.2.8
+huggingface-hub==0.36.0
+lightgbm==4.6.0
+numpy==2.3.5
+pandas==2.3.3
+peft==0.18.0
+pillow==11.3.0
+psutil==7.0.0
+pyarrow==20.0.0
+pytabkit==1.7.0
+python-dotenv==1.2.1
+pyyaml==6.0.3
+scikit-learn==1.6.1
+scipy==1.16.3
+setuptools==80.9.0
+skrub==0.10.1
+tabpfn==9.2.0
+torch==2.7.1
+torchvision==0.22.1
+transformers==4.57.3

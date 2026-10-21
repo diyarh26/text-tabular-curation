@@ -1,0 +1,16 @@
+# Copy to configs/<name>.yaml and fill in. Paths are relative to the repo root.
+name: my_dataset                      # used for results/<name>/
+csv: data/processed/my_dataset.csv    # the curated CSV (a deliverable), written by prep/<name>.py
+target: label                         # the column to predict
+task: classification                  # classification | regression
+
+# Free-text columns: embedded with E5 (frozen or target-aware). Only real prose belongs here, not short codes/names.
+text_columns: [description]
+
+# Every other feature, typed explicitly. Undeclared columns are typed by dtype, with a warning.
+categorical_columns: []
+numerical_columns: []
+date_columns: []
+
+# IDs, URLs, leaky columns (anything derived from the target, or only known after it) go here.
+drop_columns: []
