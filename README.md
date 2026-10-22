@@ -91,6 +91,16 @@ Checkpoint files are ignored by Git. Intermediate evaluation reports are saved a
 curation report is generated only after all 120 expected evaluations succeed. This entry point is separate
 from the smaller Colab pilot described below.
 
+## Full LinkedIn run on Kaggle T4 x2
+
+Import [the Kaggle notebook](notebooks/run_linkedin_full_kaggle.ipynb), enable **GPU T4 x2** and Internet,
+and attach the `GH_TOKEN` Kaggle secret for read access to this private repository. See
+[setup and resume instructions](docs/KAGGLE_LINKEDIN_RUN.md). GPU 0 handles folds 0/2/4 and GPU 1 handles
+1/3/5, each in its own process, for **120 evaluations** with the official batch 256 and 50-epoch cap.
+Fold checkpoints and results are isolated; a final verdict requires all 120 expected successful evaluations.
+The notebook exports partial checkpoints at its time budget so another session can resume the same revision.
+This adds separate launchers and does not change the active Steam VM runtime code.
+
 ## Steam versus LinkedIn: Colab TAR pilot
 
 Open `notebooks/compare_steam_linkedin_tar_colab.ipynb` in Colab and upload
