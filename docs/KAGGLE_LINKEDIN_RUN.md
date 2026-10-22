@@ -4,7 +4,11 @@ Import `notebooks/run_linkedin_full_kaggle.ipynb` into a **private** Kaggle note
 Enable Internet, choose **GPU T4 x2**, and enable a Kaggle secret named `GH_TOKEN`
 with read access to `diyarh26/text-tabular-curation` (fine-grained token: repository
 Contents read permission). Do not put tokens in cells, outputs, or Git.
-An optional `HF_TOKEN` secret is read if present; public checkpoint access is attempted otherwise.
+For TabPFN-v2.5, accept the model license at [Prior Labs](https://ux.priorlabs.ai)
+and add the account API key as a `TABPFN_TOKEN` Kaggle secret. It is a separate
+credential from `HF_TOKEN`. The pinned TabPFN library requires this license check
+when downloading gated weights; availability on another machine does not establish
+fresh-download access. An optional `HF_TOKEN` secret is also read if present.
 
 Use **Save Version > Save & Run All** for a background run with saved outputs.
 Do not also launch an interactive full run. Check the account's actual quota.
@@ -12,7 +16,8 @@ Two devices do not pool VRAM: each worker has its own 16 GB T4.
 
 The notebook downloads an exact GitHub source revision, installs a Python 3.11
 environment with the pinned full dependencies, verifies both GPUs, tests all 20
-toy learner/condition combinations on GPU 0, and checks the two regression checkpoints.
+toy learner/condition combinations on GPU 0, and checks both classification and
+regression checkpoints before TAR training.
 It then starts two processes:
 
 | Visible physical GPU | Folds | Evaluations |
@@ -25,6 +30,13 @@ Both use the same prepared 15,000-row LinkedIn sample, five learners, four
 conditions, six official splits, frozen E5-small-v2 and independent TAR adapters
 per fold. Maximum 50 epochs, early stopping, batch 256, float32. It does not
 change parameters automatically on out-of-memory or other failures.
+
+For an explicitly approved memory adjustment, set `MICRO_BATCH = 16` in the
+notebook's settings cell. Both smoke and full runs then use micro-batches of 16
+and 16-step gradient accumulation for effective batch 256, still in float32 with
+the same 50-epoch cap. This changes batch execution and can cause numerical
+differences; it is recorded in the manifest. The default remains physical batch
+256, and an existing experiment with a different micro-batch cannot be mixed.
 
 Fold outputs and training checkpoints have separate directories to avoid races.
 Both workers are stopped on a saved model error or failed process. Completed

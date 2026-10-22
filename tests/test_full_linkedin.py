@@ -89,16 +89,18 @@ def test_mask_each_worker_before_imports_and_export_resumable_checkpoint(tmp_pat
 
 
 @pytest.mark.bench
-def test_full_tar_restores_early_stopping_patience_without_changing_batch(tmp_path):
+@pytest.mark.parametrize("micro_batch,accumulation", [(256, 1), (16, 16)])
+def test_full_tar_restores_early_stopping_patience_without_changing_effective_batch(tmp_path, micro_batch, accumulation):
     import torch
     from transformers import EarlyStoppingCallback
     from multabench.finetune import lora
     from run_full_linkedin import full_tar
     original_arguments = lora.TrainingArguments
-    with full_tar(tmp_path / "checkpoint"):
+    with full_tar(tmp_path / "checkpoint", micro_batch=micro_batch):
         args = lora.TrainingArguments(output_dir=str(tmp_path / "unused"), report_to="none")
-        assert args.per_device_train_batch_size == args.per_device_eval_batch_size == 256
-        assert args.gradient_accumulation_steps == 1
+        assert args.per_device_train_batch_size == args.per_device_eval_batch_size == micro_batch
+        assert args.gradient_accumulation_steps == accumulation
+        assert args.per_device_train_batch_size * args.gradient_accumulation_steps == 256
         assert args.restore_callback_states_from_checkpoint
         trainer = lora.Trainer(model=torch.nn.Linear(2, 2), args=args,
                                callbacks=[EarlyStoppingCallback(early_stopping_patience=3)])

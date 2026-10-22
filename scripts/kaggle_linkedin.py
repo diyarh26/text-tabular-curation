@@ -81,13 +81,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results_root", required=True)
     parser.add_argument("--max_seconds", type=float, default=10 * 3600)
+    parser.add_argument("--micro_batch", type=int, choices=[16, 32, 256], default=256)
     args = parser.parse_args()
     if args.max_seconds < 60:
         raise SystemExit("Less than one minute remains in the notebook budget; save outputs and start a new session.")
     root = Path(args.results_root).resolve()
     root.mkdir(parents=True, exist_ok=True)
     worker = Path(__file__).with_name("run_full_linkedin.py")
-    common = [sys.executable, "-u", str(worker), "--results_root", str(root)]
+    common = [sys.executable, "-u", str(worker), "--results_root", str(root),
+              "--micro_batch", str(args.micro_batch)]
     env = worker_environment(0)
     subprocess.run(common + ["--prepare_only"], env=env, check=True)
     output = root / "linkedin_salary"

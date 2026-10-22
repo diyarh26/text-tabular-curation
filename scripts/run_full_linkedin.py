@@ -30,10 +30,10 @@ def fold_dir(output, fold):
 
 
 @contextlib.contextmanager
-def full_tar(cache):
+def full_tar(cache, micro_batch=256):
     """Keep the official budget and restore early-stopping patience across sessions too."""
     from multabench.finetune import lora
-    with persistent_tar(cache, epochs=50, micro_batch=256):
+    with persistent_tar(cache, epochs=50, micro_batch=micro_batch):
         original_arguments = lora.TrainingArguments
 
         def arguments(*args, **kwargs):
@@ -121,6 +121,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results_root", required=True)
     parser.add_argument("--folds", default="0,1,2,3,4,5")
+    parser.add_argument("--micro_batch", type=int, choices=[16, 32, 256], default=256,
+                        help="Official default 256; smaller micro-batches require an approved memory adjustment.")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--prepare_only", action="store_true")
     mode.add_argument("--report_only", action="store_true")
@@ -162,7 +164,7 @@ def main():
                     folds=list(range(6)), expected_evaluations=120, size="10k", frozen_encoder="e5-small",
                     source_revision=(REPO_ROOT / "SOURCE_REVISION").read_text().strip()
                         if (REPO_ROOT / "SOURCE_REVISION").exists() else None,
-                    tar_max_epochs=50, micro_batch=256, effective_batch=256, precision="float32",
+                    tar_max_epochs=50, micro_batch=args.micro_batch, effective_batch=256, precision="float32",
                     restore_early_stopping_state=True,
                     code={p.relative_to(REPO_ROOT).as_posix(): text_digest(p) for p in paths},
                     packages={n: version(n) for n in ["multabench", "torch", "transformers", "peft", "catboost",
@@ -185,10 +187,11 @@ def main():
     from tt_curation.runner import run_all
     if not torch.cuda.is_available() or torch.cuda.device_count() != 1:
         raise RuntimeError("Each worker must see exactly one GPU. Set CUDA_VISIBLE_DEVICES before starting Python.")
-    print(f"Assigned GPU: {torch.cuda.get_device_name(0)}; folds {folds}; official batch 256, cap 50.", flush=True)
+    print(f"Assigned GPU: {torch.cuda.get_device_name(0)}; folds {folds}; micro-batch {args.micro_batch}, "
+          "effective batch 256, cap 50.", flush=True)
     for fold in folds:
         destination = fold_dir(output, fold)
-        with full_tar(destination / "checkpoints"):
+        with full_tar(destination / "checkpoints", micro_batch=args.micro_batch):
             run_all(data, destination, models=MODELS, conditions=list(Condition), folds=[fold],
                     size="10k", device="cuda", frozen_encoder="e5-small")
         problems = audit_runs(output, [fold])

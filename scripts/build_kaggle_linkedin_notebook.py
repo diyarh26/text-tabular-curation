@@ -25,7 +25,9 @@ def main():
         1. Keep this notebook private. Set **Accelerator → GPU T4 x2**, and **Internet → On**.
         2. In **Add-ons → Secrets**, add `GH_TOKEN` with read access to the private
            `diyarh26/text-tabular-curation` repository and enable it for this notebook.
-           Do not paste a token into a cell. `HF_TOKEN` is optional if model access requires it.
+           Do not paste a token into a cell. For TabPFN-v2.5, accept the model license at
+           https://ux.priorlabs.ai and add its account API key as the `TABPFN_TOKEN` secret.
+           `HF_TOKEN` is a separate, optional credential.
         3. Use **Save Version → Save & Run All** for a saved background run. Do not also launch an interactive
            full run at the same time. Check your account's remaining GPU quota first.
 
@@ -47,6 +49,7 @@ def main():
         from pathlib import Path
         SESSION_START = time.monotonic()
         SESSION_WORK_HOURS = 10
+        MICRO_BATCH = 256  # Official default. Set 16 only after approving the memory adjustment.
         # Leave blank on first run; on resume auto-detect one checkpoint under /kaggle/input.
         # If you attach several older versions, specify the desired checkpoint ZIP explicitly.
         RESUME_ZIP = ""
@@ -131,6 +134,10 @@ def main():
             ENV['HF_TOKEN'] = secrets.get_secret('HF_TOKEN')
         except Exception:
             print('No optional HF_TOKEN; attempting public model access.')
+        try:
+            ENV['TABPFN_TOKEN'] = secrets.get_secret('TABPFN_TOKEN')
+        except Exception:
+            print('No TABPFN_TOKEN; the model-access check below will verify whether weights are available.')
         def run_checked(command, *, env=None, cwd=PROJECT):
             process = subprocess.Popen([str(x) for x in command], cwd=cwd, env=env or ENV,
                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
@@ -164,25 +171,45 @@ def main():
         # Lightweight local tests; these do not download models or launch experiments.
         run_checked([PYTHON, '-m', 'pytest', '-q', '-m', 'not bench'])
     """), cell("code", """
+        # Check BOTH classification and regression checkpoints before spending time on TAR.
+        smoke_env = {**ENV, 'CUDA_VISIBLE_DEVICES': '0'}
+        run_checked([PYTHON, '-c',
+            "import numpy as np; from tabpfn import TabPFNClassifier,TabPFNRegressor; "
+            "from tabpfn.constants import ModelVersion; "
+            "rng=np.random.default_rng(42); X=rng.normal(size=(64,4)); "
+            "yc=np.arange(64)%2; yr=X[:,0]+rng.normal(size=64)*.1; "
+            "[(lambda m: (m.fit(X,y), print(cls.__name__,v,m.predict(X[:2]))))(cls.create_default_for_version("
+            "version=ModelVersion(v),device='cuda',random_state=42,ignore_pretraining_limits=True)) "
+            "for cls,y in [(TabPFNClassifier,yc),(TabPFNRegressor,yr)] for v in ['v2','v2.5']]"], env=smoke_env)
+        print('Both TabPFN versions: classification/regression model access verified.')
+    """), cell("code", """
         # Smoke test ALL 20 combinations on GPU 0, including official-budget TAR.
         # Kept in scratch; these synthetic results never enter the LinkedIn reports.
         smoke_env = {**ENV, 'CUDA_VISIBLE_DEVICES': '0'}
         run_checked([PYTHON, PROJECT / 'prep/make_toy_dataset.py'], env=smoke_env)
-        run_checked([PYTHON, '-u', '-m', 'tt_curation', 'run', PROJECT / 'configs/toy.yaml',
-                     '--folds', '0', '--device', 'cuda', '--results_root', SCRATCH / 'smoke'], env=smoke_env)
-        smoke_rows = [json.loads(p.read_text()) for p in (SCRATCH / 'smoke/toy/runs').glob('*.json')]
+        # The same persistent helper and chosen micro-batch are used in smoke and full runs.
+        # The default remains 256; there is no automatic fallback on OOM.
+        smoke_root = SCRATCH / ('smoke_micro' + str(MICRO_BATCH))
+        smoke_program = "\\n".join([
+            "import sys; from pathlib import Path",
+            "sys.path.insert(0, str(Path('scripts').resolve()))",
+            "from run_full_linkedin import full_tar",
+            "from tt_curation.spec import load_spec",
+            "from tt_curation.data import load_dataset",
+            "from tt_curation.conditions import MODELS,Condition",
+            "from tt_curation.runner import run_all",
+            "root=Path(sys.argv[1]); micro=int(sys.argv[2])",
+            "data=load_dataset(load_spec('configs/toy.yaml'))",
+            "with full_tar(root/'checkpoints',micro_batch=micro):",
+            "    run_all(data,root/'toy',models=list(MODELS),conditions=list(Condition),folds=[0],device='cuda')",
+        ])
+        run_checked([PYTHON, '-u', '-c', smoke_program, smoke_root, str(MICRO_BATCH)], env=smoke_env)
+        smoke_rows = [json.loads(p.read_text()) for p in (smoke_root / 'toy/runs').glob('*.json')]
         expected = {(m, c, 0) for m in ['tabm','cat','light','tabpfnv2','tabpfnv2p5']
                     for c in ['structured','unstructured','joint_frozen','joint_tar']}
         assert {(r['short_name'], r['condition'], r['fold']) for r in smoke_rows} == expected
         assert all(r['status'] == 'ok' for r in smoke_rows), 'Smoke failure: inspect traceback above. Full run not started.'
-        # Regression checkpoints differ from classification; verify both before the full salary run.
-        run_checked([PYTHON, '-c',
-            "import numpy as np; from tabpfn import TabPFNRegressor; from tabpfn.constants import ModelVersion; "
-            "rng=np.random.default_rng(42); X=rng.normal(size=(64,4)); y=X[:,0]+rng.normal(size=64)*.1; "
-            "[(lambda m: (m.fit(X,y), print(v,m.predict(X[:2]))))(TabPFNRegressor.create_default_for_version("
-            "version=ModelVersion(v),device='cuda',random_state=42,ignore_pretraining_limits=True)) "
-            "for v in ['v2','v2.5']]"], env=smoke_env)
-        print('20/20 smoke evaluations passed; both regression checkpoints accessible.')
+        print('20/20 smoke evaluations passed.')
     """), cell("code", """
         remaining = SESSION_WORK_HOURS * 3600 - (time.monotonic() - SESSION_START)
         print('Launching GPU 0: folds 0,2,4 | GPU 1: folds 1,3,5')
@@ -190,7 +217,8 @@ def main():
         # The supervisor exports partial work even on a worker error, then reports failure.
         # Reports/checkpoints go to working; environment and downloaded weights stay in scratch.
         run_checked([PYTHON, '-u', PROJECT / 'scripts/kaggle_linkedin.py',
-                     '--results_root', RUN_ROOT, '--max_seconds', str(remaining)])
+                     '--results_root', RUN_ROOT, '--max_seconds', str(remaining),
+                     '--micro_batch', str(MICRO_BATCH)])
     """), cell("code", """
         from IPython.display import display, FileLink
         summary = RUN_ROOT / 'linkedin_salary/summary.txt'
