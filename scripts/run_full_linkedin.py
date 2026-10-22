@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import gc
 import hashlib
 from importlib.metadata import version
 import json
@@ -29,22 +30,41 @@ def fold_dir(output, fold):
     return Path(output) / "folds" / f"fold{fold}"
 
 
+def park_frozen_e5():
+    """Idle frozen encoder weights need no VRAM while a different encoder is being tuned."""
+    import torch
+    from multabench.e5.e5_finetune import _VANILLA_E5_CACHE
+    for backbone, _ in _VANILLA_E5_CACHE.values():
+        backbone.to("cpu")
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
+
 @contextlib.contextmanager
 def full_tar(cache, micro_batch=256):
     """Keep the official budget and restore early-stopping patience across sessions too."""
     from multabench.finetune import lora
+    from multabench.baselines.preprocessing import text_embeddings
     with persistent_tar(cache, epochs=50, micro_batch=micro_batch):
         original_arguments = lora.TrainingArguments
+        original_finetune = text_embeddings.finetune_e5
 
         def arguments(*args, **kwargs):
             kwargs["restore_callback_states_from_checkpoint"] = True
             return original_arguments(*args, **kwargs)
 
+        def finetune(*args, **kwargs):
+            park_frozen_e5()
+            return original_finetune(*args, **kwargs)
+
         lora.TrainingArguments = arguments
+        text_embeddings.finetune_e5 = finetune
         try:
             yield
         finally:
             lora.TrainingArguments = original_arguments
+            text_embeddings.finetune_e5 = original_finetune
 
 
 def audit_runs(output, folds=range(6)):

@@ -30,6 +30,10 @@ Both use the same prepared 15,000-row LinkedIn sample, five learners, four
 conditions, six official splits, frozen E5-small-v2 and independent TAR adapters
 per fold. Maximum 50 epochs, early stopping, batch 256, float32. It does not
 change parameters automatically on out-of-memory or other failures.
+Before tuning a separate E5 encoder, the launcher moves the unused frozen E5
+weights to CPU and releases unused CUDA allocations. Frozen embedding vectors and
+weights are retained; normal encoding moves that model back to the requested
+device when needed. This does not change batch size, precision or training parameters.
 
 For an explicitly approved memory adjustment, set `MICRO_BATCH = 16` in the
 notebook's settings cell. Both smoke and full runs then use micro-batches of 16

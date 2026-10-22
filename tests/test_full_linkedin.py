@@ -112,3 +112,32 @@ def test_full_tar_restores_early_stopping_patience_without_changing_effective_ba
         assert restored.early_stopping_patience_counter == 2
         assert restored.early_stopping_patience == 3
     assert lora.TrainingArguments is original_arguments
+
+
+@pytest.mark.bench
+def test_parking_frozen_encoder_keeps_cached_weights_and_embeddings(tmp_path, monkeypatch):
+    import torch
+    from multabench.e5 import e5_finetune
+    from tt_curation import runner
+    from run_full_linkedin import park_frozen_e5
+    model = torch.nn.Linear(4, 3).eval()
+    inputs = torch.ones(2, 4)
+    expected = model(inputs).detach().clone()
+    tokenizer = object()
+    cache = {("cuda", "test-encoder"): (model, tokenizer)}
+    monkeypatch.setattr(e5_finetune, "_VANILLA_E5_CACHE", cache)
+    vectors = {"passage: review: good": [1.0, 2.0]}
+    monkeypatch.setattr(runner, "_EMBEDDINGS", {id(model): (model, vectors)})
+    moves = []
+    original_to = model.to
+
+    def move(device):
+        moves.append(device)
+        return original_to(device)
+
+    monkeypatch.setattr(model, "to", move)
+    park_frozen_e5()
+    assert moves == ["cpu"]
+    assert cache[("cuda", "test-encoder")] == (model, tokenizer)
+    assert runner._EMBEDDINGS[id(model)][1] is vectors
+    torch.testing.assert_close(model(inputs), expected, rtol=0, atol=0)
