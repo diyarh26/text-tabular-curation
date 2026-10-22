@@ -1,0 +1,9 @@
+# LinkedIn job postings (US, 2024): predict the posted salary, on the log scale. Built by prep/linkedin.py.
+name: linkedin_salary
+csv: data/processed/linkedin_salary.csv
+target: log_salary
+task: regression
+
+text_columns: [title, description]
+categorical_columns: [experience_level, work_type, state, application_type, company_industry, job_industry]
+numerical_columns: [remote_allowed, company_size, company_employees, company_followers, n_skills, n_benefits]
