@@ -90,9 +90,11 @@ def main():
         else:
             print('Starting a fresh experiment.')
         revision_file = RUN_ROOT / 'source_revision.txt'
-        if revision_file.exists():
+        if revision_file.exists() and (RUN_ROOT / 'linkedin_salary/manifest.json').exists():
             REPO_REF = revision_file.read_text().strip()
             assert re.fullmatch(r'[0-9a-f]{40}', REPO_REF), 'Invalid saved source revision.'
+        elif revision_file.exists():
+            print('Previous setup did not initialize a full experiment; fetching the requested source revision.')
     """), cell("code", """
         import urllib.request, urllib.error
         from kaggle_secrets import UserSecretsClient
@@ -129,6 +131,7 @@ def main():
         ENV = {**os.environ, 'MPLBACKEND': 'Agg', 'HF_HOME': str(SCRATCH / 'huggingface'),
                'TORCH_HOME': str(SCRATCH / 'torch'), 'XDG_CACHE_HOME': str(SCRATCH / 'cache'),
                'UV_CACHE_DIR': str(SCRATCH / 'uv_cache'), 'TOKENIZERS_PARALLELISM': 'false',
+               'PYTORCH_CUDA_ALLOC_CONF': 'expandable_segments:True',
                'OMP_NUM_THREADS': '2', 'MKL_NUM_THREADS': '2', 'OPENBLAS_NUM_THREADS': '2'}
         try:
             ENV['HF_TOKEN'] = secrets.get_secret('HF_TOKEN')
