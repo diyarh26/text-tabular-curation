@@ -96,9 +96,13 @@ from the smaller Colab pilot described below.
 Import [the Kaggle notebook](notebooks/run_linkedin_full_kaggle.ipynb), enable **GPU T4 x2** and Internet,
 and attach the `GH_TOKEN` Kaggle secret for read access to this private repository. See
 [setup and resume instructions](docs/KAGGLE_LINKEDIN_RUN.md). GPU 0 handles folds 0/2/4 and GPU 1 handles
-1/3/5, each in its own process, for **120 evaluations** with the official batch 256 and 50-epoch cap.
+1/3/5, each in its own process, for **120 evaluations** with the 50-epoch cap. The approved Kaggle memory
+adjustment uses micro-batch 16 and 16-step gradient accumulation (effective batch 256); set
+`MICRO_BATCH = 256` for the reference physical batch on hardware where it fits.
 Fold checkpoints and results are isolated; a final verdict requires all 120 expected successful evaluations.
 The notebook exports partial checkpoints at its time budget so another session can resume the same revision.
+For the approved 256-to-16 change, it backs up the previous experiment and imports validated baseline
+evaluations only when data, model code, dependencies and other scientific settings match. TAR starts fresh.
 This adds separate launchers and does not change the active Steam VM runtime code.
 
 ## Steam versus LinkedIn: Colab TAR pilot

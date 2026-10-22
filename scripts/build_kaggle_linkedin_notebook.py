@@ -19,7 +19,9 @@ def main():
 
         **15,000 prepared rows · five learners · four conditions · six folds = 120 evaluations.**
         GPU 0 runs folds 0/2/4; GPU 1 runs 1/3/5. Each process sees one GPU.
-        Official batch 256, maximum 50 epochs with early stopping. No automatic parameter changes on failure.
+        Approved Kaggle memory adjustment: micro-batch 16, accumulation 16, effective batch 256.
+        Maximum 50 epochs with early stopping. Model, learning rate, LoRA settings and float32 remain unchanged.
+        Set `MICRO_BATCH = 256` to use the reference physical batch on a GPU where it fits.
 
         Before starting:
         1. Keep this notebook private. Set **Accelerator → GPU T4 x2**, and **Internet → On**.
@@ -47,9 +49,9 @@ def main():
     """), cell("code", """
         import os, sys, time, json, subprocess, shutil, zipfile, re
         from pathlib import Path
-        SESSION_START = time.monotonic()
+        SESSION_START = globals().get('SESSION_START', time.monotonic())
         SESSION_WORK_HOURS = 10
-        MICRO_BATCH = 256  # Official default. Set 16 only after approving the memory adjustment.
+        MICRO_BATCH = 16  # Approved: accumulation 16, effective batch 256. Reference physical batch: 256.
         # Leave blank on first run; on resume auto-detect one checkpoint under /kaggle/input.
         # If you attach several older versions, specify the desired checkpoint ZIP explicitly.
         RESUME_ZIP = ""
@@ -91,8 +93,14 @@ def main():
             print('Starting a fresh experiment.')
         revision_file = RUN_ROOT / 'source_revision.txt'
         if revision_file.exists() and (RUN_ROOT / 'linkedin_salary/manifest.json').exists():
-            REPO_REF = revision_file.read_text().strip()
-            assert re.fullmatch(r'[0-9a-f]{40}', REPO_REF), 'Invalid saved source revision.'
+            saved_manifest = json.loads((RUN_ROOT / 'linkedin_salary/manifest.json').read_text())
+            if saved_manifest['micro_batch'] == MICRO_BATCH:
+                REPO_REF = revision_file.read_text().strip()
+                assert re.fullmatch(r'[0-9a-f]{40}', REPO_REF), 'Invalid saved source revision.'
+            elif saved_manifest['micro_batch'] == 256 and MICRO_BATCH == 16:
+                print('Approved 256 -> 16 adjustment: fetch updated source, then validate baseline migration.')
+            else:
+                raise RuntimeError('Unsupported change to an existing experiment; keep the saved settings.')
         elif revision_file.exists():
             print('Previous setup did not initialize a full experiment; fetching the requested source revision.')
     """), cell("code", """
@@ -174,6 +182,20 @@ def main():
         # Lightweight local tests; these do not download models or launch experiments.
         run_checked([PYTHON, '-m', 'pytest', '-q', '-m', 'not bench'])
     """), cell("code", """
+        # Preserve previous batch-256 results and import only unchanged, validated baseline runs.
+        # TAR adapters/checkpoints/results are never reused across micro-batch settings.
+        manifest_path = RUN_ROOT / 'linkedin_salary/manifest.json'
+        if manifest_path.exists():
+            saved_manifest = json.loads(manifest_path.read_text())
+            if saved_manifest['micro_batch'] == 256 and MICRO_BATCH == 16:
+                run_checked([PYTHON, PROJECT / 'scripts/migrate_linkedin_microbatch.py',
+                             '--results_root', RUN_ROOT], env={**ENV, 'CUDA_VISIBLE_DEVICES': '0'})
+            else:
+                assert saved_manifest['micro_batch'] == MICRO_BATCH, 'Existing micro-batch differs.'
+                print('Existing experiment uses the selected micro-batch; no migration needed.')
+        else:
+            print('Fresh experiment: no previous baseline results to migrate.')
+    """), cell("code", """
         # Check BOTH classification and regression checkpoints before spending time on TAR.
         smoke_env = {**ENV, 'CUDA_VISIBLE_DEVICES': '0'}
         run_checked([PYTHON, '-c',
@@ -191,7 +213,7 @@ def main():
         smoke_env = {**ENV, 'CUDA_VISIBLE_DEVICES': '0'}
         run_checked([PYTHON, PROJECT / 'prep/make_toy_dataset.py'], env=smoke_env)
         # The same persistent helper and chosen micro-batch are used in smoke and full runs.
-        # The default remains 256; there is no automatic fallback on OOM.
+        # The selected micro-batch is explicit; there is no automatic fallback on OOM.
         smoke_root = SCRATCH / ('smoke_micro' + str(MICRO_BATCH))
         smoke_program = "\\n".join([
             "import sys; from pathlib import Path",

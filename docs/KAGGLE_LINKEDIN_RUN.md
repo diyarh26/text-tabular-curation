@@ -28,19 +28,29 @@ It then starts two processes:
 Each process sees **one GPU only**, before importing PyTorch/MulTaBench.
 Both use the same prepared 15,000-row LinkedIn sample, five learners, four
 conditions, six official splits, frozen E5-small-v2 and independent TAR adapters
-per fold. Maximum 50 epochs, early stopping, batch 256, float32. It does not
+per fold. Maximum 50 epochs, early stopping, float32. The approved Kaggle configuration
+uses micro-batch 16, accumulation 16, effective batch 256. It does not
 change parameters automatically on out-of-memory or other failures.
 Before tuning a separate E5 encoder, the launcher moves the unused frozen E5
 weights to CPU and releases unused CUDA allocations. Frozen embedding vectors and
 weights are retained; normal encoding moves that model back to the requested
 device when needed. This does not change batch size, precision or training parameters.
 
-For an explicitly approved memory adjustment, set `MICRO_BATCH = 16` in the
-notebook's settings cell. Both smoke and full runs then use micro-batches of 16
+The notebook's settings cell now defaults to the explicitly approved `MICRO_BATCH = 16`.
+Both smoke and full runs use micro-batches of 16
 and 16-step gradient accumulation for effective batch 256, still in float32 with
 the same 50-epoch cap. This changes batch execution and can cause numerical
-differences; it is recorded in the manifest. The default remains physical batch
-256, and an existing experiment with a different micro-batch cannot be mixed.
+differences; it is recorded in the manifest. Set `MICRO_BATCH = 256` for the reference
+physical batch on hardware where it fits; the command-line worker still defaults to 256.
+An existing experiment with a different micro-batch cannot be silently mixed.
+
+When resuming the failed batch-256 attempt with the new batch-16 notebook, the
+notebook verifies data/configuration, model code, dependencies and all other
+scientific settings. It preserves the old directory as a sibling named
+`linkedin_full_batch256_backup_<timestamp>`, creates a new batch-16 manifest and
+copies only successful, metadata-validated structured/text/joint-frozen JSONs.
+TAR results, adapters and training checkpoints stay in the backup. A
+`baseline_reuse.json` records source provenance and imported file hashes.
 
 Fold outputs and training checkpoints have separate directories to avoid races.
 Both workers are stopped on a saved model error or failed process. Completed
