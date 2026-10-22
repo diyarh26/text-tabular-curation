@@ -58,11 +58,54 @@ python -m tt_curation report configs/my_dataset.yaml                   # rebuild
 ```
 
 The full run needs a GPU (TabPFN, TabM and the LoRA tuning; `joint_tar` refuses to run on CPU): on a Linux GPU
-machine run `bash scripts/setup_gpu_vm.sh`, or use `notebooks/run_on_colab.ipynb`. TabPFN 2.5 needs a
-Prior Labs license: accept it at https://ux.priorlabs.ai and put the API key in `.env` as `TABPFN_TOKEN=...`. Runs are
+machine run `bash scripts/setup_gpu_vm.sh`, or use `notebooks/run_on_colab.ipynb`. Verify access to the TabPFN model
+weights before starting; these wrappers read `HF_TOKEN` from `.env` when authentication is needed. Runs are
 resumable: rerunning skips successful runs and retries failed ones.
 
 Smoke test on CPU with a synthetic dataset: `pytest` (`pytest -m "not bench"` skips the end-to-end run).
+
+## Full Steam run on the VM
+
+The prepared Steam CSV and config are included in Git. See [the VM run instructions](docs/VM_STEAM_RUN.md) for
+preflight checks, data verification, and launching inside tmux. From the repository root, after setting up the
+full benchmark environment:
+
+```bash
+.venv/bin/python -u scripts/run_full_steam.py
+```
+
+This launches all **5 learners x 4 conditions x 6 folds = 120 evaluations**, with frozen E5 for the text baselines
+and TAR capped at the official **50 epochs with early stopping**. It adds the tested persistent checkpoint logic
+to the existing runner and defaults to the official training batch of 256. Smaller execution micro-batches can be
+selected explicitly after an approved memory adjustment, retaining effective batch 256 through accumulation.
+All six folds run sequentially on one GPU, with one tuned encoder per fold shared across learners.
+
+Results go to `results/steam_full_e5/steam_recommended/`. A manifest prevents reuse with different data, code,
+dependencies, or training settings. Rerun the same command to resume. To audit all expected evaluations:
+
+```bash
+.venv/bin/python scripts/run_full_steam.py --audit_only
+```
+
+Checkpoint files are ignored by Git. Intermediate evaluation reports are saved after each fold; the final
+curation report is generated only after all 120 expected evaluations succeed. This entry point is separate
+from the smaller Colab pilot described below.
+
+## Steam versus LinkedIn: Colab TAR pilot
+
+Open `notebooks/compare_steam_linkedin_tar_colab.ipynb` in Colab and upload
+`artifacts/steam_linkedin_tar_bundle.zip` when prompted. Rebuild both from the current local data/code with
+`python scripts/build_colab_tar_bundle.py`; the bundle includes both prepared 15K-row CSVs, so no GitHub push or
+private-repo token is required. Select a GPU runtime.
+
+The default runs **joint TAR only**, using CatBoost and LightGBM, fold 0, and a 10-epoch cap with early stopping.
+This is an exploratory cap; MulTaBench's official cap is 50. Tuning uses micro-batches of 16 with gradient
+accumulation to preserve an effective batch of 256. Drive stores completed runs, epoch checkpoints, and completed
+adapters, allowing the same experiment to resume across sessions. Steam and LinkedIn have separate run cells.
+
+The existing local screens used TF-IDF, so comparison against those screens changes both the encoder and tuning.
+The notebook's optional frozen-E5 joint control is off by default; enable it to isolate TAR gain. Its comparison
+table always matches the folds available for both conditions. The pilot does not establish full curation acceptance.
 
 ## Results
 

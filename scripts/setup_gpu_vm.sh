@@ -14,9 +14,9 @@ uv pip install --python .venv/bin/python -c requirements/constraints.txt -e ".[b
 .venv/bin/python -c "import torch; assert torch.cuda.is_available(), 'torch sees no GPU'; print('✅ torch', torch.__version__, 'on', torch.cuda.get_device_name(0))"
 
 if [ ! -f .env ]; then
-    printf "TABPFN_TOKEN=\nHF_TOKEN=\n" > .env
+    printf "HF_TOKEN=\n" > .env
     chmod 600 .env
-    echo "⚠️ TabPFN 2.5 needs a Prior Labs API key: accept the license at https://ux.priorlabs.ai and put the key in .env (TABPFN_TOKEN=...)"
+    echo "Check TabPFN model access. The installed wrappers read HF_TOKEN from .env; never put tokens in Git."
 fi
 .venv/bin/python prep/make_toy_dataset.py
 echo "🎉 Ready. source .venv/bin/activate"

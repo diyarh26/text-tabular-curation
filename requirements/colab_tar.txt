@@ -1,0 +1,15 @@
+# Only the two tree learners and the E5 stack; no TabPFN license or TabM install needed.
+multabench @ git+https://github.com/alanarazi7/MulTaBench@ff0c9c8b40a2085a06a7771190e53a261341802f
+accelerate
+catboost
+lightgbm
+peft
+pillow
+psutil
+python-dotenv
+pyyaml
+setuptools
+skrub
+torch
+torchvision
+transformers

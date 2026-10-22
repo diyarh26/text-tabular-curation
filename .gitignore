@@ -37,3 +37,7 @@ catboost_info/
 .vscode/
 .idea/
 logs/
+
+# Rebuildable upload bundles and large experiment checkpoints stay local.
+artifacts/
+results/**/checkpoints/
