@@ -1,0 +1,7 @@
+learner         struct     text   frozen      TAR  joint  TAR-gain  folds
+CatBoost        0.8120   0.9540   0.9630   0.9680    ✅     ✅     6
+LightGBM        0.8010   0.9520   0.9580   0.9650    ✅     ✅     6
+TabM            0.8060   0.9580   0.9590   0.9650    ✅     ✅     6
+TabPFN-v2       0.8140   0.9570   0.9610   0.9650    ✅     ✅     6
+TabPFN-v2p5     0.8050   0.9610   0.9640   0.9670    ✅     ✅     6
+5/5 learners satisfy both criteria -> dataset PASSES (needs 3 of 5)
