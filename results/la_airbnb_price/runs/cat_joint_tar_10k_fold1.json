@@ -1,0 +1,29 @@
+{
+  "dataset": "la_airbnb_price",
+  "model": "CatBoost",
+  "short_name": "cat",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 1,
+  "size": "10k",
+  "task": "regression",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 53,
+  "timestamp": "2026-10-22 10:21:42",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": "3f16c048ba103d22a7ed04dba557c54e8d204030",
+  "metric": "root_mean_squared_error",
+  "test_score": -0.2840638998693102,
+  "test_error": 0.2840638998693102,
+  "r2": 0.8428480589057126,
+  "status": "ok",
+  "runtime_s": 380.18515062332153,
+  "tar_finetune": {
+    "best_val_loss": 2.7406890392303467,
+    "epochs": 16.0,
+    "finetune_seconds": 14164.781446695328,
+    "rows": 10000
+  }
+}
