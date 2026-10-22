@@ -1,0 +1,11 @@
+# Glassdoor UK job reviews: predict the reviewer's business outlook (positive / neutral / negative).
+# Built by prep/glassdoor.py.
+name: glassdoor_outlook_B
+csv: data/processed/glassdoor_outlook.csv
+target: outlook
+task: classification
+
+text_columns: [headline, pros, cons]
+categorical_columns: [firm, status, tenure, city]
+numerical_columns: [year]
+drop_columns: [recommend, ceo_approval, overall_rating]

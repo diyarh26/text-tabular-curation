@@ -1,0 +1,4 @@
+learner         struct     text   frozen      TAR  joint  TAR-gain  folds
+CatBoost        0.8120   0.8340   0.8930      nan    ✅     ?      3
+LightGBM        0.8030   0.8300   0.8930      nan    ✅     ?      3
+0/2 learners satisfy both criteria -> dataset does NOT pass (yet) (needs 3 of 5)
