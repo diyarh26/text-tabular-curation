@@ -1,8 +1,9 @@
 """The MulTaBench curation criteria, from the run JSONs.
 
-Per learner, on the mean test score over folds (MulTaBench's metric, higher is better):
-  1. Joint signal: joint_frozen > structured and joint_frozen > unstructured.
-  2. TAR gain:     joint_tar > joint_frozen.
+Per learner, on the mean test score over folds (MulTaBench's metric, higher is better), rounded to 3 decimals as the
+MulTaBench paper does (multabench/leaderboard/analysis/pass_matrix.py at the paper_version tag):
+  1. Joint signal: joint_frozen - max(structured, unstructured) >= 0.001
+  2. TAR gain:     joint_tar - joint_frozen >= 0.001
 A dataset passes if at least 3 of the 5 learners satisfy both.
 """
 import json
@@ -15,6 +16,9 @@ import pandas as pd
 from tt_curation.conditions import Condition
 
 MIN_PASSING_LEARNERS = 3
+# Means are compared at the paper's reported precision, so the smallest passing delta is one unit of it.
+DECIMALS = 3
+MIN_DELTA = 0.001
 METRIC_COLUMNS = ["test_score", "test_error", "auroc", "r2"]
 
 
@@ -47,23 +51,28 @@ def curation_verdict(runs: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for model, group in ok.groupby("model"):
         per_fold = group.pivot_table(index="fold", columns="condition", values="test_score")
-        mean = per_fold.mean()
+        mean = per_fold.mean().round(DECIMALS)
         row = {"model": model, **{f"score_{c.value}": mean.get(c.value, np.nan) for c in Condition}}
         row["folds"] = len(per_fold)
         s, u, f, t = (per_fold.get(c.value) for c in Condition)
         if s is not None and u is not None and f is not None:
-            row["joint_signal"] = bool(mean[Condition.JOINT_FROZEN] > max(mean[Condition.STRUCTURED],
-                                                                           mean[Condition.UNSTRUCTURED]))
-            row["delta_frozen_vs_best_unimodal"] = mean[Condition.JOINT_FROZEN] - max(mean[Condition.STRUCTURED],
-                                                                                       mean[Condition.UNSTRUCTURED])
+            delta = _delta(mean[Condition.JOINT_FROZEN], max(mean[Condition.STRUCTURED], mean[Condition.UNSTRUCTURED]))
+            row["delta_frozen_vs_best_unimodal"] = delta
+            row["joint_signal"] = delta >= MIN_DELTA
             row["joint_signal_fold_wins"] = int(((f > s) & (f > u)).sum())
         if f is not None and t is not None:
-            row["tar_gain"] = bool(mean[Condition.JOINT_TAR] > mean[Condition.JOINT_FROZEN])
-            row["delta_tar_vs_frozen"] = mean[Condition.JOINT_TAR] - mean[Condition.JOINT_FROZEN]
+            delta = _delta(mean[Condition.JOINT_TAR], mean[Condition.JOINT_FROZEN])
+            row["delta_tar_vs_frozen"] = delta
+            row["tar_gain"] = delta >= MIN_DELTA
             row["tar_gain_fold_wins"] = int((t > f).sum())
         row["passes"] = bool(row.get("joint_signal", False) and row.get("tar_gain", False))
         rows.append(row)
     return pd.DataFrame(rows)
+
+
+def _delta(a: float, b: float) -> float:
+    """A difference of 3-decimal means, rounded back so 0.251 - 0.250 compares as exactly 0.001."""
+    return round(float(a - b), 6)
 
 
 def summary_lines(verdict: pd.DataFrame, runs: pd.DataFrame) -> List[str]:

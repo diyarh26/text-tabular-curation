@@ -58,6 +58,11 @@ def test_verdict():
     verdict = curation_verdict(_fake_runs({"A": passing, "B": no_tar})).set_index("model")
     assert verdict.loc["A", "passes"] and verdict.loc["A", "tar_gain_fold_wins"] == 2
     assert verdict.loc["B", "joint_signal"] and not verdict.loc["B", "tar_gain"]
+    # As in the MulTaBench paper: means rounded to 3 decimals, so a 0.0004 edge is a tie and 0.001 is a pass.
+    tie = dict(structured=[.7400, .7400], unstructured=[.6, .6], joint_frozen=[.7404, .7404],
+               joint_tar=[.7414, .7414])
+    verdict = curation_verdict(_fake_runs({"C": tie})).set_index("model")
+    assert not verdict.loc["C", "joint_signal"] and verdict.loc["C", "tar_gain"]
     report = evaluation_report(_fake_runs({"A": passing}))
     assert list(report["condition"]) == ["structured", "unstructured", "joint_frozen", "joint_tar"]
 
