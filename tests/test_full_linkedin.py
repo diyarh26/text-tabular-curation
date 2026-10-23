@@ -148,7 +148,7 @@ def test_supervisor_continues_past_ten_hours_without_time_cutoff(tmp_path, monke
 
 
 @pytest.mark.bench
-@pytest.mark.parametrize("micro_batch,accumulation", [(256, 1), (16, 16)])
+@pytest.mark.parametrize("micro_batch,accumulation", [(256, 1), (16, 16), (64, 4)])
 def test_full_tar_restores_early_stopping_patience_without_changing_effective_batch(tmp_path, micro_batch, accumulation):
     import torch
     from transformers import EarlyStoppingCallback
@@ -174,7 +174,7 @@ def test_full_tar_restores_early_stopping_patience_without_changing_effective_ba
 
 
 @pytest.mark.bench
-@pytest.mark.parametrize("n_examples,micro_batch", [(256, 16), (35, 16), (256, 256)])
+@pytest.mark.parametrize("n_examples,micro_batch", [(256, 16), (35, 16), (256, 64), (131, 64), (256, 256)])
 def test_actual_trainer_accumulated_gradients_match_reference_full_batch(tmp_path, n_examples, micro_batch):
     """Use the upstream head and actual Trainer backward; detect scaling bugs, including uneven tails."""
     import copy
@@ -222,7 +222,8 @@ def test_actual_trainer_accumulated_gradients_match_reference_full_batch(tmp_pat
 
 
 @pytest.mark.bench
-def test_actual_training_updates_evaluation_and_checkpoint_resume(tmp_path, monkeypatch):
+@pytest.mark.parametrize("micro_batch", [16, 64])
+def test_actual_training_updates_evaluation_and_checkpoint_resume(tmp_path, monkeypatch, micro_batch):
     """Compare real optimizer/scheduler updates, evaluation, and a saved-epoch restart on CPU."""
     import copy
     from types import SimpleNamespace
@@ -260,7 +261,7 @@ def test_actual_training_updates_evaluation_and_checkpoint_resume(tmp_path, monk
             return model, trainer.state.global_step, trainer.evaluate()["eval_loss"]
 
     reference, full_steps, full_loss = train(tmp_path / "reference", 256)
-    accumulated, micro_steps, micro_loss = train(tmp_path / "accumulated", 16)
+    accumulated, micro_steps, micro_loss = train(tmp_path / "accumulated", micro_batch)
     assert full_steps == micro_steps == 6
     assert micro_loss == pytest.approx(full_loss, rel=1e-6)
     for a, b in zip(accumulated.parameters(), reference.parameters()):
@@ -278,10 +279,10 @@ def test_actual_training_updates_evaluation_and_checkpoint_resume(tmp_path, monk
     monkeypatch.setattr(lora, "Trainer", InterruptingTrainer)
     cache = tmp_path / "resumed"
     with pytest.raises(RuntimeError, match="simulated interruption"):
-        train(cache, 16)
+        train(cache, micro_batch)
     assert list(cache.glob("trainer/checkpoint-*/trainer_state.json"))
     monkeypatch.setattr(lora, "Trainer", original_trainer)
-    resumed, resumed_steps, resumed_loss = train(cache, 16)
+    resumed, resumed_steps, resumed_loss = train(cache, micro_batch)
     assert resumed_steps == micro_steps
     assert resumed_loss == pytest.approx(micro_loss, rel=1e-7)
     for a, b in zip(resumed.parameters(), accumulated.parameters()):

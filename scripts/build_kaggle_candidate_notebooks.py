@@ -46,7 +46,7 @@ def build_notebook(candidate, source_revision):
            Check remaining GPU quota; both candidate notebooks consume the same account quota.
 
         GPU 0 owns folds 0/2/4; GPU 1 owns folds 1/3/5. Each worker sees one T4; memory is not pooled.
-        The approved Kaggle execution uses **micro-batch 16, accumulation 16, effective batch 256**,
+        The approved Kaggle execution uses **micro-batch 64, accumulation 4, effective batch 256**,
         with corrected loss normalization, float32 and the official 50-epoch cap/early stopping.
         It can differ numerically from physical batch 256; the execution variant is recorded.
         Frozen conditions use E5-small-v2, not TF-IDF. There is no additional wall-time cutoff or pilot cap.
@@ -62,6 +62,8 @@ def build_notebook(candidate, source_revision):
         Attach the previous saved output via **Add Input**; only this candidate's checkpoint is detected.
         Resume pins the original source commit and verifies data, packages, code, splits and settings.
         No Steam, LinkedIn, CPU-screen or other candidate results are imported.
+        This notebook starts a fresh batch-64 experiment. Do not attach batch-16 checkpoints;
+        settings mismatches are rejected rather than mixing TAR protocols.
 
         Sources: [Kaggle notebook execution/output limits](https://www.kaggle.com/docs/notebooks),
         [GPU quota](https://www.kaggle.com/docs/efficient-gpu-usage).
@@ -71,7 +73,7 @@ def build_notebook(candidate, source_revision):
         DATASET = {candidate.key!r}
         DATASET_NAME = {candidate.name!r}
         RUN_NAME = {candidate.run_name!r}
-        MICRO_BATCH = 16  # Approved Kaggle adjustment; effective batch 256. No automatic fallback.
+        MICRO_BATCH = 64  # Approved: 4 accumulation steps, effective batch 256. No automatic fallback.
         REPO_REF = {source_revision!r}  # Exact published source; resume uses its saved exact commit.
         RESUME_ZIP = ''  # Auto-detect one matching checkpoint in attached input; set if several exist.
         WORK = Path('/kaggle/working')
@@ -79,14 +81,15 @@ def build_notebook(candidate, source_revision):
         SCRATCH = Path('/kaggle/temp') / (RUN_NAME + '_runtime')
         SCRATCH.mkdir(parents=True, exist_ok=True)
         RUN_ROOT.mkdir(parents=True, exist_ok=True)
-        assert MICRO_BATCH in (16, 32, 256), 'Unsupported execution batch.'
+        assert MICRO_BATCH in (16, 32, 64, 256), 'Unsupported execution batch.'
         print(subprocess.check_output(['nvidia-smi', '--query-gpu=index,name,memory.total',
                                        '--format=csv'], text=True))
         gpu_lines = subprocess.check_output(['nvidia-smi', '--query-gpu=name',
                                             '--format=csv,noheader'], text=True).strip().splitlines()
         assert len(gpu_lines) == 2 and all('T4' in row for row in gpu_lines), 'Select GPU T4 x2.'
         print('Free working space: %.1f GiB' % (shutil.disk_usage(WORK).free / 2**30))
-        print('Dataset:', DATASET_NAME, '| micro batch:', MICRO_BATCH, '| effective batch: 256')
+        print('Dataset:', DATASET_NAME, '| micro batch:', MICRO_BATCH,
+              '| accumulation steps:', 256 // MICRO_BATCH, '| effective batch: 256')
     """)]
     restore_source = inspect.getsource(restore_archive)
     cells.append(cell("code", restore_source + "\n" + textwrap.dedent("""
@@ -111,6 +114,12 @@ def build_notebook(candidate, source_revision):
         else:
             print('Starting a fresh experiment.')
         assert re.fullmatch(r'[0-9a-f]{40}', REPO_REF), 'Expected an exact source revision.'
+        saved_manifest = RUN_ROOT / DATASET_NAME / 'manifest.json'
+        if saved_manifest.exists():
+            saved_settings = json.loads(saved_manifest.read_text())
+            if saved_settings.get('micro_batch') != MICRO_BATCH:
+                raise RuntimeError('Checkpoint batch differs from this notebook. Preserve the old output; '
+                                   'resume it with its original notebook or start this batch-64 run fresh.')
     """)))
     cells.append(cell("code", """
         import urllib.request, urllib.error

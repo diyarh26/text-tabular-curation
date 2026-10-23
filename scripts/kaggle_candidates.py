@@ -126,7 +126,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", choices=CANDIDATES, required=True)
     parser.add_argument("--results_root", required=True)
-    parser.add_argument("--micro_batch", type=int, choices=[16, 32, 256], default=256)
+    parser.add_argument("--micro_batch", type=int, choices=[16, 32, 64, 256], default=256)
     args = parser.parse_args()
     candidate = CANDIDATES[args.dataset]
     root = Path(args.results_root).resolve()

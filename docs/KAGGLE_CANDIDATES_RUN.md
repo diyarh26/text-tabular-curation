@@ -30,7 +30,7 @@ Both GPUs must pass actual CUDA computation and all five learners must import. S
 checks validate launcher/report/resume behavior and corrected Trainer accumulation. There
 is no additional dataset screen, 20-evaluation GPU toy grid or TAR pilot.
 
-The approved Kaggle memory adjustment is physical micro-batch 16 with 16-step accumulation,
+The approved Kaggle memory adjustment is physical micro-batch 64 with 4-step accumulation,
 effective batch 256, float32. The tested summed-loss normalization handles the whole optimizer
 update's example count, including short final batches. Official learning rate, LoRA settings,
 50-epoch cap and early stopping remain unchanged. Numerical differences from a physical
@@ -108,6 +108,10 @@ The manifest rejects changes to data, config, runtime code, packages, split defi
 micro-batch or other scientific settings. Successful evaluations are skipped; TAR resumes from
 the latest saved epoch checkpoint. Failed attempts remain archived for diagnosis and are retried.
 No legacy LinkedIn TAR, pilot or TF-IDF-screen results are imported.
+
+The current notebooks start fresh batch-64 experiments. Do not attach earlier batch-16
+candidate checkpoints to these files: the manifest rejects that change. Preserve the old
+notebook/output if an earlier run has already started. No automatic protocol migration occurs.
 
 Only a successful audit of the exact 120 combinations creates a final `curation_verdict.csv`.
 Partial results have an explicit incomplete summary, with no stale final verdict. Keep all run

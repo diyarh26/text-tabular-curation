@@ -26,7 +26,8 @@ def make_runs(root, candidate, folds=range(6)):
         test = candidate.rows//3 + int(fold % 3 < candidate.rows % 3)
         splits[str(fold)] = dict(n_train=candidate.rows-test, n_test=test)
     manifest = dict(protocol_version="candidate_full_v1", dataset=candidate.name,
-        source_revision="a"*40, rows=candidate.rows, csv_sha256_lf=candidate.sha256,
+        source_revision="a"*40, micro_batch=64, gradient_accumulation_steps=4,
+        rows=candidate.rows, csv_sha256_lf=candidate.sha256,
         metric=candidate.metric, splits=splits)
     output.mkdir(parents=True, exist_ok=True)
     (output / "manifest.json").write_text(json.dumps(manifest))
@@ -123,11 +124,12 @@ def test_live_fold_table_prints_before_workers_finish_and_only_once(tmp_path, ca
 
 
 def test_resume_manifest_rejects_changes_to_batch_data_code_and_source(tmp_path):
-    settings = dict(micro_batch=16, csv="fixed", code="fixed", source_revision="a"*40)
+    settings = dict(micro_batch=64, gradient_accumulation_steps=4, csv="fixed", code="fixed", source_revision="a"*40)
     output = tmp_path / "experiment"
     initialize_manifest(output, settings, prepare=True)
     initialize_manifest(output, settings)
-    for field, value in [("micro_batch", 256), ("csv", "different"), ("code", "different"),
+    for field, value in [("micro_batch", 16), ("gradient_accumulation_steps", 16),
+                         ("csv", "different"), ("code", "different"),
                          ("source_revision", "b"*40)]:
         with pytest.raises(ValueError, match="settings differ"):
             initialize_manifest(output, {**settings, field: value}, prepare=True)
@@ -217,7 +219,8 @@ def test_notebook_cells_and_embedded_model_check_compile_with_live_unbuffered_ou
             assert entry["outputs"] == [] and entry["execution_count"] is None
             code.append(entry["source"])
     full = "\n".join(code)
-    assert "MICRO_BATCH = 16" in full and "'PYTHONUNBUFFERED': '1'" in full
+    assert "MICRO_BATCH = 64" in full and "'PYTHONUNBUFFERED': '1'" in full
+    assert "micro-batch 64, accumulation 4" in notebook["cells"][0]["source"]
     assert "scripts/kaggle_candidates.py" in full and "print(line, end='', flush=True)" in full
     assert CANDIDATES[key].run_name in code[0]
     captured = []
@@ -234,9 +237,10 @@ def test_real_prepared_csv_and_all_official_split_sizes(key):
     candidate = CANDIDATES[key]
     data, config = verified_data(candidate)
     splits = official_splits(data)
-    settings = experiment_settings(candidate, data, config, micro_batch=16)
+    settings = experiment_settings(candidate, data, config, micro_batch=64)
     assert settings["splits"] == splits and settings["tar_max_epochs"] == 50
     assert settings["effective_batch"] == 256 and settings["precision"] == "float32"
+    assert settings["micro_batch"] == 64 and settings["gradient_accumulation_steps"] == 4
     assert settings["accumulation_loss"] == "ce_sum_over_effective_batch_items_v1"
     assert len(splits) == 6
     for fold, split in splits.items():
@@ -245,6 +249,34 @@ def test_real_prepared_csv_and_all_official_split_sizes(key):
             assert (split["n_train"], split["n_test"]) == (10000, 5000)
         else:
             assert split["n_train"] in (5278, 5279) and split["n_test"] in (2639, 2640)
+
+
+@pytest.mark.parametrize("saved_batch", [16, 64])
+def test_notebook_resume_checks_batch_before_downloading_source(tmp_path, saved_batch):
+    import re
+    import tempfile
+    candidate = CANDIDATES["food"]
+    root = tmp_path / candidate.run_name
+    output = make_runs(root, candidate, folds=[])
+    manifest_path = output / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest.update(micro_batch=saved_batch, gradient_accumulation_steps=256//saved_batch)
+    manifest_path.write_text(json.dumps(manifest))
+    export_archives(root)
+    target = tmp_path / "restore" / candidate.run_name
+    target.parent.mkdir()
+    target.mkdir()
+    namespace = dict(Path=Path, zipfile=zipfile, json=json, stat=stat, re=re, tempfile=tempfile,
+        RUN_ROOT=target, RUN_NAME=candidate.run_name, DATASET_NAME=candidate.name,
+        RESUME_ZIP=str(tmp_path / f"{candidate.run_name}_checkpoint.zip"), REPO_REF="b"*40, MICRO_BATCH=64)
+    source = build_notebook(candidate, "b"*40)["cells"][2]["source"]
+    if saved_batch == 16:
+        with pytest.raises(RuntimeError, match="Checkpoint batch differs"):
+            exec(source, namespace)
+    else:
+        exec(source, namespace)
+        assert namespace["REPO_REF"] == "a"*40
+    assert (target / candidate.name / "manifest.json").exists()  # Saved work is preserved in both cases.
 
 
 def test_supervisor_has_no_ten_hour_cutoff(tmp_path, monkeypatch, capsys):

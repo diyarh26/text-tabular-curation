@@ -108,7 +108,8 @@ def experiment_settings(candidate, data, config, micro_batch):
         config_sha256_lf=text_digest(config), multabench_commit=MULTABENCH_COMMIT,
         source_revision=revision, models=MODELS, conditions=CONDITIONS, folds=list(range(6)),
         expected_evaluations=120, size="10k", metric=candidate.metric, frozen_encoder="e5-small",
-        tar_max_epochs=50, micro_batch=micro_batch, effective_batch=256, precision="float32",
+        tar_max_epochs=50, micro_batch=micro_batch, gradient_accumulation_steps=256//micro_batch,
+        effective_batch=256, precision="float32",
         accumulation_loss=ACCUMULATION_LOSS if micro_batch < 256 else "reference_single_batch_mean",
         restore_early_stopping_state=True, splits=official_splits(data),
         code={p.relative_to(REPO_ROOT).as_posix(): text_digest(p) for p in paths},
@@ -270,7 +271,7 @@ def main():
     parser.add_argument("--dataset", choices=CANDIDATES, required=True)
     parser.add_argument("--results_root", required=True)
     parser.add_argument("--folds", default="0,1,2,3,4,5")
-    parser.add_argument("--micro_batch", type=int, choices=[16, 32, 256], default=256)
+    parser.add_argument("--micro_batch", type=int, choices=[16, 32, 64, 256], default=256)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--prepare_only", action="store_true")
     mode.add_argument("--report_only", action="store_true")
@@ -306,6 +307,7 @@ def main():
     if not torch.cuda.is_available() or torch.cuda.device_count() != 1:
         raise RuntimeError("Each worker must see exactly one CUDA GPU")
     print(f"Assigned GPU: {torch.cuda.get_device_name(0)}; folds {folds}; micro batch {args.micro_batch}; "
+          f"accumulation {256//args.micro_batch}; "
           "effective batch 256; cap 50 with early stopping.", flush=True)
     for fold in folds:
         started = time.monotonic()
