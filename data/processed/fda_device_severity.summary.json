@@ -1,0 +1,147 @@
+{
+  "dataset": "fda_device_severity",
+  "preparation_version": 2,
+  "seed": 42,
+  "preparation_script_sha256": "47ba33b193becc98e861ce450adccb520fe6e0ae65fcd3a03b042736fccd76a8",
+  "source_archive": "C:\\Users\\Diyar\\Downloads\\device-enforcement-0001-of-0001.json.zip",
+  "source_member": "device-enforcement-0001-of-0001.json",
+  "source_archive_sha256": "ddcd90ba90e6c920d780790779b7259b32c5644e50409f35d75095f42ef50b4a",
+  "counts": {
+    "source_rows": 40300,
+    "excluded_unknown_severity": 1,
+    "eligible_product_rows": 40299,
+    "eligible_events": 15107,
+    "events_with_multiple_products": 4543,
+    "events_with_multiple_severities": 5,
+    "product_rows_removed_by_one_per_event": 25192,
+    "missing_or_invalid_initiation_date_in_event_pool": 0,
+    "events_removed_by_row_cap": 107,
+    "selected_rows": 15000
+  },
+  "csv": "data\\processed\\fda_device_severity.csv",
+  "csv_sha256": "b005b5ecf1bd1026c649f5989861cc6b8d3338ac1d09e67fefdc59c3793a6ec7",
+  "selection_trace": "data\\raw\\candidate_screens\\fda_device_severity.selected_rows.csv",
+  "selection_trace_sha256": "834509665ae2d960e4b7ebac6da8891c39236e64f52d20776e64314a4bdebc10",
+  "text_columns": [
+    "product_description",
+    "reason_for_recall",
+    "distribution_pattern"
+  ],
+  "categorical_columns": [
+    "recalling_firm",
+    "city",
+    "state",
+    "country",
+    "voluntary_mandated",
+    "initial_firm_notification"
+  ],
+  "numerical_columns": [
+    "recall_year",
+    "recall_month"
+  ],
+  "target": "classification",
+  "class_counts": {
+    "Class II": 13426,
+    "Class I": 988,
+    "Class III": 586
+  },
+  "missing_counts": {
+    "product_description": 0,
+    "reason_for_recall": 10,
+    "distribution_pattern": 1,
+    "recalling_firm": 0,
+    "city": 2,
+    "state": 1689,
+    "country": 3,
+    "voluntary_mandated": 8,
+    "initial_firm_notification": 360,
+    "recall_year": 0,
+    "recall_month": 0,
+    "classification": 0
+  },
+  "constant_features": [],
+  "text_profiles": {
+    "product_description": {
+      "nonempty": 15000,
+      "distinct": 14921,
+      "median_words_nonempty": 27.0,
+      "max_words": 734
+    },
+    "reason_for_recall": {
+      "nonempty": 14990,
+      "distinct": 14862,
+      "median_words_nonempty": 27.0,
+      "max_words": 331
+    },
+    "distribution_pattern": {
+      "nonempty": 14999,
+      "distinct": 12509,
+      "median_words_nonempty": 17.0,
+      "max_words": 471
+    }
+  },
+  "duplicate_complete_feature_rows": 0,
+  "duplicate_combined_text_rows": 1,
+  "explicit_class_phrase_occurrences": 62,
+  "class_phrase_audit": "data\\raw\\candidate_screens\\fda_device_severity.class_mentions.json",
+  "rules": {
+    "target": "Original Class I / Class II / Class III, without merging or ordering as a numeric target.",
+    "row_selection": "Exclude unknown severities; uniform random product within each event; then random events up to 15000.",
+    "mixed_severity_events": "Retain the selected product's own label; do not assign a single severity to all products in an event.",
+    "date_features": "Year and month of recall_initiation_date only; missing dates remain missing.",
+    "recall_severity_text": "Mask explicit recall severity; remove the audited pasted review template. Preserve device/laser/clinical classes. Labels are never inspected by the text cleaner.",
+    "text_cleanup": "Remove HTML tags, decode entities, normalize whitespace; retain date prefixes. Additional FDA leakage edits are documented separately.",
+    "no_word_length_filter": true,
+    "no_text_truncation": true,
+    "no_class_balancing": true,
+    "no_performance_based_selection": true
+  },
+  "country_counts": {
+    "United States": 13287,
+    "Germany": 246,
+    "United Kingdom": 196,
+    "Canada": 145,
+    "Switzerland": 124,
+    "France": 121,
+    "Sweden": 121,
+    "Netherlands": 94,
+    "Ireland": 91,
+    "China": 85,
+    "Israel": 66,
+    "Belgium": 60,
+    "Italy": 59,
+    "Denmark": 50,
+    "Japan": 48,
+    "Australia": 29,
+    "Finland": 24,
+    "Korea (the Republic of)": 21,
+    "Austria": 18,
+    "Norway": 18,
+    "Spain": 15,
+    "New Zealand": 12,
+    "Taiwan": 12,
+    "Poland": 9,
+    "Iceland": 9,
+    "Mexico": 8,
+    "Czech Republic": 5,
+    "India": 4,
+    "Brazil": 4,
+    "None": 3,
+    "Liechtenstein": 3,
+    "Argentina": 3,
+    "South Africa": 2,
+    "Hong Kong SAR": 2,
+    "Korea, Republic Of (South)": 1,
+    "Malaysia": 1,
+    "Bulgaria": 1,
+    "Turkey": 1,
+    "Dominican Republic (the)": 1,
+    "Singapore": 1
+  },
+  "text_cleanup": {
+    "changed_fields": 12,
+    "changed_rows": 12,
+    "change_log": "data\\raw\\candidate_screens\\fda_device_severity.text_changes.json",
+    "change_log_sha256": "c3d38457b568a40cd439fa24430ed2be37bfaab0b4f51524385c57074a873084"
+  }
+}

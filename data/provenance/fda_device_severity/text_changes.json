@@ -1,0 +1,86 @@
+[
+  {
+    "output_row": 3052,
+    "field": "reason_for_recall",
+    "recall_number": "Z-2067-2019",
+    "before": "This recall is a sub recall to BD s recent Class I recall for the Alaris Pump Infusion Set due to an issue with the consistency of the inner lumen thickness of the silicone tubing segment which directly impacts amount of occlusion force necessary to fully seal the tube. This defect prevents the pump from complete occlusion and results in the potential for over-infusion of drug product into the patient.",
+    "after": "This recall is a sub recall to BD s recent [recall severity] recall for the Alaris Pump Infusion Set due to an issue with the consistency of the inner lumen thickness of the silicone tubing segment which directly impacts amount of occlusion force necessary to fully seal the tube. This defect prevents the pump from complete occlusion and results in the potential for over-infusion of drug product into the patient."
+  },
+  {
+    "output_row": 3455,
+    "field": "reason_for_recall",
+    "recall_number": "Z-2985-2026",
+    "before": "this is a downstream recall of class I recall RES 98777",
+    "after": "this is a downstream recall of [recall severity] recall RES 98777"
+  },
+  {
+    "output_row": 3806,
+    "field": "reason_for_recall",
+    "recall_number": "Z-0161-2013",
+    "before": "Please be aware that this is not a new recall. The firm has taken action; but, due to administrative issues this recall is now being reclassified by the Agency as a Class I. The recall was initiated because First Medical Source has confirmed that these lots may have a higher flow rate than specified. The use of this product may lead to over-administration of drug solutions to the patients. The pr",
+    "after": "Please be aware that this is not a new recall. The firm has taken action; but, due to administrative issues this recall is now being reclassified by the Agency as a [recall severity]. The recall was initiated because First Medical Source has confirmed that these lots may have a higher flow rate than specified. The use of this product may lead to over-administration of drug solutions to the patients. The pr"
+  },
+  {
+    "output_row": 12556,
+    "field": "reason_for_recall",
+    "recall_number": "Z-1947-2026",
+    "before": "Kits contain the McKesson TRUE Metrix PRO Professional Monitoring Blood Glucose System that has been recalled for an issue with the software design of the E-5 Error Code where the meter displays an E-5 error code for a very high blood glucose event (> 600 mg/dL) or when there is a test strip error, which can lead to operator confusion when evaluating patients and a delay in appropriate treatment. This is a downstream recall of Trividia Health Class I, Recall Event ID 98317.",
+    "after": "Kits contain the McKesson TRUE Metrix PRO Professional Monitoring Blood Glucose System that has been recalled for an issue with the software design of the E-5 Error Code where the meter displays an E-5 error code for a very high blood glucose event (> 600 mg/dL) or when there is a test strip error, which can lead to operator confusion when evaluating patients and a delay in appropriate treatment. This is a downstream recall of Trividia Health [recall severity], Recall Event ID 98317."
+  },
+  {
+    "output_row": 12727,
+    "field": "reason_for_recall",
+    "recall_number": "Z-0083-2027",
+    "before": "Beckman Coulter has identified a software issue affecting DxC 500i Clinical Analyzers when testing plasma samples. Following user configuration of a Clinical Chemistry test to use units different from the system default, a subsequent configuration change and activation of the draft configuration in the System Configuration page may cause the analyzer to revert the test units to the system default setting without notifying the user. The system does Pre-Review Reminders Include OII and CDRHRecallGroup@fda.hhs.gov in any discussions on change/elevation of recalls to Class I classification and situations involving additional public communications (FDA and/or firm issued). Post-Review Reminders Final Check: Ensure your documentation accurately reflects the final recommendation prior to signature. Complete CTS: Recall Product tab, Additional Recall Event Info, Regulation, and Act. Upload PDFs of Consult, Review Memo, and Classification Letter for Class I Recall in DocMan. [Click to enter extra reminder]To add reminders, type the reminder in the text field to the left then press the Tab key. Doc ID 03534.05.06 2 of 8 not provide a warning or notification to alert the user that the configured units have reverted to the default units. This issue can result in falsely elevated reported results.",
+    "after": "Beckman Coulter has identified a software issue affecting DxC 500i Clinical Analyzers when testing plasma samples. Following user configuration of a Clinical Chemistry test to use units different from the system default, a subsequent configuration change and activation of the draft configuration in the System Configuration page may cause the analyzer to revert the test units to the system default setting without notifying the user. The system does not provide a warning or notification to alert the user that the configured units have reverted to the default units. This issue can result in falsely elevated reported results."
+  },
+  {
+    "output_row": 14282,
+    "field": "reason_for_recall",
+    "recall_number": "Z-1203-2018",
+    "before": "Johnson & Johnson Consumer Inc. is initiating a voluntary, Class II recall at the retail level in the U.S. of select COACH\u00bf Self-Adhering Sports Wraps, BAND-AID\u00bf Brand First Aid Products SECURE-FLEX\u00bf Wraps and BAND-AID\u00bf Brand First Aid Products HURT-FREE\u00bf Wraps products. The current labeling claim states not made with natural rubber latex which needs to be updated based upon recent awareness that natural latex was used as a base ingredient in the early-stage manufacturing process, which reduces the allergic protein found in natural latex.",
+    "after": "Johnson & Johnson Consumer Inc. is initiating a voluntary, [recall severity] recall at the retail level in the U.S. of select COACH\u00bf Self-Adhering Sports Wraps, BAND-AID\u00bf Brand First Aid Products SECURE-FLEX\u00bf Wraps and BAND-AID\u00bf Brand First Aid Products HURT-FREE\u00bf Wraps products. The current labeling claim states not made with natural rubber latex which needs to be updated based upon recent awareness that natural latex was used as a base ingredient in the early-stage manufacturing process, which reduces the allergic protein found in natural latex."
+  },
+  {
+    "output_row": 2466,
+    "field": "distribution_pattern",
+    "recall_number": "Z-1706-2015",
+    "before": "Class I Recall - Worldwide distribution -- US, including the states of AL, AZ, DC, FL, MI, MO, NJ, NY, OR, PA, TX, and WV; and, countries of Argentina, Australia, Austria, Belgium, Brazil, Bulgaria, Chile, China, Colombia, Croatia, Czech Republic, Ecuador, Finland, France, Germany, Hong Kong, Hungary, India, Indonesia, Iran, Iraq, Ireland, Israel, Italy, Japan, Jordan, Kuwait, Latvia, Lebanon, Libya, Mexico, Mongolia, Mozambique, Netherlands, Norway Oman, Panama, Peru, Poland, Portugal, Qatar, Romania, Russia, Saudi Arabia, Serbia, Singapore, Slovakia, South Africa, South Korea, Spain Sweden, Switzerland, Syria, Taiwan, Thailand, Tunisia, Turkey, United Arab Emirates, United Kingdom, Unites States, and Venezuela.",
+    "after": "[recall severity] Recall - Worldwide distribution -- US, including the states of AL, AZ, DC, FL, MI, MO, NJ, NY, OR, PA, TX, and WV; and, countries of Argentina, Australia, Austria, Belgium, Brazil, Bulgaria, Chile, China, Colombia, Croatia, Czech Republic, Ecuador, Finland, France, Germany, Hong Kong, Hungary, India, Indonesia, Iran, Iraq, Ireland, Israel, Italy, Japan, Jordan, Kuwait, Latvia, Lebanon, Libya, Mexico, Mongolia, Mozambique, Netherlands, Norway Oman, Panama, Peru, Poland, Portugal, Qatar, Romania, Russia, Saudi Arabia, Serbia, Singapore, Slovakia, South Africa, South Korea, Spain Sweden, Switzerland, Syria, Taiwan, Thailand, Tunisia, Turkey, United Arab Emirates, United Kingdom, Unites States, and Venezuela."
+  },
+  {
+    "output_row": 6070,
+    "field": "distribution_pattern",
+    "recall_number": "Z-0692-2013",
+    "before": "Class II Recall - Worldwide Distribution - USA including TX, AZ, OR, and CO. Only US product is affected by this recall.",
+    "after": "[recall severity] Recall - Worldwide Distribution - USA including TX, AZ, OR, and CO. Only US product is affected by this recall."
+  },
+  {
+    "output_row": 7289,
+    "field": "distribution_pattern",
+    "recall_number": "Z-2097-2013",
+    "before": "Class II Recall - Worldwide Distribution - US including the states of CA, HI, IL, MN, NC, NJ, OH, PA, TX, UT and VA.",
+    "after": "[recall severity] Recall - Worldwide Distribution - US including the states of CA, HI, IL, MN, NC, NJ, OH, PA, TX, UT and VA."
+  },
+  {
+    "output_row": 7344,
+    "field": "distribution_pattern",
+    "recall_number": "Z-0786-2014",
+    "before": "Class II Recall - Worldwide Distribution - US Distribution including the states of California, Louisiana, Massachusetts, Pennsylvania, New York, Kentucky and Michigan., and the countries of Bulgaria, Germany, Belarus, Russian Fed., P.R. China, India, Republic Korea, Germany, Costa Rica, Argentina, Portugal, Greece, Bulgaria, Vietnam, Hungary, Italy, Palestinian Ter, Hungary, Jordan, Egypt Poland, Greece, Curacao, St Eus, Malaysia, Egypt, Malaysia, South Africa Turkey, Thailand, Qatar and Iraq.",
+    "after": "[recall severity] Recall - Worldwide Distribution - US Distribution including the states of California, Louisiana, Massachusetts, Pennsylvania, New York, Kentucky and Michigan., and the countries of Bulgaria, Germany, Belarus, Russian Fed., P.R. China, India, Republic Korea, Germany, Costa Rica, Argentina, Portugal, Greece, Bulgaria, Vietnam, Hungary, Italy, Palestinian Ter, Hungary, Jordan, Egypt Poland, Greece, Curacao, St Eus, Malaysia, Egypt, Malaysia, South Africa Turkey, Thailand, Qatar and Iraq."
+  },
+  {
+    "output_row": 11884,
+    "field": "distribution_pattern",
+    "recall_number": "Z-1331-2014",
+    "before": "Class II Recall - Worldwide Distribution - US Distribution and the countries of Australia, Austria, Belgium, Bhutan, Bolivia, Botswana, Bulgaria, Canada, Chile, Colombia, Croatia, Dem. Rep. Congo, Denmark, Ecuador, France, Germany, Greece, India, Indonesia, Ireland, Israel, Italy, Ivory Coast, Japan, Kuwait, Malaysia, Mauritius, Mongolia, Morocco, Mozambique, Myanmar, Namibia, Netherlands, Norway, Peru, Philippines, Poland, Portugal, Republic Korea, Romania, Saudi Arabia, Serbia, Seychelles, Singapore, South Africa, Spain, Switzerland, Taiwan, Trinidad,Tobago, Turkey, U.A.E. and United Kingdom.",
+    "after": "[recall severity] Recall - Worldwide Distribution - US Distribution and the countries of Australia, Austria, Belgium, Bhutan, Bolivia, Botswana, Bulgaria, Canada, Chile, Colombia, Croatia, Dem. Rep. Congo, Denmark, Ecuador, France, Germany, Greece, India, Indonesia, Ireland, Israel, Italy, Ivory Coast, Japan, Kuwait, Malaysia, Mauritius, Mongolia, Morocco, Mozambique, Myanmar, Namibia, Netherlands, Norway, Peru, Philippines, Poland, Portugal, Republic Korea, Romania, Saudi Arabia, Serbia, Seychelles, Singapore, South Africa, Spain, Switzerland, Taiwan, Trinidad,Tobago, Turkey, U.A.E. and United Kingdom."
+  },
+  {
+    "output_row": 13879,
+    "field": "distribution_pattern",
+    "recall_number": "Z-1711-2014",
+    "before": "Class II Recall - US Distribution including the states of IL,VA, TN, PA, TX, MN, GA, MI, IN, OH, FL, CA, OR, NY, ME, MO, OK, CO and NJ.",
+    "after": "[recall severity] Recall - US Distribution including the states of IL,VA, TN, PA, TX, MN, GA, MI, IN, OH, FL, CA, OR, NY, ME, MO, OK, CO and NJ."
+  }
+]

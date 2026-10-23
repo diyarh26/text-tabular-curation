@@ -1,0 +1,9 @@
+# One randomly selected product record per recall event; original three severity classes.
+name: fda_device_severity
+csv: data/processed/fda_device_severity.csv
+target: classification
+task: classification
+
+text_columns: [product_description, reason_for_recall, distribution_pattern]
+categorical_columns: [recalling_firm, city, state, country, voluntary_mandated, initial_firm_notification]
+numerical_columns: [recall_year, recall_month]

@@ -1,0 +1,3 @@
+# Streaming parser for the large downloaded FDA enforcement archives.
+# Base project dependencies (including pandas and numpy) must already be installed.
+ijson==3.6.0
