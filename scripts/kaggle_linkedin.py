@@ -1,4 +1,4 @@
-"""Supervise two independent fold workers, stop on errors/time budget, export resumable outputs."""
+"""Supervise two independent fold workers without a time cutoff; export resumable outputs."""
 from __future__ import annotations
 
 import argparse
@@ -34,21 +34,45 @@ def progress(root):
     return ok, failures
 
 
-def export_archives(root):
+def export_archives(root, *, live=False):
     """Archive only experiment files, never the environment, repository, caches or secrets."""
     root = Path(root).resolve()
     root.mkdir(parents=True, exist_ok=True)
     paths = sorted(p for p in root.rglob("*") if p.is_file())
+    if live:
+        # trainer_state.json is saved after model/optimizer/RNG files. Exclude checkpoints
+        # still being written, and reject a snapshot if any selected file changes/disappears.
+        ready = set()
+        for state_path in root.glob("**/trainer/checkpoint-*/trainer_state.json"):
+            try:
+                state = json.loads(state_path.read_text(encoding="utf-8"))
+                if state_path.parent.name == f"checkpoint-{state['global_step']}":
+                    ready.add(state_path.parent)
+            except (OSError, ValueError, KeyError):
+                continue
+        paths = [p for p in paths if p.suffix not in (".tmp", ".log") and
+                 all(parent in ready for parent in p.parents
+                     if parent.name.startswith("checkpoint-") and parent.parent.name == "trainer")]
     for name, checkpoints in [("linkedin_full_results.zip", False), ("linkedin_full_checkpoint.zip", True)]:
         destination = root.parent / name
         temporary = destination.with_suffix(".zip.tmp")
-        with zipfile.ZipFile(temporary, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as archive:
-            for path in paths:
-                if not checkpoints and "checkpoints" in path.relative_to(root).parts:
-                    continue
-                archive.write(path, (Path("linkedin_full") / path.relative_to(root)).as_posix())
+        selected = [p for p in paths if checkpoints or "checkpoints" not in p.relative_to(root).parts]
+        try:
+            before = {p: (p.stat().st_size, p.stat().st_mtime_ns) for p in selected} if live else {}
+            with zipfile.ZipFile(temporary, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as archive:
+                for path in selected:
+                    archive.write(path, (Path("linkedin_full") / path.relative_to(root)).as_posix())
+            if live and any((p.stat().st_size, p.stat().st_mtime_ns) != before[p] for p in selected):
+                raise OSError("A file changed while the live checkpoint snapshot was being copied")
+        except OSError:
+            if not live:
+                raise
+            temporary.unlink(missing_ok=True)
+            print("Checkpoint files changed during autosave; retained the previous ZIP. Will retry.", flush=True)
+            return False
         temporary.replace(destination)
         print(f"Saved {destination} ({destination.stat().st_size / 2**20:.1f} MiB)", flush=True)
+    return True
 
 
 def stop_workers(processes):
@@ -80,11 +104,8 @@ def tail(path, lines=45):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results_root", required=True)
-    parser.add_argument("--max_seconds", type=float, default=10 * 3600)
     parser.add_argument("--micro_batch", type=int, choices=[16, 32, 256], default=256)
     args = parser.parse_args()
-    if args.max_seconds < 60:
-        raise SystemExit("Less than one minute remains in the notebook budget; save outputs and start a new session.")
     root = Path(args.results_root).resolve()
     root.mkdir(parents=True, exist_ok=True)
     worker = Path(__file__).with_name("run_full_linkedin.py")
@@ -120,6 +141,7 @@ def main():
             processes.append(subprocess.Popen(common + ["--folds", folds], env=worker_environment(gpu),
                                               stdout=handle, stderr=subprocess.STDOUT, start_new_session=True))
         last_update = -60
+        last_export = start
         while any(p.poll() is None for p in processes):
             elapsed = time.monotonic() - start
             count, failures = progress(root)
@@ -134,9 +156,9 @@ def main():
                 reason = "ERROR: a worker failed; settings have not been adjusted. Inspect GPU logs."
                 print("\n".join(failures), flush=True)
                 break
-            if elapsed >= args.max_seconds:
-                reason = "PAUSED at the notebook time budget; resume saved checkpoints in the next session."
-                break
+            if time.monotonic() - last_export >= 15 * 60:
+                saved = export_archives(root, live=True)
+                last_export = time.monotonic() if saved else time.monotonic() - 14 * 60
             time.sleep(5)
     except KeyboardInterrupt:
         reason = "PAUSED by user; exporting saved work."

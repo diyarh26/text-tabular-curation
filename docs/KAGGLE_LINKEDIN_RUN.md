@@ -1,5 +1,38 @@
 # LinkedIn full evaluation on Kaggle T4 x2
 
+## Corrected restart after the October 23 overnight run
+
+Use the newly generated notebook from this revision, not a copy downloaded before
+the correction. Keep the old output ZIPs. Import the new notebook into Kaggle,
+enable GPU T4 x2, Internet, GH_TOKEN and TABPFN_TOKEN, then Save & Run All.
+Optionally attach the old notebook output with Add Input: the notebook will
+validate and reuse the 90 unaffected baseline evaluations. Without an old input,
+it runs all 120 evaluations from scratch. In both cases, **all six TAR encoders
+train fresh**, with the corrected loss. No affected TAR results or optimizer
+checkpoints enter the corrected experiment.
+
+The original micro-batch adapter accumulated mean cross-entropy losses without
+the required normalization. Under the pinned Trainer this scaled gradients by
+approximately 16. This affects legacy batch-16 TAR runs, including the earlier
+Colab pilot. Steam's full physical-batch-256 run and LinkedIn's three baseline
+conditions are unaffected. This was an implementation bug, not merely a logging
+difference. Old TAR scores are retained only as results of that affected protocol.
+
+The correction computes each micro-batch's summed cross-entropy divided by the
+actual example count for the entire optimizer update. Tests exercise the pinned
+Trainer and upstream classification head: full-batch versus accumulated loss and
+gradients, short final batches, optimizer/scheduler updates, validation loss,
+and an interrupted checkpoint restart versus uninterrupted training. The notebook
+runs those CPU checks before its 20-case GPU smoke test and the full experiment.
+Dropout and GPU floating-point execution can still produce numerical differences
+from a physical batch of 256; effective batch size does not imply identical scores.
+
+The manifest records `accumulation_loss=ce_sum_over_effective_batch_items_v1`.
+Only the specifically identified legacy TAR worker change can be migrated; data,
+configuration, other model code and package versions must still match. The old
+experiment is kept in a sibling `linkedin_full_legacy_tar_backup_<timestamp>`.
+All imported baseline files have hashes recorded in `baseline_reuse.json`.
+
 Import `notebooks/run_linkedin_full_kaggle.ipynb` into a **private** Kaggle notebook.
 Enable Internet, choose **GPU T4 x2**, and enable a Kaggle secret named `GH_TOKEN`
 with read access to `diyarh26/text-tabular-curation` (fine-grained token: repository
@@ -58,12 +91,14 @@ evaluations remain resumable. Every minute the supervisor prints progress and GP
 utilization/memory; detailed output is in `linkedin_full/logs/gpu0.log` / `gpu1.log`.
 Report aggregation happens only after both writers stop.
 
-The notebook budgets ten hours from its first cell, including setup and smoke
-tests, then interrupts workers and exports their saved files. This reserves time
-within Kaggle's documented 12-hour GPU session limit for export; multiple sessions
-may be needed. Platform termination before export can still lose current-session
-changes. TAR can resume only from saved epoch checkpoints, not the current batch.
-No fixed runtime or quota sufficiency is promised.
+There is **no notebook-imposed time cutoff**. The supervisor keeps running until
+completion, an error or an external/manual interruption. The official 50-epoch
+training cap and early stopping remain in place. Kaggle controls its own session
+and quota limits. Every 15 minutes the supervisor atomically refreshes rolling
+ZIPs without stopping training. Live snapshots exclude incomplete checkpoints and
+retain the previous ZIP if a selected file changes during copying. Final export
+includes logs after both workers stop. TAR resumes from a saved epoch checkpoint,
+not the current batch; work since the last successful snapshot may be lost.
 
 Outputs under `/kaggle/working`:
 
@@ -79,7 +114,8 @@ Outputs under `/kaggle/working`:
 To resume, attach the previous version's notebook output with **Add Input**, then
 rerun. A single `linkedin_full_checkpoint.zip` under `/kaggle/input` is found
 automatically; if several exist, set `RESUME_ZIP` explicitly. The source commit
-stored in that checkpoint is downloaded again. Data, configuration, runtime code,
+stored in that checkpoint is downloaded again, except that legacy runs fetch the
+corrected source and undergo baseline-only migration. Data, configuration, runtime code,
 package versions and scientific settings must match the saved manifest. Existing
 successful evaluations are skipped. Checkpoints/results from the 10-epoch Colab
 pilot are deliberately not reused.

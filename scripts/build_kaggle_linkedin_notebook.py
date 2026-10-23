@@ -33,14 +33,18 @@ def main():
         3. Use **Save Version → Save & Run All** for a saved background run. Do not also launch an interactive
            full run at the same time. Check your account's remaining GPU quota first.
 
-        The supervisor stops training after a conservative 10-hour budget from the first cell,
-        then exports reports and epoch checkpoints to `/kaggle/working`. Multiple sessions may be needed.
-        A platform termination before export can still lose current-session work.
+        **There is no notebook-imposed time limit.** Training continues until completion, an error,
+        or a manual/platform interruption. Kaggle can still terminate a session under its own limits.
+        A platform termination before export can lose current-session work.
+        Rolling ZIP snapshots are refreshed every 15 minutes without stopping training;
+        incomplete checkpoints are excluded and the previous ZIP is retained if a file changes during copying.
         **Two T4s provide two separate 16 GB devices; GPU memory is not pooled.**
 
         Resume: attach the previous version's notebook output using **Add Input**, then rerun this notebook.
         Its checkpoint ZIP is detected below. The saved source revision and experiment manifest are checked;
         completed evaluations are skipped, and TAR resumes from its saved epoch checkpoint.
+        Legacy micro-batch runs are migrated automatically: only validated baselines are reused;
+        all six TAR encoders start fresh with corrected loss normalization. Legacy files are preserved.
         Only a fully audited set of 120 evaluations produces a final verdict.
 
         References: [Kaggle notebooks](https://www.kaggle.com/docs/notebooks),
@@ -49,9 +53,8 @@ def main():
     """), cell("code", """
         import os, sys, time, json, subprocess, shutil, zipfile, re
         from pathlib import Path
-        SESSION_START = globals().get('SESSION_START', time.monotonic())
-        SESSION_WORK_HOURS = 10
         MICRO_BATCH = 16  # Approved: accumulation 16, effective batch 256. Reference physical batch: 256.
+        ACCUMULATION_LOSS = 'ce_sum_over_effective_batch_items_v1'
         # Leave blank on first run; on resume auto-detect one checkpoint under /kaggle/input.
         # If you attach several older versions, specify the desired checkpoint ZIP explicitly.
         RESUME_ZIP = ""
@@ -94,7 +97,11 @@ def main():
         revision_file = RUN_ROOT / 'source_revision.txt'
         if revision_file.exists() and (RUN_ROOT / 'linkedin_salary/manifest.json').exists():
             saved_manifest = json.loads((RUN_ROOT / 'linkedin_salary/manifest.json').read_text())
-            if saved_manifest['micro_batch'] == MICRO_BATCH:
+            needs_loss_fix = (saved_manifest['micro_batch'] == MICRO_BATCH == 16
+                              and 'accumulation_loss' not in saved_manifest)
+            if needs_loss_fix:
+                print('Legacy TAR normalization detected: fetching the fix; baseline-only migration follows.')
+            elif saved_manifest['micro_batch'] == MICRO_BATCH:
                 REPO_REF = revision_file.read_text().strip()
                 assert re.fullmatch(r'[0-9a-f]{40}', REPO_REF), 'Invalid saved source revision.'
             elif saved_manifest['micro_batch'] == 256 and MICRO_BATCH == 16:
@@ -181,18 +188,27 @@ def main():
                 env={**ENV, 'CUDA_VISIBLE_DEVICES': str(gpu)})
         # Lightweight local tests; these do not download models or launch experiments.
         run_checked([PYTHON, '-m', 'pytest', '-q', '-m', 'not bench'])
+        # Exercise the ACTUAL pinned Trainer backward pass, including uneven final micro-batches.
+        run_checked([PYTHON, '-m', 'pytest', '-q', 'tests/test_full_linkedin.py', '-m', 'bench'],
+                    env={**ENV, 'CUDA_VISIBLE_DEVICES': ''})
     """), cell("code", """
-        # Preserve previous batch-256 results and import only unchanged, validated baseline runs.
-        # TAR adapters/checkpoints/results are never reused across micro-batch settings.
+        # Preserve legacy results and import only unchanged, validated baseline runs.
+        # Affected TAR adapters/checkpoints/results are NEVER reused after the loss correction.
         manifest_path = RUN_ROOT / 'linkedin_salary/manifest.json'
         if manifest_path.exists():
             saved_manifest = json.loads(manifest_path.read_text())
-            if saved_manifest['micro_batch'] == 256 and MICRO_BATCH == 16:
+            needs_loss_fix = (saved_manifest['micro_batch'] == MICRO_BATCH == 16
+                              and 'accumulation_loss' not in saved_manifest)
+            if needs_loss_fix or (saved_manifest['micro_batch'] == 256 and MICRO_BATCH == 16):
                 run_checked([PYTHON, PROJECT / 'scripts/migrate_linkedin_microbatch.py',
                              '--results_root', RUN_ROOT], env={**ENV, 'CUDA_VISIBLE_DEVICES': '0'})
             else:
                 assert saved_manifest['micro_batch'] == MICRO_BATCH, 'Existing micro-batch differs.'
                 print('Existing experiment uses the selected micro-batch; no migration needed.')
+        if manifest_path.exists():
+            active_manifest = json.loads(manifest_path.read_text())
+            if MICRO_BATCH < 256:
+                assert active_manifest.get('accumulation_loss') == ACCUMULATION_LOSS, 'Loss normalization mismatch.'
         else:
             print('Fresh experiment: no previous baseline results to migrate.')
     """), cell("code", """
@@ -214,7 +230,7 @@ def main():
         run_checked([PYTHON, PROJECT / 'prep/make_toy_dataset.py'], env=smoke_env)
         # The same persistent helper and chosen micro-batch are used in smoke and full runs.
         # The selected micro-batch is explicit; there is no automatic fallback on OOM.
-        smoke_root = SCRATCH / ('smoke_micro' + str(MICRO_BATCH))
+        smoke_root = SCRATCH / ('smoke_lossv2_micro' + str(MICRO_BATCH))
         smoke_program = "\\n".join([
             "import sys; from pathlib import Path",
             "sys.path.insert(0, str(Path('scripts').resolve()))",
@@ -236,13 +252,12 @@ def main():
         assert all(r['status'] == 'ok' for r in smoke_rows), 'Smoke failure: inspect traceback above. Full run not started.'
         print('20/20 smoke evaluations passed.')
     """), cell("code", """
-        remaining = SESSION_WORK_HOURS * 3600 - (time.monotonic() - SESSION_START)
         print('Launching GPU 0: folds 0,2,4 | GPU 1: folds 1,3,5')
-        print('Remaining training budget: %.2f hours; progress prints every minute.' % (remaining / 3600))
+        print('No automatic time cutoff. Progress prints every minute; epoch checkpoints remain resumable.')
         # The supervisor exports partial work even on a worker error, then reports failure.
         # Reports/checkpoints go to working; environment and downloaded weights stay in scratch.
         run_checked([PYTHON, '-u', PROJECT / 'scripts/kaggle_linkedin.py',
-                     '--results_root', RUN_ROOT, '--max_seconds', str(remaining),
+                     '--results_root', RUN_ROOT,
                      '--micro_batch', str(MICRO_BATCH)])
     """), cell("code", """
         from IPython.display import display, FileLink

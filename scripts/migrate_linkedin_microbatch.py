@@ -17,7 +17,32 @@ import sys
 import tempfile
 
 from colab_tar_compare import write_json
-from run_full_linkedin import MODELS, audit_runs, fold_dir
+from run_full_linkedin import ACCUMULATION_LOSS, MODELS, audit_runs, fold_dir, text_digest
+
+WORKER_KEY = "scripts/run_full_linkedin.py"
+LEGACY_WORKER_SHA = "cfba04733caa5756fab0997164a9e134cd965314304e11150816bdbab17ea5f0"
+
+
+def validate_change(old, expected):
+    """Permit only the known TAR execution corrections, never arbitrary code changes."""
+    differences = {key for key in old.keys() | expected.keys() if old.get(key) != expected.get(key)}
+    allowed = {"micro_batch", "source_revision"}
+    correction = ("accumulation_loss" not in old and expected.get("accumulation_loss") == ACCUMULATION_LOSS)
+    if correction:
+        allowed.add("accumulation_loss")
+        if old.get("code") != expected.get("code"):
+            old_code, new_code = dict(old.get("code", {})), dict(expected.get("code", {}))
+            previous = old_code.pop(WORKER_KEY, None)
+            current = new_code.pop(WORKER_KEY, None)
+            if (previous != LEGACY_WORKER_SHA or current != text_digest(Path(__file__).with_name("run_full_linkedin.py"))
+                    or old_code != new_code):
+                raise ValueError("Only a TAR micro-batch/loss correction with the known legacy worker can reuse baselines.")
+            allowed.add("code")
+    memory_adjustment = old.get("micro_batch") == 256 and expected.get("micro_batch") == 16
+    loss_correction = correction and old.get("micro_batch") == expected.get("micro_batch") == 16
+    if not differences <= allowed or not (memory_adjustment or loss_correction):
+        raise ValueError(f"Only a TAR micro-batch/loss correction can reuse baselines; differences: {sorted(differences)}")
+    return loss_correction
 
 
 def migrate(root, expected, source_revision):
@@ -28,11 +53,7 @@ def migrate(root, expected, source_revision):
     if old == expected:
         print("The experiment already matches the requested settings; no migration needed.")
         return 0
-    differences = {key for key in old.keys() | expected.keys() if old.get(key) != expected.get(key)}
-    if not differences <= {"micro_batch", "source_revision"} or old.get("micro_batch") == expected.get("micro_batch"):
-        raise ValueError(f"Only a TAR micro-batch/source revision change can reuse baselines; differences: {sorted(differences)}")
-    if old.get("micro_batch") != 256 or expected.get("micro_batch") != 16:
-        raise ValueError("This migration is restricted to the approved 256 -> 16 adjustment.")
+    loss_correction = validate_change(old, expected)
     pending = []
     for fold in range(6):
         problems = audit_runs(output, [fold])
@@ -49,7 +70,7 @@ def migrate(root, expected, source_revision):
                     raise ValueError(f"Cannot import invalid baseline: {path}")
                 pending.append((path.relative_to(root), hashlib.sha256(path.read_bytes()).hexdigest()))
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    backup = root.with_name(root.name + "_batch256_backup_" + stamp)
+    backup = root.with_name(root.name + ("_legacy_tar_backup_" if loss_correction else "_batch256_backup_") + stamp)
     staging = root.with_name(root.name + "_micro16_staging_" + stamp)
     # Both explicit paths must stay within the same working parent before moving the tree.
     if (backup.parent.resolve() != root.parent.resolve() or staging.parent.resolve() != root.parent.resolve()
@@ -68,7 +89,9 @@ def migrate(root, expected, source_revision):
             raise ValueError(f"Baseline changed during migration: {relative}")
         imported.append({"file": relative.as_posix(), "sha256": digest})
     write_json(staging / "baseline_reuse.json", {
-        "reason": "Approved TAR micro-batch 16, accumulation 16, effective batch 256; baseline training unchanged",
+        "reason": ("Correct TAR accumulation loss normalization; all legacy TAR results/checkpoints excluded"
+                   if loss_correction else "Approved TAR micro-batch 16, accumulation 16, effective batch 256"),
+        "baseline_training_unchanged": True,
         "backup_directory": str(backup), "source_manifest": old,
         "migration_utility_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "imported_baselines": imported, "tar_results_imported": 0,

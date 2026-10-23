@@ -100,10 +100,19 @@ and attach the `GH_TOKEN` Kaggle secret for read access to this private reposito
 adjustment uses micro-batch 16 and 16-step gradient accumulation (effective batch 256); set
 `MICRO_BATCH = 256` for the reference physical batch on hardware where it fits.
 Fold checkpoints and results are isolated; a final verdict requires all 120 expected successful evaluations.
-The notebook exports partial checkpoints at its time budget so another session can resume the same revision.
+The notebook has **no automatic time cutoff**. Rolling checkpoint ZIPs are exported every 15 minutes,
+and another session can resume the same corrected revision if manually interrupted or stopped by Kaggle.
 For the approved 256-to-16 change, it backs up the previous experiment and imports validated baseline
 evaluations only when data, model code, dependencies and other scientific settings match. TAR starts fresh.
 This adds separate launchers and does not change the active Steam VM runtime code.
+
+**October 23 correction:** the legacy batch-16 adapter accumulated mean losses without normalizing
+by the effective batch, scaling gradients by approximately 16. The LinkedIn launcher now uses summed
+cross-entropy divided by the full optimizer update's example count, including short final batches.
+Actual pinned-Trainer gradient, optimizer, evaluation and restart tests cover the correction.
+The notebook preserves affected experiments, reuses only validated baseline evaluations, and retrains
+all six TAR encoders. Old TAR optimizer checkpoints are rejected. Steam's full physical-batch-256
+evaluation is unaffected. See [the correction and restart instructions](docs/KAGGLE_LINKEDIN_RUN.md).
 
 ## Steam versus LinkedIn: Colab TAR pilot
 
@@ -120,6 +129,8 @@ adapters, allowing the same experiment to resume across sessions. Steam and Link
 The existing local screens used TF-IDF, so comparison against those screens changes both the encoder and tuning.
 The notebook's optional frozen-E5 joint control is off by default; enable it to isolate TAR gain. Its comparison
 table always matches the folds available for both conditions. The pilot does not establish full curation acceptance.
+The legacy Colab micro-batch helper shares the loss-normalization bug described above; its TAR pilot
+scores are exploratory and should not be used as results from the corrected training protocol.
 
 ## Results
 

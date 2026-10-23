@@ -20,6 +20,7 @@ from colab_tar_compare import persistent_tar, write_json
 DATA_SHA256_LF = "8880f84563535c60eda01be5b52010dea6f80e318f228ade00166d7cb66d57fa"
 MODELS = ["tabm", "cat", "light", "tabpfnv2", "tabpfnv2p5"]
 CONDITIONS = ["structured", "unstructured", "joint_frozen", "joint_tar"]
+ACCUMULATION_LOSS = "ce_sum_over_effective_batch_items_v1"
 
 
 def text_digest(path):
@@ -41,13 +42,40 @@ def park_frozen_e5():
         torch.cuda.empty_cache()
 
 
+def accumulated_cross_entropy(outputs, labels, num_items_in_batch=None):
+    """Normalize each micro-batch's summed loss by the WHOLE optimizer update's example count.
+
+    EncoderWithHead ignores num_items_in_batch. Trainer assumes **kwargs models
+    handle it, so its default path otherwise accumulates unnormalized mean losses.
+    The sum/count form also weights a short final micro-batch correctly.
+    """
+    import torch.nn.functional as functional
+    logits = outputs["logits"]
+    labels = labels.view(-1).long()
+    if num_items_in_batch is None:
+        return functional.cross_entropy(logits, labels)
+    return functional.cross_entropy(logits, labels, reduction="sum") / num_items_in_batch
+
+
 @contextlib.contextmanager
 def full_tar(cache, micro_batch=256):
     """Keep the official budget and restore early-stopping patience across sessions too."""
     from multabench.finetune import lora
     from multabench.baselines.preprocessing import text_embeddings
+    cache = Path(cache)
+    loss_marker = cache / "accumulation_loss.json"
+    if micro_batch < 256:
+        expected_loss = {"version": ACCUMULATION_LOSS, "micro_batch": micro_batch, "effective_batch": 256}
+        if loss_marker.exists():
+            if json.loads(loss_marker.read_text(encoding="utf-8")) != expected_loss:
+                raise ValueError("TAR checkpoint loss normalization differs; start a new TAR cache.")
+        else:
+            if any((cache / name).exists() for name in ("trainer", "adapter", "complete.json")):
+                raise ValueError("Legacy TAR checkpoint has unverified loss normalization; start TAR fresh.")
+            write_json(loss_marker, expected_loss)
     with persistent_tar(cache, epochs=50, micro_batch=micro_batch):
         original_arguments = lora.TrainingArguments
+        original_trainer = lora.Trainer
         original_finetune = text_embeddings.finetune_e5
 
         def arguments(*args, **kwargs):
@@ -58,12 +86,23 @@ def full_tar(cache, micro_batch=256):
             park_frozen_e5()
             return original_finetune(*args, **kwargs)
 
+        class CorrectAccumulationTrainer(original_trainer):
+            def __init__(self, *args, **kwargs):
+                training_args = kwargs.get("args", args[1] if len(args) > 1 else None)
+                if training_args is not None and training_args.gradient_accumulation_steps > 1:
+                    if kwargs.get("compute_loss_func") is not None:
+                        raise ValueError("Unexpected custom loss; do not override it silently.")
+                    kwargs["compute_loss_func"] = accumulated_cross_entropy
+                super().__init__(*args, **kwargs)
+
         lora.TrainingArguments = arguments
+        lora.Trainer = CorrectAccumulationTrainer
         text_embeddings.finetune_e5 = finetune
         try:
             yield
         finally:
             lora.TrainingArguments = original_arguments
+            lora.Trainer = original_trainer
             text_embeddings.finetune_e5 = original_finetune
 
 
@@ -185,6 +224,7 @@ def main():
                     source_revision=(REPO_ROOT / "SOURCE_REVISION").read_text().strip()
                         if (REPO_ROOT / "SOURCE_REVISION").exists() else None,
                     tar_max_epochs=50, micro_batch=args.micro_batch, effective_batch=256, precision="float32",
+                    accumulation_loss=ACCUMULATION_LOSS if args.micro_batch < 256 else "reference_single_batch_mean",
                     restore_early_stopping_state=True,
                     code={p.relative_to(REPO_ROOT).as_posix(): text_digest(p) for p in paths},
                     packages={n: version(n) for n in ["multabench", "torch", "transformers", "peft", "catboost",
