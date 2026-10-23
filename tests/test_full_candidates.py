@@ -219,8 +219,9 @@ def test_notebook_cells_and_embedded_model_check_compile_with_live_unbuffered_ou
             assert entry["outputs"] == [] and entry["execution_count"] is None
             code.append(entry["source"])
     full = "\n".join(code)
-    assert "MICRO_BATCH = 64" in full and "'PYTHONUNBUFFERED': '1'" in full
-    assert "micro-batch 64, accumulation 4" in notebook["cells"][0]["source"]
+    assert f"MICRO_BATCH = {256 if key == 'device' else 64}" in full and "'PYTHONUNBUFFERED': '1'" in full
+    expected = "physical batch 256, accumulation 1" if key == "device" else "micro-batch 64, accumulation 4"
+    assert expected in notebook["cells"][0]["source"]
     assert "scripts/kaggle_candidates.py" in full and "print(line, end='', flush=True)" in full
     assert CANDIDATES[key].run_name in code[0]
     captured = []
@@ -237,15 +238,16 @@ def test_real_prepared_csv_and_all_official_split_sizes(key):
     candidate = CANDIDATES[key]
     data, config = verified_data(candidate)
     splits = official_splits(data)
-    settings = experiment_settings(candidate, data, config, micro_batch=64)
+    batch = 256 if key == "device" else 64
+    settings = experiment_settings(candidate, data, config, micro_batch=batch)
     assert settings["splits"] == splits and settings["tar_max_epochs"] == 50
     assert settings["effective_batch"] == 256 and settings["precision"] == "float32"
-    assert settings["micro_batch"] == 64 and settings["gradient_accumulation_steps"] == 4
-    assert settings["accumulation_loss"] == "ce_sum_over_effective_batch_items_v1"
+    assert settings["micro_batch"] == batch and settings["gradient_accumulation_steps"] == 256//batch
+    assert settings["accumulation_loss"] == ("reference_single_batch_mean" if key == "device" else "ce_sum_over_effective_batch_items_v1")
     assert len(splits) == 6
     for fold, split in splits.items():
         assert split["n_train"] + split["n_test"] == candidate.rows
-        if key == "lendingclub":
+        if key in ("lendingclub", "device"):
             assert (split["n_train"], split["n_test"]) == (10000, 5000)
         else:
             assert split["n_train"] in (5278, 5279) and split["n_test"] in (2639, 2640)
@@ -305,3 +307,17 @@ def test_supervisor_has_no_ten_hour_cutoff(tmp_path, monkeypatch, capsys):
     supervisor.main()
     printed = capsys.readouterr().out
     assert "elapsed 11.00 h" in printed and "COMPLETE: all 120" in printed
+
+
+def test_device_never_silently_changes_official_batch():
+    with pytest.raises(ValueError, match="physical batch 256"):
+        experiment_settings(CANDIDATES["device"], None, None, micro_batch=64)
+
+
+def test_device_notebook_verifies_classification_only_and_isolates_output():
+    notebook = build_notebook(CANDIDATES["device"], "a"*40)
+    full = "\n".join(c["source"] for c in notebook["cells"])
+    assert "Class I=988, Class II=13,426, Class III=586" in full
+    assert "MICRO_BATCH = 256" in full and "fda_device_full_kaggle" in full
+    assert "TabPFNRegressor" not in full and "--max_epochs" not in full
+    assert "No micro-batch fallback is authorized" in full

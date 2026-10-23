@@ -22,6 +22,7 @@ def cell(kind, source):
 
 
 def build_notebook(candidate, source_revision):
+    micro_batch = 256 if candidate.key == "device" else 64
     if not re.fullmatch(r"[0-9a-f]{40}", source_revision):
         raise ValueError("Use an exact published 40-character source commit")
     description = ("15,000 complete loans; description content length >50 words; purpose removed; "
@@ -30,6 +31,16 @@ def build_notebook(candidate, source_revision):
                    "7,918 recall events; one product per event; three original severity classes: "
                    "Class I=3,182, Class II=4,065, Class III=671. Primary metric: log loss, stored as "
                    "negative log loss. Macro OvR AUROC is reported separately.")
+    if candidate.key == "device":
+        description = ("15,000 fixed recall events; Class I=988, Class II=13,426, Class III=586. "
+                       "Three text inputs and eight structured inputs; intentional missing values retained. "
+                       "Primary metric: NEGATIVE LOG LOSS. Macro OvR AUROC is supplementary.")
+    execution = ("The Device execution uses **physical batch 256, accumulation 1, effective batch 256**, "
+                 "float32 and the official 50-epoch cap/early stopping. No micro-batch fallback is authorized."
+                 if candidate.key == "device" else
+                 "The approved Kaggle execution uses **micro-batch 64, accumulation 4, effective batch 256**, "
+                 "with corrected loss normalization, float32 and the official 50-epoch cap/early stopping. "
+                 "It can differ numerically from physical batch 256; the execution variant is recorded.")
     cells = [cell("markdown", f"""
         # {candidate.title}: full evaluation on Kaggle T4 x2
 
@@ -46,9 +57,7 @@ def build_notebook(candidate, source_revision):
            Check remaining GPU quota; both candidate notebooks consume the same account quota.
 
         GPU 0 owns folds 0/2/4; GPU 1 owns folds 1/3/5. Each worker sees one T4; memory is not pooled.
-        The approved Kaggle execution uses **micro-batch 64, accumulation 4, effective batch 256**,
-        with corrected loss normalization, float32 and the official 50-epoch cap/early stopping.
-        It can differ numerically from physical batch 256; the execution variant is recorded.
+        {execution}
         Frozen conditions use E5-small-v2, not TF-IDF. There is no additional wall-time cutoff or pilot cap.
 
         **LIVE RESULTS:** the running cell prints a complete five-learner result table after EACH fold,
@@ -62,7 +71,7 @@ def build_notebook(candidate, source_revision):
         Attach the previous saved output via **Add Input**; only this candidate's checkpoint is detected.
         Resume pins the original source commit and verifies data, packages, code, splits and settings.
         No Steam, LinkedIn, CPU-screen or other candidate results are imported.
-        This notebook starts a fresh batch-64 experiment. Do not attach batch-16 checkpoints;
+        This notebook starts a fresh batch-{micro_batch} experiment. Attach only matching checkpoints;
         settings mismatches are rejected rather than mixing TAR protocols.
 
         Sources: [Kaggle notebook execution/output limits](https://www.kaggle.com/docs/notebooks),
@@ -73,7 +82,7 @@ def build_notebook(candidate, source_revision):
         DATASET = {candidate.key!r}
         DATASET_NAME = {candidate.name!r}
         RUN_NAME = {candidate.run_name!r}
-        MICRO_BATCH = 64  # Approved: 4 accumulation steps, effective batch 256. No automatic fallback.
+        MICRO_BATCH = {micro_batch}  # Effective batch 256; no automatic fallback.
         REPO_REF = {source_revision!r}  # Exact published source; resume uses its saved exact commit.
         RESUME_ZIP = ''  # Auto-detect one matching checkpoint in attached input; set if several exist.
         WORK = Path('/kaggle/working')
@@ -119,7 +128,7 @@ def build_notebook(candidate, source_revision):
             saved_settings = json.loads(saved_manifest.read_text())
             if saved_settings.get('micro_batch') != MICRO_BATCH:
                 raise RuntimeError('Checkpoint batch differs from this notebook. Preserve the old output; '
-                                   'resume it with its original notebook or start this batch-64 run fresh.')
+                                   'resume it with its original notebook or start this run fresh.')
     """)))
     cells.append(cell("code", """
         import urllib.request, urllib.error

@@ -1,4 +1,4 @@
-"""Resumable full-budget LendingClub/FDA Food workers; one visible GPU per process."""
+"""Resumable full-budget LendingClub/FDA Food/FDA Device workers; one visible GPU per process."""
 from __future__ import annotations
 
 import argparse
@@ -34,6 +34,9 @@ class Candidate:
 
 
 CANDIDATES = {
+    "device": Candidate("device", "fda_device_severity", "FDA Device", "fda_device_full_kaggle",
+        15_000, "b005b5ecf1bd1026c649f5989861cc6b8d3338ac1d09e67fefdc59c3793a6ec7",
+        {"Class I": 988, "Class II": 13_426, "Class III": 586}, 8, "log_loss"),
     "lendingclub": Candidate("lendingclub", "lendingclub_longdesc_no_purpose", "LendingClub",
         "lendingclub_full", 15_000, "46d3b72cefc9634840fc5556b80deb860f7d07f956bbc3f00f0363ead8d9af24",
         {"0": 12_822, "1": 2_178}, 9, "roc_auc"),
@@ -52,6 +55,9 @@ def verified_data(candidate):
     from tt_curation import REPO_ROOT
     from tt_curation.data import load_dataset
     from tt_curation.spec import load_spec
+    if candidate.key == "device":
+        from run_full_device import verify_prepared_data
+        verify_prepared_data(REPO_ROOT)
     config = REPO_ROOT / "configs" / f"{candidate.name}.yaml"
     spec = load_spec(config)
     if text_digest(spec.csv) != candidate.sha256 or spec.name != candidate.name or not spec.is_cls:
@@ -87,6 +93,8 @@ def official_splits(data):
 
 
 def experiment_settings(candidate, data, config, micro_batch):
+    if candidate.key == "device" and micro_batch != 256:
+        raise ValueError("Device requires official physical batch 256; discuss any OOM adjustment first")
     from tt_curation import MULTABENCH_COMMIT, REPO_ROOT
     direct = distribution("multabench").read_text("direct_url.json")
     if not direct or json.loads(direct).get("vcs_info", {}).get("commit_id") != MULTABENCH_COMMIT:
@@ -101,6 +109,8 @@ def experiment_settings(candidate, data, config, micro_batch):
         raise ValueError("Cannot establish exact source revision")
     scripts = ["run_full_candidate.py", "kaggle_candidates.py", "run_full_linkedin.py",
                "colab_tar_compare.py", "kaggle_linkedin.py"]
+    if candidate.key == "device":
+        scripts.append("run_full_device.py")
     paths = [*sorted((REPO_ROOT / "src/tt_curation").glob("*.py")),
              *(REPO_ROOT / "scripts" / name for name in scripts)]
     return dict(protocol_version="candidate_full_v1", dataset=candidate.name, rows=candidate.rows,
@@ -309,7 +319,25 @@ def main():
     print(f"Assigned GPU: {torch.cuda.get_device_name(0)}; folds {folds}; micro batch {args.micro_batch}; "
           f"accumulation {256//args.micro_batch}; "
           "effective batch 256; cap 50 with early stopping.", flush=True)
+    if candidate.key == "device":
+        # Persist the original traceback, then stop immediately; no automatic protocol adjustment.
+        import tt_curation.runner as runner
+        original = runner.run_one
+        def checked_run_one(*a, **kw):
+            result = original(*a, **kw)
+            if result["status"] != "ok":
+                path = fold_dir(output, result["fold"]) / "runs" / (
+                    f'{result["short_name"]}_{result["condition"]}_10k_fold{result["fold"]}.json')
+                write_json(path, result)
+                raise RuntimeError(result["error"])
+            return result
+        runner.run_one = checked_run_one
     for fold in folds:
+        if candidate.key == "device":
+            # Existing status-ok files must pass the full audit before runner skip logic can reuse them.
+            for problem in audit_runs(output, candidate, [fold]):
+                if not problem.endswith(": missing"):
+                    raise ValueError("Invalid saved Device run: " + problem)
         started = time.monotonic()
         with full_tar(fold_dir(output, fold) / "checkpoints", micro_batch=args.micro_batch):
             run_all(data, fold_dir(output, fold), models=MODELS, conditions=list(Condition),
