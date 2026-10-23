@@ -21,8 +21,11 @@ def cell(kind, source):
     return result
 
 
-def build_notebook(candidate, source_revision):
-    micro_batch = 256 if candidate.key == "device" else 64
+def build_notebook(candidate, source_revision, *, micro_batch=None):
+    if micro_batch is None:
+        micro_batch = 256 if candidate.key == "device" else 64
+    if micro_batch not in (64, 256) or (candidate.key == "device" and micro_batch != 256):
+        raise ValueError("Unsupported notebook batch; Device requires physical batch 256")
     if not re.fullmatch(r"[0-9a-f]{40}", source_revision):
         raise ValueError("Use an exact published 40-character source commit")
     description = ("15,000 complete loans; description content length >50 words; purpose removed; "
@@ -35,9 +38,9 @@ def build_notebook(candidate, source_revision):
         description = ("15,000 fixed recall events; Class I=988, Class II=13,426, Class III=586. "
                        "Three text inputs and eight structured inputs; intentional missing values retained. "
                        "Primary metric: NEGATIVE LOG LOSS. Macro OvR AUROC is supplementary.")
-    execution = ("The Device execution uses **physical batch 256, accumulation 1, effective batch 256**, "
+    execution = (f"The {candidate.title} execution uses **physical batch 256, accumulation 1, effective batch 256**, "
                  "float32 and the official 50-epoch cap/early stopping. No micro-batch fallback is authorized."
-                 if candidate.key == "device" else
+                 if micro_batch == 256 else
                  "The approved Kaggle execution uses **micro-batch 64, accumulation 4, effective batch 256**, "
                  "with corrected loss normalization, float32 and the official 50-epoch cap/early stopping. "
                  "It can differ numerically from physical batch 256; the execution variant is recorded.")

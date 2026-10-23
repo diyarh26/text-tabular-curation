@@ -333,3 +333,24 @@ def test_bootstrap_source_revision_uses_real_newline():
     for call in writes:
         assert isinstance(call.args[0], ast.BinOp)
         assert call.args[0].right.value == "\n"
+
+
+def test_food_physical_batch256_notebook_preserves_original_batch64():
+    import ast
+    batch256 = build_notebook(CANDIDATES['food'], 'a'*40, micro_batch=256)
+    original = build_notebook(CANDIDATES['food'], 'a'*40)
+    assert 'MICRO_BATCH = 64' in original['cells'][1]['source']
+    assert 'physical batch 256, accumulation 1' in batch256['cells'][0]['source']
+    assert 'micro-batch 64' not in batch256['cells'][0]['source']
+    settings = ast.parse(batch256['cells'][1]['source'])
+    values = {node.targets[0].id: ast.literal_eval(node.value) for node in settings.body
+              if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name)
+              and node.targets[0].id in ('DATASET', 'DATASET_NAME', 'MICRO_BATCH')}
+    assert values == dict(DATASET='food', DATASET_NAME='fda_food_severity', MICRO_BATCH=256)
+    for entry in batch256['cells']:
+        if entry['cell_type'] == 'code':
+            compile(entry['source'], 'food256_cell', 'exec')
+            assert entry['outputs'] == []
+    full = '\n'.join(entry['source'] for entry in batch256['cells'])
+    assert 'Checkpoint batch differs' in full
+    assert 'No micro-batch fallback is authorized' in full
