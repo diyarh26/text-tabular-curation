@@ -321,3 +321,15 @@ def test_device_notebook_verifies_classification_only_and_isolates_output():
     assert "MICRO_BATCH = 256" in full and "fda_device_full_kaggle" in full
     assert "TabPFNRegressor" not in full and "--max_epochs" not in full
     assert "No micro-batch fallback is authorized" in full
+
+
+def test_bootstrap_source_revision_uses_real_newline():
+    import ast
+    notebook = build_notebook(CANDIDATES["device"], "a"*40)
+    source = next(c["source"] for c in notebook["cells"] if "revision_file.write_text" in c["source"])
+    writes = [n for n in ast.walk(ast.parse(source)) if isinstance(n, ast.Call)
+              and isinstance(n.func, ast.Attribute) and n.func.attr == "write_text"]
+    assert len(writes) == 2
+    for call in writes:
+        assert isinstance(call.args[0], ast.BinOp)
+        assert call.args[0].right.value == "\n"

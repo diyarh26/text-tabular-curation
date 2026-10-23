@@ -263,6 +263,10 @@ def build_notebook(candidate, source_revision):
         print('Per-fold reports:', RUN_ROOT / DATASET_NAME / 'foldN_report.txt')
         print('Cumulative completed-fold comparison:', RUN_ROOT / DATASET_NAME / 'progress_report.txt')
     """))
+    # Generated source must write a real LF, not the two characters backslash+n.
+    for entry in cells:
+        if entry["cell_type"] == "code":
+            entry["source"] = entry["source"].replace(r"source_sha + '\\n'", r"source_sha + '\n'")
     for index, entry in enumerate(cells):
         entry["id"] = f"{candidate.key}-kaggle-{index}"
         if entry["cell_type"] == "code":
