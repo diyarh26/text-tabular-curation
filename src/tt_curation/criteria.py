@@ -1,10 +1,10 @@
-"""The MulTaBench curation criteria, from the run JSONs.
+"""Course curation criteria, following staff forum clarifications supplied on 2026-10-23.
 
-Per learner, on the mean test score over folds (MulTaBench's metric, higher is better), rounded to 3 decimals as the
-MulTaBench paper does (multabench/leaderboard/analysis/pass_matrix.py at the paper_version tag):
-  1. Joint signal: joint_frozen - max(structured, unstructured) >= 0.001
-  2. TAR gain:     joint_tar - joint_frozen >= 0.001
-A dataset passes if at least 3 of the 5 learners satisfy both.
+Use unrounded mean test scores over folds (MulTaBench's metric, higher is better):
+  1. Joint signal: joint_frozen - max(structured, unstructured) > 0
+  2. TAR gain:     joint_tar - joint_frozen > 0
+Each criterion needs at least 3 of the 5 learners, counted independently; the learners may differ.
+This course rule supersedes the paper analysis's rounded-score convention used by earlier reports.
 """
 import json
 from pathlib import Path
@@ -16,9 +16,6 @@ import pandas as pd
 from tt_curation.conditions import Condition
 
 MIN_PASSING_LEARNERS = 3
-# Means are compared at the paper's reported precision, so the smallest passing delta is one unit of it.
-DECIMALS = 3
-MIN_DELTA = 0.001
 METRIC_COLUMNS = ["test_score", "test_error", "auroc", "r2"]
 
 
@@ -46,47 +43,51 @@ def evaluation_report(runs: pd.DataFrame) -> pd.DataFrame:
 
 
 def curation_verdict(runs: pd.DataFrame) -> pd.DataFrame:
-    """Per learner: mean scores per condition, the two criteria, their margins and on how many folds they held."""
+    """Per-learner raw means/deltas and fold wins. 'passes' diagnoses both on that learner only;
+    dataset acceptance counts joint_signal and tar_gain independently, not this diagnostic column.
+    """
     ok = runs[runs["status"] == "ok"]
     rows = []
     for model, group in ok.groupby("model"):
         per_fold = group.pivot_table(index="fold", columns="condition", values="test_score")
-        mean = per_fold.mean().round(DECIMALS)
+        mean = per_fold.mean()
         row = {"model": model, **{f"score_{c.value}": mean.get(c.value, np.nan) for c in Condition}}
         row["folds"] = len(per_fold)
         s, u, f, t = (per_fold.get(c.value) for c in Condition)
         if s is not None and u is not None and f is not None:
-            delta = _delta(mean[Condition.JOINT_FROZEN], max(mean[Condition.STRUCTURED], mean[Condition.UNSTRUCTURED]))
+            delta = float(mean[Condition.JOINT_FROZEN] - max(mean[Condition.STRUCTURED], mean[Condition.UNSTRUCTURED]))
             row["delta_frozen_vs_best_unimodal"] = delta
-            row["joint_signal"] = delta >= MIN_DELTA
+            row["joint_signal"] = delta > 0
             row["joint_signal_fold_wins"] = int(((f > s) & (f > u)).sum())
         if f is not None and t is not None:
-            delta = _delta(mean[Condition.JOINT_TAR], mean[Condition.JOINT_FROZEN])
+            delta = float(mean[Condition.JOINT_TAR] - mean[Condition.JOINT_FROZEN])
             row["delta_tar_vs_frozen"] = delta
-            row["tar_gain"] = delta >= MIN_DELTA
+            row["tar_gain"] = delta > 0
             row["tar_gain_fold_wins"] = int((t > f).sum())
         row["passes"] = bool(row.get("joint_signal", False) and row.get("tar_gain", False))
         rows.append(row)
     return pd.DataFrame(rows)
 
 
-def _delta(a: float, b: float) -> float:
-    """A difference of 3-decimal means, rounded back so 0.251 - 0.250 compares as exactly 0.001."""
-    return round(float(a - b), 6)
-
-
 def summary_lines(verdict: pd.DataFrame, runs: pd.DataFrame) -> List[str]:
-    n_pass = int(verdict["passes"].sum())
-    lines = [f"{'learner':<13}{'struct':>9}{'text':>9}{'frozen':>9}{'TAR':>9}  joint  TAR-gain  folds"]
+    n_joint = int(verdict.get("joint_signal", pd.Series(dtype=bool)).fillna(False).sum())
+    n_tar = int(verdict.get("tar_gain", pd.Series(dtype=bool)).fillna(False).sum())
+    lines = ["Decision uses unrounded fold-mean test scores, strict improvement (> 0), and independent criterion counts.",
+             f"{'learner':<13}{'struct':>11}{'text':>11}{'frozen':>11}{'TAR':>11}  "
+             f"{'joint delta':>13} {'TAR delta':>13}  joint  TAR-gain  folds"]
     for _, r in verdict.iterrows():
         def mark(key):
             return "  ?  " if pd.isna(r.get(key)) else ("  ✅ " if r[key] else "  ❌ ")
-        lines.append(f"{r['model']:<13}" + "".join(f"{r[f'score_{c.value}']:>9.4f}" for c in Condition)
+        lines.append(f"{r['model']:<13}" + "".join(f"{r[f'score_{c.value}']:>11.6f}" for c in Condition)
+                     + f"  {r.get('delta_frozen_vs_best_unimodal', np.nan):>13.9f}"
+                     + f" {r.get('delta_tar_vs_frozen', np.nan):>13.9f}"
                      + f"  {mark('joint_signal')}  {mark('tar_gain')}    {r['folds']}")
     n_failed = int((runs["status"] != "ok").sum())
-    verdict_text = "PASSES" if n_pass >= MIN_PASSING_LEARNERS else "does NOT pass (yet)"
-    lines.append(f"{n_pass}/{len(verdict)} learners satisfy both criteria -> dataset {verdict_text} "
-                 f"(needs {MIN_PASSING_LEARNERS} of 5)")
+    passed = n_joint >= MIN_PASSING_LEARNERS and n_tar >= MIN_PASSING_LEARNERS
+    lines.append(f"Joint Signal: {n_joint}/{len(verdict)} learners; needs {MIN_PASSING_LEARNERS} of 5.")
+    lines.append(f"TAR Gain: {n_tar}/{len(verdict)} learners; needs {MIN_PASSING_LEARNERS} of 5.")
+    verdict_text = "PASSES" if passed else "does NOT pass (yet)"
+    lines.append(f"Dataset {verdict_text}: each criterion must pass independently; the qualifying learners may differ.")
     if n_failed:
         lines.append(f"⚠️ {n_failed} runs failed; see their JSONs")
     return lines

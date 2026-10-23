@@ -17,9 +17,16 @@ task helps. Each of 5 learners (TabM, CatBoost, LightGBM, TabPFN 2.0, TabPFN 2.5
 | `joint_frozen` | all | frozen E5-small-v2 |
 | `joint_tar` | all | E5-small-v2 LoRA-tuned on the target (target-aware) |
 
-The dataset passes if, for at least 3 of the 5 learners:
-1. **Joint signal:** `joint_frozen` > `structured` and `joint_frozen` > `unstructured`
-2. **TAR gain:** `joint_tar` > `joint_frozen`
+Following course staff's forum clarifications (October 23), the dataset passes if each criterion
+holds for at least 3 of the 5 learners, **counted independently**; the qualifying learners may differ:
+
+1. **Joint signal:** `joint_frozen` > `structured` and `joint_frozen` > `unstructured` for at least 3 learners.
+2. **TAR gain:** `joint_tar` > `joint_frozen` for at least 3 learners.
+
+Decisions use **unrounded fold-mean scores and strict improvement (> 0)**, without a 0.001 threshold.
+Scores may be rounded for display only. A tiny positive margin can pass numerically while offering
+negligible practical improvement. The per-learner `passes` CSV column means that learner satisfies
+both criteria; dataset acceptance instead counts the two criterion columns separately.
 
 Scores are MulTaBench's (higher is better; error = 1 − AUROC for binary, log loss for multiclass, RMSE for
 regression), averaged over its 6 outer folds (3-fold CV × 2 repeats, train/test capped at 10K/5K rows). AUROC / R² are

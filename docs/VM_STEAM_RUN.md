@@ -87,8 +87,10 @@ and stops on failures. Never interpret incomplete results as a final acceptance 
 
 Completion requires the exact 120 expected model/condition/fold combinations with successful statuses and
 matching metadata, not merely 120 JSON files. Inspect `evaluation_report.csv`, `curation_verdict.csv`, and
-`summary.txt` after the final audit. A dataset passes only when at least three learners satisfy both joint signal
-and TAR gain under the repository's scoring rules.
+`summary.txt` after the final audit. Following course staff's October 23 clarifications, a dataset passes when
+Joint Signal holds for at least three learners and TAR Gain holds for at least three learners, counted
+independently; the groups may differ. Compare unrounded fold-mean scores using strict improvement (> 0).
+Display rounding must not determine pass/fail. No evaluation needs rerunning for this reporting correction.
 
 When handing back the job, report the Git commit, GPU, data checks, environment fixes, exact command,
 tmux session, log path, output directory, and actual progress. Do not stop at writing a plan if checks pass.

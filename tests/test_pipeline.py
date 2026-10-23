@@ -9,7 +9,7 @@ import pytest
 
 from tt_curation import REPO_ROOT
 from tt_curation.conditions import Condition, condition_features
-from tt_curation.criteria import curation_verdict, evaluation_report
+from tt_curation.criteria import curation_verdict, evaluation_report, summary_lines
 from tt_curation.data import load_dataset
 from tt_curation.spec import DatasetSpec, load_spec
 
@@ -58,13 +58,44 @@ def test_verdict():
     verdict = curation_verdict(_fake_runs({"A": passing, "B": no_tar})).set_index("model")
     assert verdict.loc["A", "passes"] and verdict.loc["A", "tar_gain_fold_wins"] == 2
     assert verdict.loc["B", "joint_signal"] and not verdict.loc["B", "tar_gain"]
-    # As in the MulTaBench paper: means rounded to 3 decimals, so a 0.0004 edge is a tie and 0.001 is a pass.
+    # Staff clarification: evaluate raw means; a small positive gain is still positive.
     tie = dict(structured=[.7400, .7400], unstructured=[.6, .6], joint_frozen=[.7404, .7404],
                joint_tar=[.7414, .7414])
     verdict = curation_verdict(_fake_runs({"C": tie})).set_index("model")
-    assert not verdict.loc["C", "joint_signal"] and verdict.loc["C", "tar_gain"]
+    assert verdict.loc["C", "joint_signal"] and verdict.loc["C", "tar_gain"]
+    assert verdict.loc["C", "score_joint_frozen"] == .7404
+    assert verdict.loc["C", "delta_frozen_vs_best_unimodal"] == pytest.approx(.0004)
     report = evaluation_report(_fake_runs({"A": passing}))
     assert list(report["condition"]) == ["structured", "unstructured", "joint_frozen", "joint_tar"]
+
+
+@pytest.mark.parametrize("delta,passes", [(1e-10, True), (0, False), (-1e-10, False)])
+def test_raw_deltas_are_not_rounded_or_given_an_epsilon_threshold(delta, passes):
+    scores = dict(structured=[.7], unstructured=[.6], joint_frozen=[.7 + delta], joint_tar=[.7 + 2 * delta])
+    row = curation_verdict(_fake_runs({"A": scores})).iloc[0]
+    assert bool(row.joint_signal) == passes
+    assert bool(row.tar_gain) == passes
+    assert row.delta_frozen_vs_best_unimodal == (.7 + delta) - .7
+
+
+@pytest.mark.parametrize("joint_models,tar_models,passed", [
+    ({"A", "B", "C"}, {"C", "D", "E"}, True),
+    ({"A", "B", "C"}, {"D", "E"}, False),
+    ({"A", "B"}, {"C", "D", "E"}, False),
+])
+def test_dataset_criteria_count_learners_independently(joint_models, tar_models, passed):
+    scores = {}
+    for model in "ABCDE":
+        frozen = .75 if model in joint_models else .69
+        scores[model] = dict(structured=[.7], unstructured=[.6], joint_frozen=[frozen],
+                             joint_tar=[frozen + (.01 if model in tar_models else -.01)])
+    runs = _fake_runs(scores)
+    verdict = curation_verdict(runs)
+    assert verdict.passes.sum() == len(joint_models & tar_models)
+    summary = "\n".join(summary_lines(verdict, runs))
+    assert f"Joint Signal: {len(joint_models)}/5" in summary
+    assert f"TAR Gain: {len(tar_models)}/5" in summary
+    assert ("Dataset PASSES:" in summary) == passed
 
 
 @pytest.mark.bench
