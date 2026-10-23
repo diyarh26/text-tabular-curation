@@ -1,0 +1,131 @@
+{
+  "dataset": "lendingclub_longdesc_no_purpose",
+  "preparation_version": 2,
+  "seed": 42,
+  "preparation_script_sha256": "a6f85f4f397c5b5f7dd09473d88981d51e72bba862d4d5566bb2120b98d03e7b",
+  "source_archive": "C:\\Users\\Diyar\\Downloads\\archive (5).zip",
+  "source_member": "accepted_2007_to_2018q4.csv/accepted_2007_to_2018Q4.csv",
+  "source_archive_sha256": "b412cf8d26e30a6302cd5665f03d772987368ff15404e6987a5f910a0981da20",
+  "counts": {
+    "full_complete_parent_pool": 115099,
+    "long_description_eligible_pool": 26061,
+    "excluded_at_most_50_content_words": 89038,
+    "eligible_rows_removed_by_sampling": 11061,
+    "selected_rows": 15000
+  },
+  "csv": "data\\processed\\lendingclub_longdesc_no_purpose.csv",
+  "csv_sha256": "46d3b72cefc9634840fc5556b80deb860f7d07f956bbc3f00f0363ead8d9af24",
+  "selection_trace": "data\\raw\\candidate_screens\\lendingclub_longdesc_no_purpose.selected_rows.csv",
+  "selection_trace_sha256": "f75c1fa44410378a978e4c886bd6592132bfa1c34a487e3df3f5a6fc10a377fb",
+  "text_columns": [
+    "desc",
+    "title",
+    "emp_title"
+  ],
+  "categorical_columns": [
+    "term",
+    "emp_length",
+    "home_ownership",
+    "grade"
+  ],
+  "numerical_columns": [
+    "loan_amnt",
+    "annual_inc",
+    "dti",
+    "fico_score",
+    "int_rate"
+  ],
+  "target": "charged_off",
+  "class_counts": {
+    "0": 12822,
+    "1": 2178
+  },
+  "missing_counts": {
+    "desc": 0,
+    "title": 0,
+    "emp_title": 0,
+    "term": 0,
+    "emp_length": 0,
+    "home_ownership": 0,
+    "grade": 0,
+    "loan_amnt": 0,
+    "annual_inc": 0,
+    "dti": 0,
+    "fico_score": 0,
+    "int_rate": 0,
+    "charged_off": 0
+  },
+  "constant_features": [],
+  "text_profiles": {
+    "desc": {
+      "nonempty": 15000,
+      "distinct": 15000,
+      "median_words_nonempty": 75.0,
+      "max_words": 771
+    },
+    "title": {
+      "nonempty": 15000,
+      "distinct": 7718,
+      "median_words_nonempty": 2.0,
+      "max_words": 18
+    },
+    "emp_title": {
+      "nonempty": 15000,
+      "distinct": 12601,
+      "median_words_nonempty": 3.0,
+      "max_words": 10
+    }
+  },
+  "duplicate_complete_feature_rows": 0,
+  "duplicate_combined_text_rows": 0,
+  "explicit_class_phrase_occurrences": 1,
+  "class_phrase_audit": "data\\raw\\candidate_screens\\lendingclub_longdesc_no_purpose.class_mentions.json",
+  "rules": {
+    "target": "0 = Fully Paid; 1 = Charged Off.",
+    "row_selection": "From the FULL verified complete pool, require >50 description content words BEFORE random sampling of 15000 loans, seed 42.",
+    "missing_fields": "Zero missing selected inputs or targets; no imputation.",
+    "description_minimum": "Strictly greater than 50 whitespace-separated words after removing Borrower added on date prefixes for counting only.",
+    "date_prefixes_retained_in_model_text": true,
+    "purpose_removed_from_csv_and_config": true,
+    "title_retained_as_text": true,
+    "text_cleanup": "Remove HTML tags, decode entities, normalize whitespace; retain date prefixes. Additional FDA leakage edits are documented separately.",
+    "no_word_length_filter": false,
+    "no_text_truncation": true,
+    "no_class_balancing": true,
+    "no_performance_based_selection": true
+  },
+  "shared_preparation_helpers_sha256": "214ac678f59fb60bed14f7bf42667fd4735c2eafe96de0ac63267b0a33d7ac54",
+  "parent_complete_pool_sha256": "8c50ab5c24586f94c0df31011bfc3bb9838e1d9c7b14f43a77ab4a7137e94aac",
+  "full_long_description_pool": {
+    "csv": "data\\raw\\candidate_screens\\lendingclub_longdesc_no_purpose_pool.csv",
+    "csv_sha256": "522ac52b7f5f6e8cc3999e319c7a77dda46f056e6dfdbaa34d3a3752c03c2e4e",
+    "trace": "data\\raw\\candidate_screens\\lendingclub_longdesc_no_purpose_pool.selected_rows.csv",
+    "trace_sha256": "090405b74d9e6431815397139dafb04f75d445f62eba14b0c47baac9af573f84",
+    "class_distribution": {
+      "Fully Paid": {
+        "count": 22311,
+        "percentage": 85.61068262921607
+      },
+      "Charged Off": {
+        "count": 3750,
+        "percentage": 14.38931737078393
+      }
+    }
+  },
+  "sample_class_distribution": {
+    "Fully Paid": {
+      "count": 12822,
+      "percentage": 85.48
+    },
+    "Charged Off": {
+      "count": 2178,
+      "percentage": 14.52
+    }
+  },
+  "description_content_words": {
+    "min": 51,
+    "median": 68.0,
+    "max": 756
+  },
+  "earlier_samples_unchanged": true
+}

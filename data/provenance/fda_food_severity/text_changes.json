@@ -1,0 +1,9 @@
+[
+  {
+    "output_row": 2842,
+    "field": "reason_for_recall",
+    "recall_number": "F-1733-2013",
+    "before": "One of our vendors, ARO Pistachio Inc., is issuing an FDA Class 2 Voluntary Recall on certain shipments of pistachios.",
+    "after": "One of our vendors, ARO Pistachio Inc., is issuing an FDA [recall severity] Voluntary Recall on certain shipments of pistachios."
+  }
+]

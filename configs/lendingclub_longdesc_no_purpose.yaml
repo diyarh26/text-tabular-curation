@@ -1,0 +1,9 @@
+# Complete loans with >50 description content words; purpose deliberately omitted.
+name: lendingclub_longdesc_no_purpose
+csv: data/processed/lendingclub_longdesc_no_purpose.csv
+target: charged_off
+task: classification
+
+text_columns: [desc, title, emp_title]
+categorical_columns: [term, emp_length, home_ownership, grade]
+numerical_columns: [loan_amnt, annual_inc, dti, fico_score, int_rate]

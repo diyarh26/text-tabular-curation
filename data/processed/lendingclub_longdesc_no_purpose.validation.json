@@ -1,0 +1,17 @@
+{
+  "parent_rows": 115099,
+  "eligible_pool": 26061,
+  "sample_rows": 15000,
+  "missing_cells": 0,
+  "purpose_absent": true,
+  "title_retained": true,
+  "minimum_content_words": 51,
+  "median_content_words": 68.0,
+  "independent_resampling_matches": true,
+  "unique_loan_ids": true,
+  "screen_completed": {
+    "successful": 18,
+    "failed": 0,
+    "results": "results\\lendingclub_longdesc_no_purpose_screen_tfidf"
+  }
+}

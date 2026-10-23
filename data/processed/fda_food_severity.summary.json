@@ -1,0 +1,139 @@
+{
+  "dataset": "fda_food_severity",
+  "preparation_version": 2,
+  "seed": 42,
+  "preparation_script_sha256": "47ba33b193becc98e861ce450adccb520fe6e0ae65fcd3a03b042736fccd76a8",
+  "source_archive": "C:\\Users\\Diyar\\Downloads\\food-enforcement-0001-of-0001.json.zip",
+  "source_member": "food-enforcement-0001-of-0001.json",
+  "source_archive_sha256": "5f78c14eba4f9f8cc165ad826875e853db0344747f1adcfb53126c7cccf0b349",
+  "counts": {
+    "source_rows": 29505,
+    "excluded_unknown_severity": 2,
+    "eligible_product_rows": 29503,
+    "eligible_events": 7918,
+    "events_with_multiple_products": 2784,
+    "events_with_multiple_severities": 177,
+    "product_rows_removed_by_one_per_event": 21585,
+    "missing_or_invalid_initiation_date_in_event_pool": 1,
+    "events_removed_by_row_cap": 0,
+    "selected_rows": 7918
+  },
+  "csv": "data\\processed\\fda_food_severity.csv",
+  "csv_sha256": "0a8ff4ce3ff48fd2beb16edb9ff197b4f38fc026a87cc82308be220baaee539d",
+  "selection_trace": "data\\raw\\candidate_screens\\fda_food_severity.selected_rows.csv",
+  "selection_trace_sha256": "48b01ae4ad648b6abc8dec97eff1298a081c0e5c86aaa6df94f205962231f028",
+  "text_columns": [
+    "product_description",
+    "reason_for_recall",
+    "distribution_pattern"
+  ],
+  "categorical_columns": [
+    "recalling_firm",
+    "city",
+    "state",
+    "country",
+    "voluntary_mandated",
+    "initial_firm_notification"
+  ],
+  "numerical_columns": [
+    "recall_year",
+    "recall_month"
+  ],
+  "target": "classification",
+  "class_counts": {
+    "Class II": 4065,
+    "Class I": 3182,
+    "Class III": 671
+  },
+  "missing_counts": {
+    "product_description": 0,
+    "reason_for_recall": 0,
+    "distribution_pattern": 0,
+    "recalling_firm": 0,
+    "city": 0,
+    "state": 150,
+    "country": 0,
+    "voluntary_mandated": 6,
+    "initial_firm_notification": 6,
+    "recall_year": 1,
+    "recall_month": 1,
+    "classification": 0
+  },
+  "constant_features": [],
+  "text_profiles": {
+    "product_description": {
+      "nonempty": 7918,
+      "distinct": 7900,
+      "median_words_nonempty": 22.0,
+      "max_words": 672
+    },
+    "reason_for_recall": {
+      "nonempty": 7918,
+      "distinct": 6854,
+      "median_words_nonempty": 12.0,
+      "max_words": 165
+    },
+    "distribution_pattern": {
+      "nonempty": 7918,
+      "distinct": 6274,
+      "median_words_nonempty": 7.0,
+      "max_words": 183
+    }
+  },
+  "duplicate_complete_feature_rows": 0,
+  "duplicate_combined_text_rows": 1,
+  "explicit_class_phrase_occurrences": 0,
+  "class_phrase_audit": "data\\raw\\candidate_screens\\fda_food_severity.class_mentions.json",
+  "rules": {
+    "target": "Original Class I / Class II / Class III, without merging or ordering as a numeric target.",
+    "row_selection": "Exclude unknown severities; uniform random product within each event; then random events up to 15000.",
+    "mixed_severity_events": "Retain the selected product's own label; do not assign a single severity to all products in an event.",
+    "date_features": "Year and month of recall_initiation_date only; missing dates remain missing.",
+    "recall_severity_text": "Mask explicit recall severity; remove the audited pasted review template. Preserve device/laser/clinical classes. Labels are never inspected by the text cleaner.",
+    "text_cleanup": "Remove HTML tags, decode entities, normalize whitespace; retain date prefixes. Additional FDA leakage edits are documented separately.",
+    "no_word_length_filter": true,
+    "no_text_truncation": true,
+    "no_class_balancing": true,
+    "no_performance_based_selection": true
+  },
+  "country_counts": {
+    "United States": 7754,
+    "Canada": 76,
+    "China": 10,
+    "Mexico": 9,
+    "India": 7,
+    "France": 6,
+    "Chile": 6,
+    "Italy": 5,
+    "Korea (the Republic of)": 5,
+    "Belgium": 4,
+    "Taiwan": 4,
+    "Poland": 3,
+    "Netherlands": 3,
+    "Dominican Republic (the)": 3,
+    "Costa Rica": 2,
+    "Australia": 2,
+    "Israel": 2,
+    "Sweden": 2,
+    "Guatemala": 2,
+    "Germany": 1,
+    "El Salvador": 1,
+    "United Kingdom": 1,
+    "Ireland": 1,
+    "Fiji": 1,
+    "Thailand": 1,
+    "Vietnam": 1,
+    "New Zealand": 1,
+    "Spain": 1,
+    "Egypt": 1,
+    "Armenia": 1,
+    "Pakistan": 1,
+    "Serbia": 1
+  },
+  "text_cleanup": {
+    "changed_fields": 1,
+    "changed_rows": 1,
+    "change_log": "data\\raw\\candidate_screens\\fda_food_severity.text_changes.json",
+    "change_log_sha256": "4f3aaf47e21b34d81a3e0b898a0179d45a8a3cd663a329da0191c77f9f3656d7"
+  }
+}
