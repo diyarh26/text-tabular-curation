@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import argparse
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 import hashlib
 from importlib.metadata import distribution, version
 import json
@@ -44,6 +44,11 @@ CANDIDATES = {
         "0a8ff4ce3ff48fd2beb16edb9ff197b4f38fc026a87cc82308be220baaee539d",
         {"Class I": 3_182, "Class II": 4_065, "Class III": 671}, 8, "log_loss"),
 }
+
+
+def experiment_run_name(candidate, micro_batch):
+    """The new Food batch-256 run must never discover an old batch-64 checkpoint."""
+    return candidate.run_name + ("_batch256" if candidate.key == "food" and micro_batch == 256 else "")
 
 
 def fold_dir(output, fold):
@@ -96,6 +101,7 @@ def experiment_settings(candidate, data, config, micro_batch):
     if candidate.key == "device" and micro_batch != 256:
         raise ValueError("Device requires official physical batch 256; discuss any OOM adjustment first")
     from tt_curation import MULTABENCH_COMMIT, REPO_ROOT
+    from multabench.e5.constants import E5_LORA
     direct = distribution("multabench").read_text("direct_url.json")
     if not direct or json.loads(direct).get("vcs_info", {}).get("commit_id") != MULTABENCH_COMMIT:
         raise ValueError("Installed MulTaBench is not verified at the required Git commit")
@@ -118,6 +124,12 @@ def experiment_settings(candidate, data, config, micro_batch):
         config_sha256_lf=text_digest(config), multabench_commit=MULTABENCH_COMMIT,
         source_revision=revision, models=MODELS, conditions=CONDITIONS, folds=list(range(6)),
         expected_evaluations=120, size="10k", metric=candidate.metric, frozen_encoder="e5-small",
+        curation_metric="macro_ovr_auroc" if candidate.task == "multiclass" else "auroc",
+        course_rule=dict(round_scores=False, delta_strictly_greater_than=0, independent_counts=True,
+                         min_learners=3),
+        paper_rule=dict(round_condition_means=3, delta_at_least=0.001, same_learners=True,
+                        min_learners=3, applied_to="six course folds; not the paper's five-seed experiment"),
+        tar_parameters=asdict(E5_LORA),
         tar_max_epochs=50, micro_batch=micro_batch, gradient_accumulation_steps=256//micro_batch,
         effective_batch=256, precision="float32",
         accumulation_loss=ACCUMULATION_LOSS if micro_batch < 256 else "reference_single_batch_mean",
@@ -217,21 +229,46 @@ def score_table(runs, value):
     return table
 
 
+def course_verdict_auroc(runs):
+    """Use stored AUROC for curation without modifying the repository's saved log-loss scores."""
+    from tt_curation.criteria import curation_verdict
+    verdict = curation_verdict(runs.assign(test_score=runs["auroc"]))
+    verdict["curation_score_column"] = "auroc"
+    return verdict
+
+
+def paper_score_table(runs):
+    """Round CONDITION means first; use integer thousandths to test the >= .001 margin exactly."""
+    units = score_table(runs, "auroc")[CONDITIONS].round(3).mul(1000).round().astype("int64")
+    joint_units = units.joint_frozen - units[["structured", "unstructured"]].max(axis=1)
+    tar_units = units.joint_tar - units.joint_frozen
+    table = units / 1000
+    table["Joint delta"] = joint_units / 1000
+    table["TAR delta"] = tar_units / 1000
+    table["joint_signal"] = joint_units.ge(1)
+    table["tar_gain"] = tar_units.ge(1)
+    table["passes_both"] = table.joint_signal & table.tar_gain
+    return table
+
+
 def progress_text(output, candidate, folds):
     """A live, preliminary comparison using only fully audited folds, never partial baselines."""
     runs = collect_runs(output, folds)
-    table = score_table(runs, "test_score")
+    table = score_table(runs, "auroc")
     text = [f"{candidate.title} | completed folds {list(folds)} | {20*len(folds)}/120 evaluations in this table",
             "PRELIMINARY until all six folds complete. No performance-based early exit.",
-            "Official metric: " + ("AUROC (higher is better)" if candidate.metric == "roc_auc" else
-                                  "NEGATIVE LOG LOSS (higher is better; closer to zero)"),
+            "Primary curation metric: " + ("AUROC" if candidate.task == "binary" else "MACRO OvR AUROC")
+            + " (higher is better)",
             table.to_string(float_format=lambda x: f"{x:.6f}")]
     joint, tar = int(table["Joint delta"].gt(0).sum()), int(table["TAR delta"].gt(0).sum())
-    text += [f"Joint Signal: {joint}/5 | TAR Gain: {tar}/5 | need >=3/5 independently on six-fold means.",
+    text += [f"Course rule: Joint Signal: {joint}/5 | TAR Gain: {tar}/5 | need >=3/5 independently; raw mean deltas >0.",
              "Joint delta = joint frozen - better unimodal; TAR delta = joint TAR - joint frozen."]
+    paper = paper_score_table(runs)
+    text += [f"Paper rule on these course folds: {int(paper.passes_both.sum())}/5 learners meet BOTH criteria; "
+             "need >=3/5, each delta >=0.001 after rounding condition means to three decimals."]
     if candidate.metric == "log_loss":
-        text += ["Supplementary macro OvR AUROC (not the official log-loss verdict):",
-                 score_table(runs, "auroc").to_string(float_format=lambda x: f"{x:.6f}")]
+        text += ["Diagnostic repository score: NEGATIVE LOG LOSS (not used for the AUROC curation verdict):",
+                 score_table(runs, "test_score").to_string(float_format=lambda x: f"{x:.6f}")]
     return "\n".join(text) + "\n"
 
 
@@ -244,7 +281,10 @@ def save_fold_report(output, candidate, fold, elapsed):
     stats = next((r for r in rows.tar_finetune if isinstance(r, dict)), {}) if "tar_finetune" in rows else {}
     if stats:
         text += "TAR training metadata: " + json.dumps(stats, default=str) + "\n"
-    score_table(rows, "test_score").to_csv(fold_dir(output, fold) / "scores.csv")
+    score_table(rows, "auroc").to_csv(fold_dir(output, fold) / "scores.csv")
+    paper_score_table(rows).to_csv(fold_dir(output, fold) / "paper_scores_and_deltas.csv")
+    if candidate.metric == "log_loss":
+        score_table(rows, "test_score").to_csv(fold_dir(output, fold) / "diagnostic_negative_log_loss.csv")
     write_json(fold_dir(output, fold) / "timing.json", dict(fold=fold, session_elapsed_seconds=elapsed, tar=stats))
     destination = output / f"fold{fold}_report.txt"
     temporary = destination.with_suffix(".tmp")
@@ -254,7 +294,7 @@ def save_fold_report(output, candidate, fold, elapsed):
 
 
 def make_report(output, candidate):
-    from tt_curation.criteria import curation_verdict, evaluation_report, summary_lines
+    from tt_curation.criteria import evaluation_report, summary_lines
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     problems = audit_runs(output, candidate)
@@ -263,13 +303,30 @@ def make_report(output, candidate):
         evaluation_report(runs).to_csv(output / "evaluation_report.csv", index=False)
     if problems:
         text = f"INCOMPLETE: {len(problems)} audit problems. No final curation verdict.\n" + "\n".join(problems)
-        (output / "curation_verdict.csv").unlink(missing_ok=True)
+        for name in ("curation_verdict.csv", "paper_verdict.csv", "curation_summary.json", "auroc_scores.csv"):
+            (output / name).unlink(missing_ok=True)
     else:
-        verdict = curation_verdict(runs)
+        verdict = course_verdict_auroc(runs)
         verdict.to_csv(output / "curation_verdict.csv", index=False)
-        text = "COMPLETE: all 120 evaluations audited.\n" + "\n".join(summary_lines(verdict, runs))
+        score_table(runs, "auroc").to_csv(output / "auroc_scores.csv")
+        paper = paper_score_table(runs)
+        paper.to_csv(output / "paper_verdict.csv")
+        joint = int(verdict.joint_signal.sum())
+        tar = int(verdict.tar_gain.sum())
+        both = int(paper.passes_both.sum())
+        write_json(output / "curation_summary.json", dict(dataset=candidate.name, folds=list(range(6)),
+            curation_metric="macro_ovr_auroc" if candidate.task == "multiclass" else "auroc",
+            course=dict(joint_learners=joint, tar_learners=tar, accepted=joint >= 3 and tar >= 3,
+                        rule="raw AUROC mean deltas >0; >=3/5 independently"),
+            paper=dict(both_learners=both, accepted=both >= 3,
+                       rule="condition means rounded to 3 decimals; both deltas >=0.001 on the same >=3/5",
+                       evaluation="applied to six course folds; not a five-seed paper reproduction")))
+        text = "COMPLETE: all 120 evaluations audited.\nPrimary curation metric: AUROC.\n"
+        text += "COURSE VERDICT:\n" + "\n".join(summary_lines(verdict, runs))
+        text += f"\nPAPER RULE ON SIX COURSE FOLDS: {'PASSES' if both >= 3 else 'DOES NOT PASS'}; "
+        text += f"{both}/5 learners meet both rounded-score margins >=0.001.\n"
         if candidate.metric == "log_loss":
-            text += "\nOfficial scores/deltas are negative log loss; macro AUROC is supplementary.\n"
+            text += "Repository negative-log-loss scores remain in evaluation_report.csv and raw JSONs as diagnostics.\n"
     (output / "summary.txt").write_text(text + "\n", encoding="utf-8")
     print(text, flush=True)
     return not problems

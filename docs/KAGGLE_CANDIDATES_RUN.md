@@ -1,5 +1,11 @@
 # Full LendingClub and FDA Food evaluations on Kaggle
 
+For the new physical-batch-256 Food and Device experiments, use
+[KAGGLE_FDA_BATCH256.md](KAGGLE_FDA_BATCH256.md). The previously published batch-64
+notebook files remain pinned to their original source revision. Their log-loss
+verdict labels predate the correction below; their saved AUROC values can be
+reanalyzed without retraining.
+
 Import these as **two separate private notebooks**:
 
 - `notebooks/run_lendingclub_full_kaggle.ipynb`.
@@ -51,8 +57,8 @@ The actual pinned MulTaBench wrappers, preprocessing, splits and metric are call
 | Rows | 15,000 | 7,918 |
 | Classes | Fully Paid 12,822; Charged Off 2,178 | I 3,182; II 4,065; III 671 |
 | Text/structured inputs | 3 / 9 | 3 / 8 |
-| Primary metric | AUROC | Log loss, stored as negative log loss |
-| Supplementary metric | Same AUROC | Macro one-vs-rest AUROC |
+| Primary curation metric | AUROC | Macro one-vs-rest AUROC |
+| Diagnostic repository metric | Same AUROC | Log loss, stored as negative log loss |
 
 LendingClub uses complete selected inputs and descriptions with strictly more than 50 content
 words, sampled from the full eligible pool. `purpose` is absent; `title` remains text. Food uses
@@ -73,12 +79,16 @@ Because two workers run independently, fold 1 may print before fold 0.
 Each table includes structured, text, joint frozen, joint TAR, Joint Signal delta and TAR delta.
 It prints the independent learner counts passing each criterion. A second table shows cumulative
 means over **fully completed folds only**; partial next-fold baselines never enter that comparison.
-Food prints both official negative-log-loss and supplementary macro-AUROC tables.
+The updated runtime prints Food's macro-AUROC curation table first, followed by
+the repository's negative-log-loss diagnostic table. Original pinned notebooks
+retain their original reporting order until explicitly regenerated.
 
 These early tables are marked preliminary. They inform the user without triggering a
-performance-based early exit. Final acceptance uses all six folds and unrounded official-score
+performance-based early exit. Course acceptance uses all six folds and unrounded AUROC
 means: Joint Signal >0 in at least 3/5 learners and TAR Gain >0 in at least 3/5 learners, counted
-independently. The qualifying learners may differ. Do not equate AUROC and log-loss delta scales.
+independently. The qualifying learners may differ. The paper rule is separately
+reported with rounded condition means and both deltas >=0.001 on the same >=3/5
+learners. Do not equate AUROC and log-loss delta scales.
 
 ## Output and resumption
 

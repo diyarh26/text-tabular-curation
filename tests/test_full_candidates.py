@@ -13,7 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from build_kaggle_candidate_notebooks import build_notebook
 from kaggle_candidates import emit_fold_reports, export_archives, restore_archive
 from run_full_candidate import (CANDIDATES, CONDITIONS, MODELS, audit_runs, collect_runs,
-                                experiment_settings, fold_dir, initialize_manifest, make_report, official_splits,
+                                course_verdict_auroc, experiment_run_name, experiment_settings, fold_dir,
+                                initialize_manifest, make_report, official_splits, paper_score_table,
                                 save_fold_report, verified_data)
 from tt_curation import MULTABENCH_COMMIT
 from tt_curation.conditions import MODELS as NAMES
@@ -82,10 +83,15 @@ def test_final_verdict_requires_all_six_folds_and_partial_clears_stale_verdict(t
     assert len(report) == 20 and set(report.n_folds) == {6}
     verdict = pd.read_csv(output / "curation_verdict.csv")
     assert verdict.joint_signal.all() and verdict.tar_gain.all()
-    assert verdict.delta_frozen_vs_best_unimodal.iloc[0] == pytest.approx(.03 if key == "lendingclub" else .05)
+    assert verdict.delta_frozen_vs_best_unimodal.iloc[0] == pytest.approx(.03)
+    assert set(verdict.curation_score_column) == {"auroc"}
+    assert (output / "paper_verdict.csv").exists()
+    assert json.loads((output / "curation_summary.json").read_text())["course"]["accepted"]
     (fold_dir(output, 5) / "runs/light_joint_tar_10k_fold5.json").write_text('{"status":')
     assert not make_report(output, candidate)
     assert not (output / "curation_verdict.csv").exists()
+    assert not (output / "paper_verdict.csv").exists()
+    assert not (output / "curation_summary.json").exists()
     assert "INCOMPLETE" in (output / "summary.txt").read_text()
 
 
@@ -109,8 +115,10 @@ def test_live_fold_table_prints_before_workers_finish_and_only_once(tmp_path, ca
     assert all(name in printed for name in NAMES.values())
     assert "PRELIMINARY" in printed and "completed folds [0]" in printed
     assert announced == {0}
-    if key == "food":
-        assert "NEGATIVE LOG LOSS" in printed and "Supplementary macro" in printed
+    if key in ("food", "device"):
+        assert "Primary curation metric: MACRO OvR AUROC" in printed
+        assert "Diagnostic repository score: NEGATIVE LOG LOSS" in printed
+    assert "Paper rule on these course folds:" in printed
     assert (output / "progress_report.txt").exists()
     emit_fold_reports(tmp_path, candidate, announced)
     assert capsys.readouterr().out == ""
@@ -244,6 +252,9 @@ def test_real_prepared_csv_and_all_official_split_sizes(key):
     assert settings["effective_batch"] == 256 and settings["precision"] == "float32"
     assert settings["micro_batch"] == batch and settings["gradient_accumulation_steps"] == 256//batch
     assert settings["accumulation_loss"] == ("reference_single_batch_mean" if key == "device" else "ce_sum_over_effective_batch_items_v1")
+    assert settings["tar_parameters"] == dict(learning_rate=1e-4, epochs=50, lora_rank=16,
+        layers=3, patience=3, weight_decay=.001, batch_size=256)
+    assert settings["curation_metric"] == ("auroc" if key == "lendingclub" else "macro_ovr_auroc")
     assert len(splits) == 6
     for fold, split in splits.items():
         assert split["n_train"] + split["n_test"] == candidate.rows
@@ -293,7 +304,8 @@ def test_supervisor_has_no_ten_hour_cutoff(tmp_path, monkeypatch, capsys):
         def poll(self):
             return None if clock[0] < 22*3600 else 0
 
-    monkeypatch.setattr(sys, "argv", ["kaggle_candidates.py", "--dataset", "food", "--results_root", str(root)])
+    monkeypatch.setattr(sys, "argv", ["kaggle_candidates.py", "--dataset", "food", "--results_root", str(root),
+                                    "--micro_batch", "64"])
     monkeypatch.setattr(supervisor, "audit_runs", lambda *a, **kw: ["missing"])
     monkeypatch.setattr(supervisor, "emit_fold_reports", lambda *a, **kw: None)
     monkeypatch.setattr(supervisor, "progress", lambda *a: (90, []))
@@ -354,3 +366,61 @@ def test_food_physical_batch256_notebook_preserves_original_batch64():
     full = '\n'.join(entry['source'] for entry in batch256['cells'])
     assert 'Checkpoint batch differs' in full
     assert 'No micro-batch fallback is authorized' in full
+    assert 'fda_food_full_batch256' in batch256['cells'][1]['source']
+    assert 'fda_food_full_batch256' not in original['cells'][1]['source']
+    assert experiment_run_name(CANDIDATES['food'], 256) == 'fda_food_full_batch256'
+
+
+@pytest.mark.parametrize("key", ["food", "device"])
+def test_multiclass_verdict_uses_auroc_even_when_log_loss_worsens(tmp_path, key):
+    candidate = CANDIDATES[key]
+    output = make_runs(tmp_path, candidate)
+    originals = {}
+    for path in output.glob("folds/fold*/runs/*.json"):
+        row = json.loads(path.read_text())
+        row['test_score'] = [-.5, -.4, -.45, -.50][CONDITIONS.index(row['condition'])]
+        row['test_error'] = -row['test_score']
+        path.write_text(json.dumps(row))
+        originals[path] = path.read_bytes()
+    assert not audit_runs(output, candidate)
+    assert make_report(output, candidate)
+    import pandas as pd
+    verdict = pd.read_csv(output / 'curation_verdict.csv')
+    assert verdict.joint_signal.all() and verdict.tar_gain.all()
+    assert verdict.delta_frozen_vs_best_unimodal.iloc[0] == pytest.approx(.03)
+    assert verdict.delta_tar_vs_frozen.iloc[0] == pytest.approx(.02)
+    assert all(path.read_bytes() == data for path, data in originals.items())
+
+
+def test_course_and_paper_count_different_learners_separately(tmp_path):
+    output = make_runs(tmp_path, CANDIDATES['food'])
+    # Joint passes A/B/C; TAR passes B/C/D. The course accepts; the paper's same-three rule does not.
+    for path in output.glob('folds/fold*/runs/*.json'):
+        row = json.loads(path.read_text())
+        index = MODELS.index(row['short_name'])
+        joint = .61 if index < 3 else .59
+        tar = joint + (.01 if index in (1, 2, 3) else -.01)
+        row['auroc'] = [.5, .6, joint, tar][CONDITIONS.index(row['condition'])]
+        path.write_text(json.dumps(row))
+    assert make_report(output, CANDIDATES['food'])
+    summary = json.loads((output / 'curation_summary.json').read_text())
+    assert summary['course']['joint_learners'] == summary['course']['tar_learners'] == 3
+    assert summary['course']['accepted'] is True
+    assert summary['paper']['both_learners'] == 2 and summary['paper']['accepted'] is False
+
+
+def test_paper_rounds_condition_means_before_deltas_and_handles_exact_margin(tmp_path):
+    output = make_runs(tmp_path, CANDIDATES['food'], folds=[0])
+    for path in output.glob('folds/fold*/runs/*.json'):
+        row = json.loads(path.read_text())
+        values = [.4, .60049, .60051, .60149] if row['short_name'] == 'cat' else [.4, .600, .601, .602]
+        row['auroc'] = values[CONDITIONS.index(row['condition'])]
+        path.write_text(json.dumps(row))
+    runs = collect_runs(output, [0])
+    paper = paper_score_table(runs)
+    assert paper.loc['CatBoost', 'Joint delta'] == .001
+    assert paper.loc['CatBoost', 'TAR delta'] == 0
+    assert paper.loc['CatBoost', 'joint_signal'] and not paper.loc['CatBoost', 'tar_gain']
+    assert paper.loc['LightGBM', 'passes_both']
+    course = course_verdict_auroc(runs).set_index('model')
+    assert course.loc['CatBoost', 'joint_signal'] and course.loc['CatBoost', 'tar_gain']

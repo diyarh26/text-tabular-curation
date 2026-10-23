@@ -11,7 +11,7 @@ def main():
     parser.add_argument('--source_revision', required=True)
     args = parser.parse_args()
     notebook = build_notebook(CANDIDATES['device'], args.source_revision)
-    path = Path(__file__).resolve().parents[1] / 'notebooks/run_device_full_kaggle.ipynb'
+    path = Path(__file__).resolve().parents[1] / 'notebooks/run_device_full_kaggle_batch256.ipynb'
     path.write_text(json.dumps(notebook, indent=1) + '\n', encoding='utf-8')
     print(path)
 

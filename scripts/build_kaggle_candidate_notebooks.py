@@ -9,7 +9,7 @@ import re
 import textwrap
 
 from kaggle_candidates import restore_archive
-from run_full_candidate import CANDIDATES
+from run_full_candidate import CANDIDATES, experiment_run_name
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -28,16 +28,17 @@ def build_notebook(candidate, source_revision, *, micro_batch=None):
         raise ValueError("Unsupported notebook batch; Device requires physical batch 256")
     if not re.fullmatch(r"[0-9a-f]{40}", source_revision):
         raise ValueError("Use an exact published 40-character source commit")
+    run_name = experiment_run_name(candidate, micro_batch)
     description = ("15,000 complete loans; description content length >50 words; purpose removed; "
                    "title retained. Target 0=Fully Paid (12,822), 1=Charged Off (2,178). Primary metric: AUROC."
                    if candidate.key == "lendingclub" else
                    "7,918 recall events; one product per event; three original severity classes: "
-                   "Class I=3,182, Class II=4,065, Class III=671. Primary metric: log loss, stored as "
-                   "negative log loss. Macro OvR AUROC is reported separately.")
+                   "Class I=3,182, Class II=4,065, Class III=671. Primary curation metric: macro OvR AUROC. "
+                   "Repository negative log loss is retained as a diagnostic.")
     if candidate.key == "device":
         description = ("15,000 fixed recall events; Class I=988, Class II=13,426, Class III=586. "
                        "Three text inputs and eight structured inputs; intentional missing values retained. "
-                       "Primary metric: NEGATIVE LOG LOSS. Macro OvR AUROC is supplementary.")
+                       "Primary curation metric: macro OvR AUROC. Negative log loss is diagnostic.")
     execution = (f"The {candidate.title} execution uses **physical batch 256, accumulation 1, effective batch 256**, "
                  "float32 and the official 50-epoch cap/early stopping. No micro-batch fallback is authorized."
                  if micro_batch == 256 else
@@ -62,13 +63,25 @@ def build_notebook(candidate, source_revision, *, micro_batch=None):
         GPU 0 owns folds 0/2/4; GPU 1 owns folds 1/3/5. Each worker sees one T4; memory is not pooled.
         {execution}
         Frozen conditions use E5-small-v2, not TF-IDF. There is no additional wall-time cutoff or pilot cap.
+        This is the **current official-source, six-fold course evaluation**, pinned to MulTaBench `ff0c9c8`.
+        It calls the official learners/preprocessing/splits through the project's dataset runner.
+        It is not a literal reproduction of the paper's five-seed experiment: the user chose six folds
+        and the official code's **weight decay 0.001** (the paper states 0.01).
+        Other E5 TAR defaults: learning rate 0.0001, LoRA rank 16/alpha 32/dropout 0.1 on the last
+        three layers, 512-token truncation, up to 50 epochs, early-stopping patience 3, float32.
+        Batch 256 must fit **one** GPU; two T4s do not combine their memory. An OOM stops the run
+        with its traceback and saved progress. Training settings never change automatically.
 
         **LIVE RESULTS:** the running cell prints a complete five-learner result table after EACH fold,
         including Joint Signal/TAR deltas and independent passing counts. It also prints cumulative
-        averages over fully completed folds only. No need to wait for the cell or ZIP export to finish.
+        averages over fully completed folds only. AUROC drives the curation verdict; log loss is diagnostic.
+        Course rule: raw mean deltas >0 in >=3/5 learners independently per criterion.
+        Paper rule is shown separately: round condition means to three decimals, then require BOTH
+        deltas >=0.001 in the same >=3/5 learners, applied here to the chosen six course folds.
+        No need to wait for the cell or ZIP export to finish.
         Fold tables are preliminary; all six folds are needed for the final verdict.
 
-        Results/checkpoints are isolated in `/kaggle/working/{candidate.run_name}`. Rolling result and
+        Results/checkpoints are isolated in `/kaggle/working/{run_name}`. Rolling result and
         checkpoint ZIPs refresh every 15 minutes. Kaggle's own session/quota limits still apply;
         preserve the checkpoint ZIP or saved notebook output to resume after interruption.
         Attach the previous saved output via **Add Input**; only this candidate's checkpoint is detected.
@@ -84,7 +97,7 @@ def build_notebook(candidate, source_revision, *, micro_batch=None):
         from pathlib import Path
         DATASET = {candidate.key!r}
         DATASET_NAME = {candidate.name!r}
-        RUN_NAME = {candidate.run_name!r}
+        RUN_NAME = {run_name!r}
         MICRO_BATCH = {micro_batch}  # Effective batch 256; no automatic fallback.
         REPO_REF = {source_revision!r}  # Exact published source; resume uses its saved exact commit.
         RESUME_ZIP = ''  # Auto-detect one matching checkpoint in attached input; set if several exist.

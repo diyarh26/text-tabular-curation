@@ -14,7 +14,7 @@ import time
 import zipfile
 
 from kaggle_linkedin import stop_workers, tail, worker_environment
-from run_full_candidate import CANDIDATES, audit_runs, make_report, progress_text
+from run_full_candidate import CANDIDATES, audit_runs, experiment_run_name, make_report, progress_text
 
 
 def restore_archive(archive_path, root, dataset):
@@ -130,7 +130,7 @@ def main():
     args = parser.parse_args()
     candidate = CANDIDATES[args.dataset]
     root = Path(args.results_root).resolve()
-    if root.name != candidate.run_name:
+    if root.name != experiment_run_name(candidate, args.micro_batch):
         raise ValueError("Use the candidate-specific run root to isolate output/checkpoint archives")
     root.mkdir(parents=True, exist_ok=True)
     worker = Path(__file__).with_name("run_full_candidate.py")

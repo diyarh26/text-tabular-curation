@@ -1,6 +1,7 @@
 # FDA Device full evaluation on Kaggle
 
-Import `notebooks/run_device_full_kaggle.ipynb` into a private Kaggle notebook.
+Import `notebooks/run_device_full_kaggle_batch256.ipynb` into a private Kaggle notebook.
+See [the shared batch-256 instructions](KAGGLE_FDA_BATCH256.md) for both FDA notebooks.
 Select GPU T4 x2, enable Internet, and enable a `GH_TOKEN` secret with Contents
 read access to `diyarh26/text-tabular-curation`. Never paste secrets into cells.
 The notebook also reads optional `HF_TOKEN` and `TABPFN_TOKEN` secrets. If model
@@ -24,11 +25,15 @@ adjustment before preparing a separate protocol variant.
 
 Detailed logs are in `/kaggle/working/fda_device_full_kaggle/logs/gpu0.log` and
 `gpu1.log`. The running cell prints status every minute and full score tables
-with both deltas after each audited fold. Official scores are NEGATIVE LOG LOSS;
-macro one-vs-rest AUROC is shown separately. Single-fold and cumulative partial
+with both deltas after each audited fold. The primary curation metric is macro
+one-vs-rest AUROC. The pinned repository's negative log loss remains diagnostic.
+Single-fold and cumulative partial
 reports are preliminary. Only all 120 exact, metadata-validated evaluations
 produce a final verdict. Joint Signal and TAR Gain use unrounded six-fold means
-and independently require positive deltas in at least three of five learners.
+and independently require positive AUROC deltas in at least three of five learners.
+The paper's rounded-score, delta >=0.001, same-three rule is reported separately,
+applied to these six course folds. The manifest records the official code's weight
+decay 0.001; the paper states 0.01, which the user explicitly chose not to override.
 
 Download `/kaggle/working/fda_device_full_kaggle_results.zip` for analysis and
 keep `fda_device_full_kaggle_checkpoint.zip` for resumption. Rolling snapshots
