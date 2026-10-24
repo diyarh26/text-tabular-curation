@@ -141,7 +141,7 @@ def test_guard_native_training_arguments_loss_and_smoke_isolation(tmp_path, smok
         args = lora.TrainingArguments(output_dir=str(tmp_path / "ignored"), report_to="none",
             num_train_epochs=50, per_device_train_batch_size=256, per_device_eval_batch_size=256,
             learning_rate=.0001, weight_decay=.001, eval_strategy="epoch", save_strategy="epoch",
-            load_best_model_at_end=True)
+            load_best_model_at_end=True, dataloader_num_workers=4)
         dataset = [{"input_ids": torch.zeros(512, dtype=torch.long), "labels": torch.tensor(0)}]
         trainer = lora.Trainer(model=torch.nn.Linear(2, 2), args=args, train_dataset=dataset,
             eval_dataset=dataset, callbacks=[EarlyStoppingCallback(early_stopping_patience=3)])
@@ -164,12 +164,15 @@ def test_guard_native_training_arguments_loss_and_smoke_isolation(tmp_path, smok
 
 
 @pytest.mark.bench
-def test_real_trainer_smoke_stops_after_two_updates_but_validates_and_keeps_50_epoch_schedule(tmp_path):
+def test_real_trainer_smoke_stops_after_two_updates_but_validates_and_keeps_50_epoch_schedule(tmp_path, monkeypatch):
     """Exercise Trainer's callback/epoch/save flow, not just callback methods in isolation."""
     import torch
     from multabench.finetune import lora
     from transformers import EarlyStoppingCallback
     torch.set_num_threads(2)
+    # Only this tiny CPU callback test uses zero workers, allowing its local model/dataset
+    # classes on Windows. Production experiment_settings rejects non-official worker counts.
+    monkeypatch.setitem(vm.TRAINING, "dataloader_num_workers", 0)
 
     class Examples(torch.utils.data.Dataset):
         def __len__(self):

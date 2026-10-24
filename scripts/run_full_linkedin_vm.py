@@ -1,4 +1,4 @@
-"""Fresh LinkedIn VM evaluation: physical batch 256, six folds, live R2 reports.
+"""Fresh LinkedIn GPU evaluation: native physical batch 256, six folds, live R2 reports.
 
 Prepare an EMPTY output with --prepare_only, test CUDA with --gpu_smoke, then run
 without a mode flag. Resume only this experiment by repeating the same command.
@@ -23,14 +23,15 @@ import time
 from colab_tar_compare import write_json
 from run_full_linkedin import CONDITIONS, DATA_SHA256_LF, MODELS, fold_dir, full_tar, text_digest
 
-PROTOCOL = "linkedin_vm_physical256_v1"
+PROTOCOL = "linkedin_native_physical256_v2"
 CONFIG_SHA256_LF = "859863d245ed81b761d27682bf4b1657e5687b8a60f87d22dbe26e87c8cbc2ce"
 TAR = dict(learning_rate=0.0001, epochs=50, lora_rank=16, layers=3,
            patience=3, weight_decay=0.001, batch_size=256)
 TRAINING = dict(per_device_train_batch_size=256, per_device_eval_batch_size=256,
                 gradient_accumulation_steps=1, num_train_epochs=50, learning_rate=0.0001,
                 weight_decay=0.001, fp16=False, bf16=False, max_steps=-1,
-                load_best_model_at_end=True, restore_callback_states_from_checkpoint=True)
+                load_best_model_at_end=True, restore_callback_states_from_checkpoint=True,
+                dataloader_num_workers=4)
 PACKAGES = ["multabench", "torch", "transformers", "accelerate", "peft", "catboost",
             "lightgbm", "pytabkit", "tabpfn", "scikit-learn", "pandas", "numpy", "skrub"]
 
@@ -65,22 +66,39 @@ def official_splits(data):
     return result
 
 
+def source_revision():
+    from tt_curation import REPO_ROOT
+    from tt_curation.runner import _git_commit
+    revision = _git_commit()
+    revision_file = REPO_ROOT / "SOURCE_REVISION"
+    if revision_file.exists():
+        recorded = revision_file.read_text().strip()
+        if len(recorded) != 40 or any(c not in "0123456789abcdef" for c in recorded):
+            raise ValueError("Invalid exact source revision in downloaded repository")
+        if revision is not None and revision != recorded:
+            raise ValueError("Git checkout and downloaded source revision disagree")
+        revision = recorded
+    if not revision:
+        raise ValueError("Cannot establish exact source revision")
+    return revision
+
+
 def experiment_settings(data, config):
     from tt_curation import MULTABENCH_COMMIT, REPO_ROOT
     from tt_curation.conditions import Condition, MODELS as names
-    from tt_curation.runner import _git_commit
     from multabench.e5.constants import E5_LORA
+    from multabench.finetune.train_args import DATALOADER_WORKERS
     direct = distribution("multabench").read_text("direct_url.json")
     if not direct or json.loads(direct).get("vcs_info", {}).get("commit_id") != MULTABENCH_COMMIT:
         raise ValueError("Installed MulTaBench must be installed from the exact pinned Git commit")
-    if asdict(E5_LORA) != TAR or set(MODELS) != set(names) or CONDITIONS != [str(c) for c in Condition]:
+    if (asdict(E5_LORA) != TAR or TRAINING["dataloader_num_workers"] != DATALOADER_WORKERS
+            or set(MODELS) != set(names) or CONDITIONS != [str(c) for c in Condition]):
         raise ValueError("Official TAR defaults or evaluation grid differ from the approved protocol")
-    revision = _git_commit()
-    if not revision:
-        raise ValueError("Run from a Git checkout so source provenance can be recorded")
+    revision = source_revision()
     paths = [*sorted((REPO_ROOT / "src/tt_curation").glob("*.py")),
              *(REPO_ROOT / "scripts" / p for p in
-               ("run_full_linkedin_vm.py", "run_full_linkedin.py", "colab_tar_compare.py", "run_linkedin_vm256.sh")),
+               ("run_full_linkedin_vm.py", "run_full_linkedin.py", "colab_tar_compare.py", "run_linkedin_vm256.sh",
+                "kaggle_linkedin_batch256.py", "kaggle_linkedin.py")),
              REPO_ROOT / "requirements/constraints.txt", REPO_ROOT / "pyproject.toml"]
     return dict(protocol=PROTOCOL, dataset="linkedin_salary", task="regression", rows=15_000,
         csv_sha256_lf=DATA_SHA256_LF, config_sha256_lf=text_digest(config),
@@ -173,7 +191,7 @@ def collect_runs(output, folds):
                          for *_, p in expected_paths(output, folds)])
 
 
-def write_reports(output, *, just_finished=None):
+def write_reports(output, *, just_finished=None, fold_only=False):
     """Use fully audited folds only; always compute the course verdict from R2."""
     from tt_curation.criteria import curation_verdict, evaluation_report
     output = Path(output)
@@ -212,6 +230,8 @@ def write_reports(output, *, just_finished=None):
         if timing.exists():
             print("Fold timing/memory: " + timing.read_text(encoding="utf-8"), flush=True)
         runs[runs.fold == just_finished][["model", "condition", "runtime_s"]].to_csv(folder / "run_times.csv", index=False)
+        if fold_only:
+            return True  # Parallel fold workers never compete to write the cumulative/final files.
     verdict, text = table(runs)
     evaluation_report(runs).to_csv(output / "evaluation_report.csv", index=False)
     verdict.to_csv(output / "r2_cumulative_preliminary.csv", index=False)
@@ -234,6 +254,9 @@ def guarded_tar(cache, *, smoke_steps=None):
     from multabench.finetune import lora
     from transformers import TrainerCallback
     with full_tar(cache, micro_batch=256):
+        # persistent_tar supports small-memory notebooks with zero workers. This protocol
+        # deliberately restores the official Linux source default of FOUR workers.
+        lora.DATALOADER_WORKERS = TRAINING["dataloader_num_workers"]
         original = lora.Trainer
 
         class SmokeStop(TrainerCallback):
@@ -272,10 +295,13 @@ def fail_fast(destination):
     """Persist the runner's failure JSON and traceback, then stop before another evaluation starts."""
     from tt_curation import runner
     original = runner.run_one
+    manifest = Path(destination).parent.parent / "manifest.json"
 
     def checked(*args, **kwargs):
         row = original(*args, **kwargs)
         row["protocol"] = PROTOCOL
+        if row.get("git") is None and manifest.exists():
+            row["git"] = json.loads(manifest.read_text(encoding="utf-8"))["source_revision"]
         if row["condition"] == "joint_tar":
             row.update(tar_parameters=TAR, training_arguments=TRAINING)
         if row["status"] != "ok":
@@ -376,12 +402,20 @@ def main():
     os.environ["MPLBACKEND"] = "Agg"
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results_root", default="results/linkedin_vm_batch256")
+    parser.add_argument("--folds", default="0,1,2,3,4,5")
+    parser.add_argument("--fold_worker", action="store_true", help="Only save per-fold reports; supervisor writes cumulative output")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--prepare_only", action="store_true")
     mode.add_argument("--gpu_smoke", action="store_true")
     mode.add_argument("--report_only", action="store_true")
     mode.add_argument("--audit_only", action="store_true")
     args = parser.parse_args()
+    try:
+        folds = [int(f) for f in args.folds.split(",")]
+    except ValueError:
+        parser.error("folds must be a comma-separated selection of 0..5")
+    if not folds or len(folds) != len(set(folds)) or set(folds) - set(range(6)):
+        parser.error("folds must be distinct members of 0..5")
     from dotenv import load_dotenv
     from tt_curation import REPO_ROOT
     load_dotenv(REPO_ROOT / ".env")
@@ -417,7 +451,7 @@ def main():
     import torch
     from tt_curation.conditions import Condition
     from tt_curation.runner import run_all
-    for fold in range(6):
+    for fold in folds:
         if not audit_runs(output, [fold]):
             print(f"Fold {fold}: already complete in THIS experiment; audited and preserved.", flush=True)
             continue
@@ -442,7 +476,9 @@ def main():
                     sampled_device_peak_mib=monitor.peak, sampling_error=monitor.error,
                     note="This session attempt; a resumed attempt can reuse saved work."))
                 write_json(timing_path, attempts)
-        write_reports(output, just_finished=fold)
+        write_reports(output, just_finished=fold, fold_only=args.fold_worker)
+    if args.fold_worker:
+        return
     if not write_reports(output):
         raise RuntimeError("Full evaluation did not pass the 120-record audit")
 
