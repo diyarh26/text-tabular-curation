@@ -33,7 +33,8 @@ TRAINING = dict(per_device_train_batch_size=256, per_device_eval_batch_size=256,
                 load_best_model_at_end=True, restore_callback_states_from_checkpoint=True,
                 dataloader_num_workers=4)
 PACKAGES = ["multabench", "torch", "transformers", "accelerate", "peft", "catboost",
-            "lightgbm", "pytabkit", "tabpfn", "scikit-learn", "pandas", "numpy", "skrub"]
+            "lightgbm", "pytabkit", "tabpfn", "scikit-learn", "pandas", "numpy", "skrub",
+            "autogluon-features", "autogluon-core", "autogluon-common"]
 
 
 def verified_data():

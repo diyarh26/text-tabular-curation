@@ -36,6 +36,7 @@ def test_notebook_compiles_and_pins_source_native_training_and_two_gpu_smokes():
     assert 'range(2)' in code and "'--gpu_smoke'" in code
     assert 'kaggle_linkedin_batch256.py' in code
     assert 'run_full_linkedin_vm.py' in code
+    assert "'autogluon-features==1.5.0'" in code
     assert 'migrate' not in code and '--micro_batch' not in code
     assert 'time_budget' not in code and 'max_runtime' not in code
     assert 'EXPECTED_SOURCE+\'\\n\'' in code

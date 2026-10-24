@@ -174,7 +174,7 @@ def build_notebook(revision):
         PYTHON=SCRATCH/'venv/bin/python'
         if not PYTHON.exists(): run_checked([uv,'venv','--python','3.11',PYTHON.parent.parent])
         run_checked([uv,'pip','install','--python',PYTHON,'-c',PROJECT/'requirements/constraints.txt',
-                     '-e',str(PROJECT)+'[bench,dev]'])
+                     '-e',str(PROJECT)+'[bench,dev]','autogluon-features==1.5.0'])
         run_checked([uv,'pip','check','--python',PYTHON])
         run_checked([PYTHON,'-m','pytest','-q','tests/test_linkedin_vm.py','tests/test_full_linkedin.py',
                      'tests/test_linkedin_batch256_kaggle.py'],env={**ENV,'CUDA_VISIBLE_DEVICES':''})
