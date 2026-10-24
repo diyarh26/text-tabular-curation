@@ -1,5 +1,36 @@
 # LinkedIn full evaluation on Kaggle T4 x2
 
+## Resume the corrected 115-result checkpoint (October 24)
+
+Use `notebooks/resume_linkedin_remaining_kaggle.ipynb` with the downloaded
+`linkedin_full_checkpoint.zip`. This archive already has the corrected loss
+normalization and must **not** undergo the historical migration described below.
+
+Upload the ZIP as a **private Kaggle Dataset**, attach it with **Add Input**, and
+select GPU T4 x2, Internet On, and enabled GH_TOKEN (plus optional TABPFN_TOKEN /
+HF_TOKEN if needed). The notebook accepts a retained ZIP or Kaggle's unpacked
+dataset contents. Use Save Version > Save & Run All. If the original run remains
+active, let it finish instead of launching another copy.
+
+Initial validation must retain 115 successful evaluations and identify fold 5's
+epoch-30 checkpoint (step 2130). The exact original source revision remains
+`b75bdbb835d2ec0da13e076fce5249933879127b`, micro-batch remains 16, accumulation 16,
+effective batch 256, float32, cap 50 and original early stopping. A later compatible
+checkpoint may contain more progress. Missing/incompatible input stops execution;
+there is no fallback that starts a fresh full experiment.
+
+Only unfinished work runs. One worker finds all its folds complete and exits;
+the other skips completed folds and resumes fold 5. One idle GPU is expected.
+The previous 20-case toy smoke is not repeated. At the end, the notebook prints
+the correct unrounded **R²** comparison and independent criterion counts, writes
+`summary_r2.txt`, `curation_verdict_r2.csv`, and `curation_summary_r2.json`, then
+re-exports both ZIPs including those reports. Original run JSONs are preserved.
+
+The downloaded archive's 115 result records and fold-5 model, optimizer, scheduler,
+RNG and Trainer-state files were checked locally, including ZIP CRC validation.
+Notebook guards/restoration/reporting have CPU tests. The real GPU resume occurs
+on Kaggle; its strict manifest check retains the original pinned GPU environment.
+
 ## Corrected restart after the October 23 overnight run
 
 Use the newly generated notebook from this revision, not a copy downloaded before
