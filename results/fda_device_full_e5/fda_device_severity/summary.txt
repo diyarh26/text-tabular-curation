@@ -1,0 +1,11 @@
+COMPLETE: all 120 evaluations passed the audit.
+Decision uses unrounded fold-mean test scores, strict improvement (> 0), and independent criterion counts.
+learner           struct       text     frozen        TAR    joint delta     TAR delta  joint  TAR-gain  folds
+CatBoost       -0.349065  -0.317661  -0.301643  -0.303325    0.016017534  -0.001682125    ✅     ❌     6
+LightGBM       -0.390914  -0.362324  -0.386763  -0.407643   -0.024439004  -0.020880519    ❌     ❌     6
+TabM           -0.456640  -0.314359  -0.478174  -0.469712   -0.163814489   0.008461188    ❌     ✅     6
+TabPFN-v2      -0.356041  -0.319250  -0.314584  -0.306994    0.004665844   0.007590795    ✅     ✅     6
+TabPFN-v2p5    -0.352721  -0.303243  -0.296148  -0.300373    0.007094339  -0.004224410    ✅     ❌     6
+Joint Signal: 3/5 learners; needs 3 of 5.
+TAR Gain: 2/5 learners; needs 3 of 5.
+Dataset does NOT pass: each criterion must pass independently; the qualifying learners may differ.

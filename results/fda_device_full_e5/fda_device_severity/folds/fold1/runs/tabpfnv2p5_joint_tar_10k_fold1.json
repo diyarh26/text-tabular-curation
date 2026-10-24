@@ -1,0 +1,29 @@
+{
+  "dataset": "fda_device_severity",
+  "model": "TabPFN-v2p5",
+  "short_name": "tabpfnv2p5",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 1,
+  "size": "10k",
+  "task": "multiclass",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 11,
+  "timestamp": "2026-10-24 02:14:51",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": "481a40c87dcf6bbbd2fcfe27d061f579544f8b6d",
+  "metric": "log_loss",
+  "test_score": -0.29344890194805495,
+  "test_error": 0.29344890194805495,
+  "auroc": 0.8562152943611113,
+  "status": "ok",
+  "runtime_s": 99.35542678833008,
+  "tar_finetune": {
+    "best_val_loss": 0.3522930443286896,
+    "epochs": 12.0,
+    "finetune_seconds": 5824.9227550029755,
+    "rows": 10000
+  }
+}
