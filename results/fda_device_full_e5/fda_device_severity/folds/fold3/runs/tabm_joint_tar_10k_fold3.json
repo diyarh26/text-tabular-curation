@@ -1,0 +1,29 @@
+{
+  "dataset": "fda_device_severity",
+  "model": "TabM",
+  "short_name": "tabm",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 3,
+  "size": "10k",
+  "task": "multiclass",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 11,
+  "timestamp": "2026-10-24 06:00:32",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": "481a40c87dcf6bbbd2fcfe27d061f579544f8b6d",
+  "metric": "log_loss",
+  "test_score": -0.6367549236005396,
+  "test_error": 0.6367549236005396,
+  "auroc": 0.7891735480368833,
+  "status": "ok",
+  "runtime_s": 303.57534193992615,
+  "tar_finetune": {
+    "best_val_loss": 0.35192349553108215,
+    "epochs": 15.0,
+    "finetune_seconds": 7237.980008125305,
+    "rows": 10000
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "preliminary": true,
+  "fold": 3,
+  "tar": {
+    "best_val_loss": 0.35192349553108215,
+    "epochs": 15.0,
+    "finetune_seconds": 7237.980008125305,
+    "rows": 10000
+  },
+  "wall_seconds": 8704.889424085617,
+  "sampled_peak_gpu_mib": 15009,
+  "sampling_interval_s": 2,
+  "estimated_remaining_seconds": 17409.778848171234
+}
