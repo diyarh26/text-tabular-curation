@@ -1,7 +1,9 @@
 """Protect original result provenance and reject premature submission packages."""
 import hashlib
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
 import zipfile
 
@@ -11,7 +13,7 @@ import pytest
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import report_linkedin as reporting
-from build_submission import build
+from build_submission import build, build_code
 
 
 @pytest.fixture(autouse=True)
@@ -20,7 +22,7 @@ def synthetic_original_index(tmp_path,monkeypatch):
 
 
 def fixture(output,complete=False):
-    manifest=json.loads((ROOT/"tests/fixtures/vm256_manifest.json").read_text())
+    manifest=json.loads((ROOT/"reproduction/original_vm256/experiment_manifest.json").read_text())
     output.mkdir()
     (output/"manifest.json").write_text(json.dumps(manifest))
     for fold in range(6):
@@ -94,8 +96,38 @@ def test_complete_package_preserves_layout_hashes_and_excludes_archives(tmp_path
         names=set(z.namelist())
         assert 'data/processed/linkedin_salary.csv' in names and 'paper/report.pdf' in names
         assert 'scripts/setup_native_multabench.py' in names and 'integration/multabench/linkedin_salary.patch' in names
-        assert 'reproduction/original_vm256/source_manifest.json' in names
-        assert not any(p.startswith('archive/') or '/checkpoints/' in p or p.endswith('.env') for p in names)
+        assert 'reproduction/original_vm256/experiment_manifest.json' in names
+        assert 'scripts/run_full_linkedin_vm.py' in names
+        assert not any(p.startswith(('archive/','tests/','notebooks/','reproduction/original_vm256/code/'))
+                       or '/checkpoints/' in p or p.endswith('.env')
+                       or 'resume' in p or p.startswith('scripts/build_') for p in names)
         manifest=json.loads(z.read('package_manifest.json'))
         assert manifest['complete_evaluations']==120
         assert all(hashlib.sha256(z.read(name)).hexdigest()==sha for name,sha in manifest['files'].items())
+        assert all(hashlib.sha256(z.read(name)).hexdigest()==sha for name,sha in manifest['original_source_sha256'].items())
+
+
+def test_code_bundle_runs_its_original_data_validation_without_repository_helpers(tmp_path):
+    destination=build_code(tmp_path/'code.zip')
+    extracted=tmp_path/'standalone'
+    with zipfile.ZipFile(destination) as z:
+        assert not any(p.startswith(('tests/','notebooks/','results/','paper/','archive/')) for p in z.namelist())
+        assert not any('resume' in p or 'make_toy' in p for p in z.namelist())
+        assert json.loads(z.read('package_manifest.json'))['final_submission'] is False
+        z.extractall(extracted)
+    env={**os.environ,'PYTHONPATH':str(extracted/'src')}
+    command="""import sys
+sys.path.insert(0, 'scripts')
+import run_full_linkedin_vm as original
+import report_linkedin as reporting
+data, config = original.verified_data()
+assert len(data.y) == 15000 and len(data.x.columns) == 14
+assert reporting.ROOT == config.parents[1]
+assert (reporting.ROOT/'reproduction/original_vm256/experiment_manifest.json').is_file()
+assert (reporting.ROOT/'reproduction/original_vm256/original_run_sha256.json').is_file()
+print('Standalone original data validation passed')
+"""
+    result=subprocess.run([sys.executable,'-c',command],cwd=extracted,env=env,
+                          capture_output=True,text=True,check=False)
+    assert result.returncode==0, result.stdout+result.stderr
+    assert 'Standalone original data validation passed' in result.stdout

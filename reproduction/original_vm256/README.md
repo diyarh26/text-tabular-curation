@@ -10,6 +10,10 @@ plus the original dataset preparation/configuration, setup, README and license.
 reporting tool checks this immutable index before accepting additional records;
 regenerating a report cannot hide an overwrite of an original result.
 
+`experiment_manifest.json` is the unchanged reference experiment manifest,
+previously kept as a test fixture. Reporting and native split verification now
+read it here, so delivered code does not depend on the test suite.
+
 The exact CSV is kept once at `data/processed/linkedin_salary.csv` in the main
 repository. It is not resampled or duplicated here. The raw dataset remains local.
 This snapshot is evidence, rather than a second independently installed package.

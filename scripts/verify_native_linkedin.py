@@ -25,7 +25,7 @@ def verify(data_dir):
     from tt_curation.spec import load_spec
 
     original = load_dataset(load_spec(ROOT / "configs/linkedin_salary.yaml"))
-    manifest = json.loads((ROOT / "tests/fixtures/vm256_manifest.json").read_text(encoding="utf-8"))
+    manifest = json.loads((ROOT / "reproduction/original_vm256/experiment_manifest.json").read_text(encoding="utf-8"))
     views = {FULL: original.x, STRUCTURED: original.x.drop(columns=original.text_columns),
              TEXT: original.x[original.text_columns]}
     registered = {info.id for info in list_datasets(tier="candidate")}

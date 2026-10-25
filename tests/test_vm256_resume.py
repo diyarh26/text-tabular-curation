@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def fixture(root):
     """Use real manifest provenance with synthetic scores and inert checkpoint files."""
-    manifest_path = ROOT / "tests/fixtures/vm256_manifest.json"
+    manifest_path = ROOT / "reproduction/original_vm256/experiment_manifest.json"
     manifest = json.loads(manifest_path.read_text())
     output = root / "linkedin_salary"
     output.mkdir(parents=True)

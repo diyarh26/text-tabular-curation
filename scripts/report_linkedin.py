@@ -22,7 +22,7 @@ ORIGINAL_RESULTS_INDEX = ROOT / "reproduction/original_vm256/original_run_sha256
 
 def audit(output):
     output = Path(output)
-    reference = json.loads((ROOT / "tests/fixtures/vm256_manifest.json").read_text(encoding="utf-8"))
+    reference = json.loads((ROOT / "reproduction/original_vm256/experiment_manifest.json").read_text(encoding="utf-8"))
     manifest_path = output / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest != reference:

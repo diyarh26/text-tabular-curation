@@ -113,7 +113,13 @@ pytest -m "not bench"
 pytest tests/test_native_linkedin.py
 ```
 
-The submission builder requires all 120 matching evaluations and a final paper PDF:
+The minimal code/data bundle includes only preparation, actual batch-256 evaluation, result calculation, and their required dependencies/native integration. It excludes notebooks, tests, transfer tools and archived attempts; originals remain in this repository:
+
+```bash
+python scripts/build_submission.py --code-only
+```
+
+The complete submission additionally requires all 120 matching evaluations and a final paper PDF:
 
 ```bash
 python scripts/build_submission.py --paper paper/report.pdf
