@@ -1,10 +1,10 @@
 """Protect original result provenance and reject premature submission packages."""
 import hashlib
 import json
-import os
 from pathlib import Path
 import subprocess
 import sys
+import runpy
 import zipfile
 
 import pandas as pd
@@ -93,41 +93,64 @@ def test_complete_package_preserves_layout_hashes_and_excludes_archives(tmp_path
     paper=tmp_path/'unit-test.pdf';paper.write_bytes(b'%PDF-1.4\nunit-test stub, not a deliverable')
     destination=build(output,paper,tmp_path/'package.zip')
     with zipfile.ZipFile(destination) as z:
-        names=set(z.namelist())
-        assert 'data/processed/linkedin_salary.csv' in names and 'paper/report.pdf' in names
-        assert 'scripts/setup_native_multabench.py' in names and 'integration/multabench/linkedin_salary.patch' in names
-        assert 'reproduction/original_vm256/experiment_manifest.json' in names
-        assert 'scripts/run_full_linkedin_vm.py' in names
-        assert not any(p.startswith(('archive/','tests/','notebooks/','reproduction/original_vm256/code/'))
-                       or '/checkpoints/' in p or p.endswith('.env')
-                       or 'resume' in p or p.startswith('scripts/build_') for p in names)
-        manifest=json.loads(z.read('package_manifest.json'))
-        assert manifest['complete_evaluations']==120
-        assert all(hashlib.sha256(z.read(name)).hexdigest()==sha for name,sha in manifest['files'].items())
-        assert all(hashlib.sha256(z.read(name)).hexdigest()==sha for name,sha in manifest['original_source_sha256'].items())
+        assert set(z.namelist())=={'track2_submission/'+name for name in (
+            'data/dataset.csv','src/preprocess.py','src/evaluate.py',
+            'evaluation_results.csv','final_report.pdf','README.md')}
+        assert z.read('track2_submission/data/dataset.csv')==(ROOT/'data/processed/linkedin_salary.csv').read_bytes()
+        assert z.read('track2_submission/evaluation_results.csv')==(output/'evaluation_report.csv').read_bytes()
+        assert z.read('track2_submission/final_report.pdf')==paper.read_bytes()
+        assert 'All 120 original' in z.read('track2_submission/README.md').decode()
+        assert '95/120' not in z.read('track2_submission/README.md').decode()
 
 
-def test_code_bundle_runs_its_original_data_validation_without_repository_helpers(tmp_path):
+def test_two_file_bundle_imports_without_repository_helpers(tmp_path):
     destination=build_code(tmp_path/'code.zip')
     extracted=tmp_path/'standalone'
     with zipfile.ZipFile(destination) as z:
-        assert not any(p.startswith(('tests/','notebooks/','results/','paper/','archive/')) for p in z.namelist())
-        assert not any('resume' in p or 'make_toy' in p for p in z.namelist())
-        assert json.loads(z.read('package_manifest.json'))['final_submission'] is False
+        assert set(z.namelist())=={'track2_submission/'+name for name in (
+            'data/dataset.csv','src/preprocess.py','src/evaluate.py','evaluation_results.csv','README.md')}
         z.extractall(extracted)
-    env={**os.environ,'PYTHONPATH':str(extracted/'src')}
-    command="""import sys
-sys.path.insert(0, 'scripts')
-import run_full_linkedin_vm as original
-import report_linkedin as reporting
-data, config = original.verified_data()
-assert len(data.y) == 15000 and len(data.x.columns) == 14
-assert reporting.ROOT == config.parents[1]
-assert (reporting.ROOT/'reproduction/original_vm256/experiment_manifest.json').is_file()
-assert (reporting.ROOT/'reproduction/original_vm256/original_run_sha256.json').is_file()
-print('Standalone original data validation passed')
+    command="""import hashlib, runpy, sys
+from pathlib import Path
+root=Path('track2_submission').resolve()
+preprocess=runpy.run_path(str(root/'src/preprocess.py'))
+evaluation=runpy.run_path(str(root/'src/evaluate.py'))
+assert preprocess['OUT']==root/'data/dataset.csv'
+assert '[amount]' in preprocess['mask_money']('Salary: $75,000 per year')
+assert evaluation['ROOT']==root
+assert evaluation['TAR']['batch_size']==256
+assert hashlib.sha256((root/'data/dataset.csv').read_bytes().replace(b'\\r\\n',b'\\n')).hexdigest()==evaluation['CSV_SHA256_LF']
+assert 'tt_curation' not in sys.modules
+print('Standalone two-file imports passed')
 """
-    result=subprocess.run([sys.executable,'-c',command],cwd=extracted,env=env,
+    result=subprocess.run([sys.executable,'-I','-c',command],cwd=extracted,
                           capture_output=True,text=True,check=False)
     assert result.returncode==0, result.stdout+result.stderr
-    assert 'Standalone original data validation passed' in result.stdout
+    assert 'Standalone two-file imports passed' in result.stdout
+
+
+def test_standalone_native_report_accepts_official_short_git_hash(tmp_path):
+    pytest.importorskip('multabench')
+    import numpy as np
+    from multabench.benchmark.splits import get_split
+    code=runpy.run_path(str(ROOT/'track2_submission/src/evaluate.py'))
+    csv=ROOT/'track2_submission/data/dataset.csv'
+    y=pd.read_csv(csv,usecols=['log_salary']).log_salary.to_numpy()
+    output=tmp_path/'synthetic_native_results'
+    (output/'runs').mkdir(parents=True)
+    for fold in range(6):
+        variance=np.var(y[get_split(y,False,fold,size='10k')[1]],ddof=0)
+        for model in code['MODELS'].values():
+            for condition,score in {'structured':.4,'unstructured':.6,'joint_frozen':.65,'joint_tar':.7}.items():
+                dataset={'structured':code['STRUCTURED'],'unstructured':code['TEXT']}.get(condition,code['FULL'])
+                row=dict(status='ok',fold=fold,n_train=10000,n_test=5000,metric='root_mean_squared_error',
+                    size='10k',model=model,dataset=dataset,git=code['OFFICIAL_COMMIT'][:7],
+                    text_encoder='e5-small-tar' if condition=='joint_tar' else 'e5-small',
+                    test_error=float(np.sqrt((1-score)*variance)))
+                (output/'runs'/f'{fold}_{model}_{condition}.json').write_text(json.dumps(row))
+    destination=tmp_path/'table.csv'
+    assert code['report_results'](output,csv,destination)
+    table=pd.read_csv(destination)
+    assert len(table)==20 and set(table.n_folds)=={6} and set(table.status)=={'final'}
+    assert np.allclose(table[table.condition=='joint_tar'].r2_mean,.7)
+    assert np.allclose(table[table.condition=='joint_frozen'].r2_mean,.65)

@@ -1,4 +1,8 @@
-# LinkedIn salary: dataset creation and evaluation code
+# Historical multi-file packaging notes
+
+Superseded by `track2_submission/README.md`. The current delivery has exactly
+two Python files, `src/preprocess.py` and `src/evaluate.py`. These earlier notes
+are retained in the repository only; they are not included in the delivery ZIP.
 
 This bundle contains the curated 15,000-row CSV, the code used to create and
 evaluate it, and its native MulTaBench integration. It excludes notebooks,

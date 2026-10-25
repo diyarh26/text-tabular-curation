@@ -113,7 +113,9 @@ pytest -m "not bench"
 pytest tests/test_native_linkedin.py
 ```
 
-The minimal code/data bundle includes only preparation, actual batch-256 evaluation, result calculation, and their required dependencies/native integration. It excludes notebooks, tests, transfer tools and archived attempts; originals remain in this repository:
+The requested delivery is [track2_submission/](track2_submission/): exactly two Python files, the dataset, results CSV and README, with the separately written final paper to be added. `src/preprocess.py` creates/cleans the dataset; `src/evaluate.py` includes native registration, runs official MulTaBench with batch 256, and prints/saves results. It imports no other project helpers. All original source remains preserved elsewhere in this repository.
+
+Build a review ZIP of that exact layout (results are currently preliminary):
 
 ```bash
 python scripts/build_submission.py --code-only

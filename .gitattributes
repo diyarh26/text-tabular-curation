@@ -3,5 +3,7 @@
 /reproduction/original_vm256/code/** text eol=lf
 /results/linkedin_batch256/** text eol=lf
 /integration/multabench/*.patch -whitespace
+# The standalone evaluator embeds that unified patch, including required context markers.
+/track2_submission/src/evaluate.py -whitespace
 # Preserve historical artifacts rather than rewriting their existing whitespace.
 /archive/** -whitespace
