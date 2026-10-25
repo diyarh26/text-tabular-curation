@@ -1,0 +1,129 @@
+diff --git a/multabench/benchmark/load.py b/multabench/benchmark/load.py
+index 5181b1a..81eb252 100644
+--- a/multabench/benchmark/load.py
++++ b/multabench/benchmark/load.py
+@@ -22,6 +22,7 @@ from multabench.benchmark.splits import DEFAULT_SIZE, SPLITS, Size, get_split
+ from multabench.datasets.all_datasets import Modality, MulTaBenchDatasetID, dataset_modality
+ from multabench.datasets.hub import DATA_PARQUET, IMAGES_DIR, extract_images, hf_repo_id, local_repo_dir
+ from multabench.datasets.revisions import revision
++from multabench.datasets.linkedin_salary import DATASETS as LINKEDIN_DATASETS, dataset_dir as linkedin_dir
+ from multabench.datasets.objects import DatasetSplit, MultimodalDataset, SupervisedTask
+ from multabench.e5.constants import DEFAULT_TEXT_ENCODER
+ from multabench.embeddings.hub import (CACHED_ENCODERS, EMBEDDINGS_NPZ, META_JSON, CachedEmbeddings, CachedEncoder,
+@@ -49,6 +50,8 @@ def _missing_as_nan(df: pd.DataFrame) -> pd.DataFrame:
+ def download_dataset(dataset_id: MulTaBenchDatasetID, data_dir: Optional[str] = None,
+                      with_image_files: bool = True) -> str:
+     """The dataset's folder, downloaded at its pinned revision or under data_dir; without image files if asked."""
++    if dataset_id in LINKEDIN_DATASETS:
++        return linkedin_dir(dataset_id, data_dir)
+     if not with_image_files:
+         return _download_table(dataset_id, data_dir=data_dir)
+     repo_id = hf_repo_id(dataset_id)
+@@ -166,6 +169,8 @@ def _load_columns(dataset_id: MulTaBenchDatasetID, columns: List[str], data_dir:
+ 
+ 
+ def _download_table(dataset_id: MulTaBenchDatasetID, data_dir: Optional[str] = None) -> str:
++    if dataset_id in LINKEDIN_DATASETS:
++        return linkedin_dir(dataset_id, data_dir)
+     repo_id = hf_repo_id(dataset_id)
+     if data_dir is not None:
+         return local_repo_dir(data_dir, repo_id, [DATA_PARQUET, METADATA_JSON])
+diff --git a/multabench/datasets/all_datasets.py b/multabench/datasets/all_datasets.py
+index bacd076..9a61888 100644
+--- a/multabench/datasets/all_datasets.py
++++ b/multabench/datasets/all_datasets.py
+@@ -47,6 +47,11 @@ class MulTaBenchDatasetID(Enum):
+     REG_TEXT_VIDEO_GAMES_SALES = "core-text-reg-video-games-sales"
+     REG_TEXT_ZOMATO_RESTAURANTS = "core-text-reg-zomato-restaurants"
+ 
++    # Local course candidate: one dataset, three feature-ablation views.
++    REG_TEXT_LINKEDIN_SALARY = "candidate-text-reg-linkedin-salary"
++    REG_TEXT_LINKEDIN_SALARY_STRUCTURED = "candidate-text-reg-linkedin-salary-structured"
++    REG_TEXT_LINKEDIN_SALARY_TEXT = "candidate-text-reg-linkedin-salary-text"
++
+     # Extended text datasets
+     MUL_TEXT_CONSUMER_COMPLAINT = "extended-text-cls-consumer-complaint"
+     MUL_TEXT_BOX_OFFICE = "extended-text-cls-box-office"
+@@ -152,6 +157,9 @@ def dataset_modality(dataset_id: MulTaBenchDatasetID) -> Modality:
+ 
+ 
+ MULTABENCH_SOURCES: dict[MulTaBenchDatasetID, str] = {
++    MulTaBenchDatasetID.REG_TEXT_LINKEDIN_SALARY: "https://www.kaggle.com/datasets/arshkon/linkedin-job-postings",
++    MulTaBenchDatasetID.REG_TEXT_LINKEDIN_SALARY_STRUCTURED: "https://www.kaggle.com/datasets/arshkon/linkedin-job-postings",
++    MulTaBenchDatasetID.REG_TEXT_LINKEDIN_SALARY_TEXT: "https://www.kaggle.com/datasets/arshkon/linkedin-job-postings",
+     MulTaBenchDatasetID.BIN_IMAGE_CELEB_ATTRACTIVENESS: "https://www.kaggle.com/datasets/jessicali9530/celeba-dataset",
+     MulTaBenchDatasetID.BIN_IMAGE_HATEFUL_MEME: "https://www.kaggle.com/datasets/parthplc/facebook-hateful-meme-dataset",
+     MulTaBenchDatasetID.BIN_IMAGE_MAMMOGRAPHY_CMMD: "https://www.kaggle.com/datasets/nguynththanhho/cmmd-mammography",
+diff --git a/multabench/datasets/hub.py b/multabench/datasets/hub.py
+index ed24040..23e01bc 100644
+--- a/multabench/datasets/hub.py
++++ b/multabench/datasets/hub.py
+@@ -7,6 +7,7 @@ from os.path import join
+ from typing import List
+ 
+ from multabench.datasets.all_datasets import MulTaBenchDatasetID
++from multabench.datasets.linkedin_salary import DATASETS as LINKEDIN_DATASETS
+ 
+ HF_ORG = "multabench"
+ DATA_PARQUET = "data.parquet"
+@@ -15,6 +16,8 @@ IMAGE_SHARDS = "images-*.zip"
+ 
+ 
+ def hf_repo_id(dataset_id: MulTaBenchDatasetID) -> str:
++    if dataset_id in LINKEDIN_DATASETS:
++        return f"local/{dataset_id.value}"
+     return f"{HF_ORG}/{dataset_id.value}"
+ 
+ 
+diff --git a/multabench/datasets/info.py b/multabench/datasets/info.py
+index 80a0bda..26d4e81 100644
+--- a/multabench/datasets/info.py
++++ b/multabench/datasets/info.py
+@@ -13,6 +13,7 @@ PREFIX2TASK = {"BIN": SupervisedTask.BINARY, "MUL": SupervisedTask.MULTICLASS, "
+ class Tier(StrEnum):
+     CORE = "core"
+     EXTENDED = "extended"
++    CANDIDATE = "candidate"
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/multabench/embeddings/hub.py b/multabench/embeddings/hub.py
+index 92b321c..66aed29 100644
+--- a/multabench/embeddings/hub.py
++++ b/multabench/embeddings/hub.py
+@@ -23,6 +23,8 @@ from multabench.benchmark.splits import Size
+ from multabench.datasets.all_datasets import Modality, MulTaBenchDatasetID, dataset_modality
+ from multabench.datasets.hub import HF_ORG, local_repo_dir
+ from multabench.datasets.revisions import revision
++from multabench.datasets.linkedin_salary import (DATASETS as LINKEDIN_DATASETS, FULL as LINKEDIN_FULL,
++                                                STRUCTURED as LINKEDIN_STRUCTURED, TEXT as LINKEDIN_TEXT, local_root)
+ from multabench.dino.constants import IMAGE_ENCODERS, ImageEncoder
+ from multabench.e5.constants import TEXT_ENCODERS, TextEncoder, format_e5_passage
+ from multabench.utils.encoders import Encoder
+@@ -70,6 +72,8 @@ def cached_encoder(model_name: str, tuned: bool) -> Optional[CachedEncoder]:
+ 
+ def embeds_dataset(encoder: CachedEncoder, dataset_id: MulTaBenchDatasetID) -> bool:
+     """Whether the benchmark's runs use the encoder on the dataset; datasets with images embed text with e5-small."""
++    if dataset_id == LINKEDIN_STRUCTURED:
++        return False
+     modality = dataset_modality(dataset_id)
+     if isinstance(encoder, ImageEncoder):
+         return modality.has_images
+@@ -78,6 +82,8 @@ def embeds_dataset(encoder: CachedEncoder, dataset_id: MulTaBenchDatasetID) -> b
+ 
+ def embeddings_dir(dataset_id: MulTaBenchDatasetID, size: Optional[Size] = None, fold: Optional[int] = None) -> str:
+     """<dataset> for a frozen encoder, <dataset>/<size>/fold_<k> for a tuned one."""
++    if dataset_id == LINKEDIN_TEXT:
++        dataset_id = LINKEDIN_FULL  # Same text/target values; share raw embeddings, never fitted PCA.
+     if fold is None:
+         return dataset_id.value
+     return join(dataset_id.value, str(Size(size)), f"fold_{fold}")
+@@ -145,6 +151,8 @@ def download_embeddings(encoder: CachedEncoder, dataset_id: MulTaBenchDatasetID,
+     """The directory of the dataset's cached embeddings, the fold's for a tuned encoder; under data_dir if given."""
+     if is_tuned(encoder) != (fold is not None):
+         raise ValueError(f"{encoder} embeddings are cached {'per fold' if is_tuned(encoder) else 'once per dataset'}")
++    if dataset_id in LINKEDIN_DATASETS:
++        data_dir = str(local_root(data_dir))
+     path_in_repo = embeddings_dir(dataset_id, size=size, fold=fold)
+     files = [EMBEDDINGS_NPZ, META_JSON]
+     repo_id = embeddings_repo_id(encoder)

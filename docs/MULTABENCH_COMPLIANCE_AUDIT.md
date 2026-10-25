@@ -4,9 +4,11 @@ Audit date: 2026-10-25. This is a source/data/manifest audit plus existing local
 
 ## Conclusion
 
-The current run uses MulTaBench's actual learner classes, feature preprocessing, E5/LoRA implementation, default core training hyperparameters, and six train/test splits. It is not an unmodified invocation of the official benchmark entry point. LinkedIn is not registered inside MulTaBench, and the project's runner constructs `MultimodalDataset(..., dataset_id=None)` itself.
+The existing run uses MulTaBench's actual learner classes, feature preprocessing, E5/LoRA implementation, default core training hyperparameters, and six train/test splits. It was produced by the project's runner, which constructs `MultimodalDataset(..., dataset_id=None)` itself.
 
-Therefore, do not describe the current repository as an entirely identical or already native MulTaBench pipeline. The native integration requirement from the staff forum answer remains open. This distinction concerns the execution and integration contract; this audit does not show that the saved predictive scores are invalid.
+Native dataset integration has now been added separately: LinkedIn is registered inside an isolated pinned MulTaBench checkout, with typed full/structured/text views and local cache lookup. The original native benchmark/evaluation, model, preprocessing, split and LoRA files are unchanged. Native loader parity and a real structured LightGBM CLI evaluation passed. See [NATIVE_MULTABENCH.md](NATIVE_MULTABENCH.md) and [the loader evidence](audit/native_linkedin_loader_parity.json).
+
+Do not describe the historical run as if it had used the newly added native CLI route. Its provenance and execution differences below remain valid. No 120-run rerun was started as part of this integration.
 
 ## Revisions checked
 
@@ -46,7 +48,7 @@ The checked installed upstream files match the pinned source bytes after CRLF-to
 
 | Area | Current VM-v1 behavior | Official pinned behavior / implication |
 |---|---|---|
-| Dataset integration | Our CSV/YAML loader; `dataset_id=None`; our experiment loop | Native benchmark accepts registered `MulTaBenchDatasetID` values and loads typed data/metadata. LinkedIn cannot currently be selected there |
+| Dataset integration | Original run: our CSV/YAML loader; `dataset_id=None`; our experiment loop | New dataset patch supplies native registered IDs and typed views; historical scores retain their original execution identity |
 | Data-loader workers | Persistent helper forces zero workers | Official LoRA default is four. This is an execution difference that must be disclosed, not hidden by calling the entire run identical |
 | Checkpoint lifetime | Persistent trainer/optimizer/scheduler/RNG state and completed adapters | Official LoRA uses a temporary checkpoint directory |
 | Restart semantics | Explicit restoration of early-stopping callback state | Not explicitly enabled by official TrainingArguments. This preserves patience on continuation; it is still an execution addition |
@@ -62,15 +64,15 @@ Compared with the pinned official revision, the checked latest master has identi
 
 TabPFN has a real update: many-class classification support above ten classes and a TabPFN-v2.5 display-name correction. The added many-class branch is not used for this regression task. This audit does not run a numerical comparison of the two TabPFN revisions. Keep the original revision pinned to preserve provenance.
 
-## Native integration still to implement
+## Native integration implementation and validation
 
-1. Provide a minimal, reviewable dataset integration against the pinned upstream source, with a LinkedIn dataset identifier and original source attribution.
-2. Export the exact same rows, target and declared column types to the upstream typed-data/metadata format while retaining the required CSV deliverable.
-3. Connect the dataset to the native loader and embedding-cache/live-encoding route without changing learner implementations, preprocessing, splits or TAR defaults. Registration alone is insufficient if cache lookup still points at nonexistent upstream Hugging Face files.
-4. Demonstrate the dataset is selectable and evaluable inside MulTaBench. Test all four feature conditions, six split identities, correct labels/types, and the official five learner selections. An external wrapper-only demo does not close the staff requirement.
-5. Compare the native integration's data and evaluation behavior with the saved experiment. Document meaningful differences before deciding whether any GPU work needs repeating. Do not promise byte-identical scores from a different execution path without a numerical check.
+1. Dataset-only patch and native recipe supplied under `integration/multabench/`; original Kaggle attribution is in the registry and metadata.
+2. Exact selected rows exported into typed native data/metadata, with required CSV retained unchanged.
+3. Local cache routing and full/text cache sharing use upstream's actual cache reader. Missing caches fail; learner, preprocessing, split, embedding-computation and LoRA code is unchanged.
+4. Native CLI recognizes all views. All four input/encoder contracts and six split identities passed; real LightGBM structured fold 0 matches the existing runner's score within `1e-12`.
+5. GPU frozen-text/TAR numerical parity and a full native GPU run have not been performed locally. This is disclosed rather than inferred from CPU tests. Integration alone does not replace or erase the original 95 saved records.
 
-The intended delivery is an offline/local-data integration or a separately reviewed dataset patch; this audit does not publish a dataset to Hugging Face or submit a pull request to upstream.
+The delivery is an offline/local-data native integration. No dataset has been published to Hugging Face and no pull request has been submitted to upstream. The original VM-v1 code is also preserved, unmodified, in `reproduction/original_vm256/`.
 
 ## Submission boundaries
 

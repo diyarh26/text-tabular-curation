@@ -1,0 +1,149 @@
+{
+  "loader_parity_passed": true,
+  "gpu_training_performed": false,
+  "original_results_relabelled": false,
+  "views": {
+    "REG_TEXT_LINKEDIN_SALARY": {
+      "rows": 15000,
+      "columns": [
+        "title",
+        "description",
+        "experience_level",
+        "work_type",
+        "remote_allowed",
+        "state",
+        "application_type",
+        "company_size",
+        "company_employees",
+        "company_followers",
+        "company_industry",
+        "job_industry",
+        "n_skills",
+        "n_benefits"
+      ],
+      "exact_values_dtypes_row_order_and_target": true,
+      "splits": {
+        "0": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "1": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "2": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "3": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "4": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "5": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        }
+      }
+    },
+    "REG_TEXT_LINKEDIN_SALARY_STRUCTURED": {
+      "rows": 15000,
+      "columns": [
+        "experience_level",
+        "work_type",
+        "remote_allowed",
+        "state",
+        "application_type",
+        "company_size",
+        "company_employees",
+        "company_followers",
+        "company_industry",
+        "job_industry",
+        "n_skills",
+        "n_benefits"
+      ],
+      "exact_values_dtypes_row_order_and_target": true,
+      "splits": {
+        "0": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "1": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "2": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "3": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "4": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "5": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        }
+      }
+    },
+    "REG_TEXT_LINKEDIN_SALARY_TEXT": {
+      "rows": 15000,
+      "columns": [
+        "title",
+        "description"
+      ],
+      "exact_values_dtypes_row_order_and_target": true,
+      "splits": {
+        "0": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "1": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "2": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "3": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "4": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        },
+        "5": {
+          "n_train": 10000,
+          "n_test": 5000,
+          "matches_vm_split": true
+        }
+      }
+    }
+  }
+}

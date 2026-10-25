@@ -11,7 +11,7 @@ This checklist summarizes the local eight-page course handout, `NLP Course (0972
 | One new text-tabular dataset, not already included in MulTaBench | Sections 3.1 and 3.3.1, pp. 4-5 | LinkedIn salary; absent from the checked official dataset registry |
 | Curated data in CSV format | Section 3.4, p. 6 | `data/processed/linkedin_salary.csv` already exists; 15,000 rows, 14 inputs plus target |
 | Code used to create the dataset | Section 3.4, p. 6 | `prep/linkedin.py`; raw inputs and transformations documented in `LINKEDIN_DATASET_CARD.md` |
-| Code used to evaluate the dataset, using official MulTaBench source | Sections 3.2 and 3.4, pp. 4 and 6 | Official model/preprocessing imports verified; native dataset integration remains unfinished; see `MULTABENCH_COMPLIANCE_AUDIT.md` |
+| Code used to evaluate the dataset, using official MulTaBench source | Sections 3.2 and 3.4, pp. 4 and 6 | Native dataset patch, official entry-point commands, exact data/split parity and a real structured CLI check provided; historical execution differences disclosed in `MULTABENCH_COMPLIANCE_AUDIT.md` |
 | All five learners: TabM, CatBoost, LightGBM, TabPFN 2.0, TabPFN 2.5 | Section 3.2, p. 4 | Present in current evaluation |
 | All four conditions: structured, text only, joint frozen, joint TAR | Section 3.2, p. 4 | Present in current evaluation |
 | Strict improvement of joint frozen over both unimodal conditions, and joint TAR over joint frozen | Section 3.2.1, p. 4 | Preliminary four-fold means meet both criteria for 5/5 learners; final six-fold result pending |
@@ -43,7 +43,7 @@ These are separate from the PDF and were not independently accessed on Moodle. T
 - Use raw, unrounded scores for pass/fail. A near-zero margin may satisfy the inequality but is a weak submission.
 - A new dataset must run inside MulTaBench. The quoted staff answer rejected submitting only an external CSV loader/wrapper around the evaluation functions.
 
-The final clarification makes native dataset integration an explicit completion item. Importing the upstream model code alone does not establish that requirement.
+The final clarification makes native dataset integration an explicit completion item. Importing the upstream model code alone does not establish that requirement. The repository now provides a dataset-only native patch plus loading/evaluation checks, documented in `NATIVE_MULTABENCH.md`.
 
 ## Evaluation conventions already selected for this project
 
@@ -88,6 +88,6 @@ Do not mark this package final while the batch-256 run is incomplete, native int
 | Six official split identities | Recomputed and matched to saved manifest |
 | Physical batch-256 evaluation | 95/120 successful records in latest locally available VM backup; folds 0-3 complete |
 | Final six-fold CSVs and verdict | Pending remaining 25 evaluations and final audit |
-| Native MulTaBench dataset integration | Required; not implemented/tested yet |
+| Native MulTaBench dataset integration | Implemented and locally tested, including exact loader/split parity and a real structured LightGBM CLI evaluation; GPU text/TAR parity not newly tested |
 | LinkedIn paper | User will write in a separate chat |
 | Final package and Moodle submission | Not ready / not submitted |

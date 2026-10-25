@@ -1,0 +1,26 @@
+{
+  "source_revision": "bfe0ba3b846cb8bd719d43a586dc4d25b36088cd",
+  "protocol": "linkedin_vm_physical256_v1",
+  "raw_git_blob_sha256": {
+    "LICENSE": "4e5b552d93c9bbc3b36e6e280aa3f26f279e557a9aa164d10edf9a7774b5a767",
+    "README.md": "e7ba50c5c48923d2916f0d3b702019f65eb0b446492eeae05b14b0affb371fc8",
+    "configs/linkedin_salary.yaml": "859863d245ed81b761d27682bf4b1657e5687b8a60f87d22dbe26e87c8cbc2ce",
+    "prep/linkedin.py": "81940a1b2ec187a5a01921741a3d803c401f6da91cd4715ce37fb8e4a6ff7609",
+    "pyproject.toml": "c826dc342130540275e1d7065ef875c1ffc8c37dc72a83f33c4e48c951b1879c",
+    "requirements/constraints.txt": "5d287bba1c6c6d805c81870aaab94a4e68f8a30972b0f2d2df405558ab83e7c0",
+    "scripts/colab_tar_compare.py": "3713365e29392192a146f3a3830ef2a4581a4235b2adb1f986a0965e75cee00e",
+    "scripts/run_full_linkedin.py": "3d025ea9cb48af4e54a76f705d80bdc8e692426759edb5b1b652c51c711c39be",
+    "scripts/run_full_linkedin_vm.py": "04e920e679432bdcbe89c62641c2e994ee6428aa944b205002cf8128d00c3462",
+    "scripts/run_linkedin_vm256.sh": "274b712ac4245ca8a72cbaa73208af8d76e60125854a8cc889d8332ed3052275",
+    "scripts/setup_gpu_vm.sh": "ba14d0c3ddcec6cd4726ae3423da68381968ba06616670bd15954507d9b97295",
+    "src/tt_curation/__init__.py": "a10c17c4694e00de9db2185eaabb4edfb2c751b91230d55cfe952564cd78fdb2",
+    "src/tt_curation/__main__.py": "5c22cd7edc6a9a7349a08570f3d0a28b24338a758e8869495d487ce373e32429",
+    "src/tt_curation/conditions.py": "443c2e45fbbd008f18dc5d2f8f20b8e2519655b11dcad6c19405d1327d85e450",
+    "src/tt_curation/criteria.py": "575a81de69351b1bd55ef3b42a05108eefd9ef7a75dc8c6e8ecdd0b312a3f1db",
+    "src/tt_curation/data.py": "8c33d999951a973f120179e50bb6c1fff0ddaaf75b5f79b26c668437143d6430",
+    "src/tt_curation/runner.py": "32cbf3c4b6186eb37a141f9fbc2bdc9e11ac7041d87f589ede6aa394f0da9508",
+    "src/tt_curation/spec.py": "693906dedcbb93485ffe9962e7e722bd3666bec32332e45c855732e5fb826374"
+  },
+  "csv_sha256_lf": "8880f84563535c60eda01be5b52010dea6f80e318f228ade00166d7cb66d57fa",
+  "note": "Unmodified original code. Dataset CSV remains at repository data/processed/linkedin_salary.csv. Use the original Git revision to rerun or resume."
+}

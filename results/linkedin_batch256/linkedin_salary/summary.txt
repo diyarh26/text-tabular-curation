@@ -1,0 +1,12 @@
+PRELIMINARY: 95/120 successful evaluations.
+Means include fully completed folds only: [0, 1, 2, 3].
+Metric: R2 on log salary; original RMSE and result provenance are preserved.
+             Structured  Text only  Joint frozen  Joint TAR  Joint delta  TAR delta
+model
+CatBoost       0.495086   0.655175      0.694021   0.743217     0.038846   0.049196
+LightGBM       0.484813   0.624861      0.663917   0.738696     0.039056   0.074778
+TabM           0.472411   0.691113      0.721669   0.750158     0.030556   0.028489
+TabPFN-v2      0.499556   0.671406      0.697989   0.737967     0.026583   0.039977
+TabPFN-v2p5    0.507069   0.698593      0.724456   0.746758     0.025863   0.022302
+Joint Signal: 5/5; TAR Gain: 5/5; counted independently, raw deltas > 0.
+Final verdict pending all six folds.

@@ -41,3 +41,12 @@ logs/
 # Rebuildable upload bundles and large experiment checkpoints stay local.
 artifacts/
 results/**/checkpoints/
+
+# Original VM transfer inputs stay local and at their existing resume-builder paths.
+docs/linkedin_vm256_backup/
+docs/linkedin_vm256_resume_supplement.zip
+
+# Model weights and training state are not source/submission artifacts.
+*.safetensors
+*.pt
+*.pth

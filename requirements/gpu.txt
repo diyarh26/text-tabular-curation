@@ -1,0 +1,5 @@
+# Install from repository root with -c requirements/constraints.txt.
+-e .[bench,dev]
+autogluon-features
+autogluon-core
+autogluon-common

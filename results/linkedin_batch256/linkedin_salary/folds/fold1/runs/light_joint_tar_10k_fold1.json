@@ -1,0 +1,52 @@
+{
+  "dataset": "linkedin_salary",
+  "model": "LightGBM",
+  "short_name": "light",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 1,
+  "size": "10k",
+  "task": "regression",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 14,
+  "timestamp": "2026-10-24 20:43:26",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": "bfe0ba3b846cb8bd719d43a586dc4d25b36088cd",
+  "metric": "root_mean_squared_error",
+  "test_score": -0.27633268681637296,
+  "test_error": 0.27633268681637296,
+  "r2": 0.7484670909396105,
+  "status": "ok",
+  "runtime_s": 1.198861837387085,
+  "protocol": "linkedin_vm_physical256_v1",
+  "tar_parameters": {
+    "learning_rate": 0.0001,
+    "epochs": 50,
+    "lora_rank": 16,
+    "layers": 3,
+    "patience": 3,
+    "weight_decay": 0.001,
+    "batch_size": 256
+  },
+  "training_arguments": {
+    "per_device_train_batch_size": 256,
+    "per_device_eval_batch_size": 256,
+    "gradient_accumulation_steps": 1,
+    "num_train_epochs": 50,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.001,
+    "fp16": false,
+    "bf16": false,
+    "max_steps": -1,
+    "load_best_model_at_end": true,
+    "restore_callback_states_from_checkpoint": true
+  },
+  "tar_finetune": {
+    "best_val_loss": 2.4164516925811768,
+    "epochs": 25.0,
+    "finetune_seconds": 7949.761252164841,
+    "rows": 10000
+  }
+}
