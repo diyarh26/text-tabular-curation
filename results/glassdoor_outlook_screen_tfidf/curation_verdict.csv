@@ -1,3 +1,0 @@
-model,score_structured,score_unstructured,score_joint_frozen,score_joint_tar,folds,delta_frozen_vs_best_unimodal,joint_signal,joint_signal_fold_wins,passes
-CatBoost,-0.663,-0.846,-0.664,,3,-0.001,False,1,False
-LightGBM,-0.708,-0.857,-0.699,,3,0.009,True,3,False
