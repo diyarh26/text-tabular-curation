@@ -21,5 +21,15 @@
   "pending": [
     "25 remaining evaluations from original batch-256 experiment",
     "Final LinkedIn paper written separately"
-  ]
+  ],
+  "fresh_git_checkout_validation": {
+    "passed": true,
+    "original_code_snapshot_hashes_verified": 18,
+    "original_result_records_verified": 95,
+    "published_archive_file_hashes_verified": 1651,
+    "local_only_logs_and_bytecode_omitted": 11,
+    "native_patch_and_preparation_passed": true,
+    "all_native_view_and_split_parity_passed": true,
+    "original_result_reporting_passed": true
+  }
 }
