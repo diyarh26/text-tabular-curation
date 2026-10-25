@@ -1,0 +1,98 @@
+{
+  "audit_date": "2026-10-25",
+  "scope": "Local saved VM-v1 backup, not live Kaggle progress",
+  "dataset": "linkedin_salary",
+  "csv_sha256_lf": "8880f84563535c60eda01be5b52010dea6f80e318f228ade00166d7cb66d57fa",
+  "csv_hash_matches_manifest": true,
+  "config_hash_matches_manifest": true,
+  "original_project_revision": "bfe0ba3b846cb8bd719d43a586dc4d25b36088cd",
+  "official_source_revision": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "source_code_hash_matches": {
+    "src/tt_curation/__init__.py": true,
+    "src/tt_curation/__main__.py": true,
+    "src/tt_curation/conditions.py": true,
+    "src/tt_curation/criteria.py": true,
+    "src/tt_curation/data.py": true,
+    "src/tt_curation/runner.py": true,
+    "src/tt_curation/spec.py": true,
+    "scripts/run_full_linkedin_vm.py": true,
+    "scripts/run_full_linkedin.py": true,
+    "scripts/colab_tar_compare.py": true,
+    "scripts/run_linkedin_vm256.sh": true,
+    "requirements/constraints.txt": true,
+    "pyproject.toml": true
+  },
+  "official_split_checks": {
+    "0": {
+      "train_indices_match": true,
+      "test_indices_match": true
+    },
+    "1": {
+      "train_indices_match": true,
+      "test_indices_match": true
+    },
+    "2": {
+      "train_indices_match": true,
+      "test_indices_match": true
+    },
+    "3": {
+      "train_indices_match": true,
+      "test_indices_match": true
+    },
+    "4": {
+      "train_indices_match": true,
+      "test_indices_match": true
+    },
+    "5": {
+      "train_indices_match": true,
+      "test_indices_match": true
+    }
+  },
+  "rows": 15000,
+  "text_columns": [
+    "title",
+    "description"
+  ],
+  "structured_columns": [
+    "experience_level",
+    "work_type",
+    "remote_allowed",
+    "state",
+    "application_type",
+    "company_size",
+    "company_employees",
+    "company_followers",
+    "company_industry",
+    "job_industry",
+    "n_skills",
+    "n_benefits"
+  ],
+  "missing_rows_by_input": {
+    "title": 0,
+    "description": 0,
+    "experience_level": 3365,
+    "work_type": 0,
+    "remote_allowed": 0,
+    "state": 2706,
+    "application_type": 0,
+    "company_size": 1000,
+    "company_employees": 210,
+    "company_followers": 210,
+    "company_industry": 231,
+    "job_industry": 157,
+    "n_skills": 0,
+    "n_benefits": 0
+  },
+  "successful_evaluations": 95,
+  "evaluations_by_fold": {
+    "0": 20,
+    "1": 20,
+    "2": 20,
+    "3": 20,
+    "4": 15,
+    "5": 0
+  },
+  "full_grid_complete": false,
+  "native_dataset_integration_complete": false,
+  "gpu_execution_performed_in_this_audit": false
+}
