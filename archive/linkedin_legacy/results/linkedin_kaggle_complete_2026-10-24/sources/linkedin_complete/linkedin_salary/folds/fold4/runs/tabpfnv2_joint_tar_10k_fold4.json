@@ -1,0 +1,29 @@
+{
+  "dataset": "linkedin_salary",
+  "model": "TabPFN-v2",
+  "short_name": "tabpfnv2",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 4,
+  "size": "10k",
+  "task": "regression",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 14,
+  "timestamp": "2026-10-23 21:59:17",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "root_mean_squared_error",
+  "test_score": -0.2884874229030852,
+  "test_error": 0.2884874229030852,
+  "r2": 0.7307348205697405,
+  "status": "ok",
+  "runtime_s": 135.98467803001404,
+  "tar_finetune": {
+    "best_val_loss": 2.4651310443878174,
+    "epochs": 26.0,
+    "finetune_seconds": 10051.46113872528,
+    "rows": 10000
+  }
+}

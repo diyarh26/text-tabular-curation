@@ -6,6 +6,10 @@ The `code/` directory contains **unmodified Git blobs** from project commit
 SHA-256 hashes. This includes every code file recorded by the experiment manifest,
 plus the original dataset preparation/configuration, setup, README and license.
 
+`original_run_sha256.json` separately freezes the original 95 result hashes. The
+reporting tool checks this immutable index before accepting additional records;
+regenerating a report cannot hide an overwrite of an original result.
+
 The exact CSV is kept once at `data/processed/linkedin_salary.csv` in the main
 repository. It is not resampled or duplicated here. The raw dataset remains local.
 This snapshot is evidence, rather than a second independently installed package.

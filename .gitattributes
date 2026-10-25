@@ -1,6 +1,7 @@
-/scripts/run_linkedin_vm256.sh text eol=lf
 /scripts/*.sh text eol=lf
 /integration/multabench/** text eol=lf
 /reproduction/original_vm256/code/** text eol=lf
 /results/linkedin_batch256/** text eol=lf
 /integration/multabench/*.patch -whitespace
+# Preserve historical artifacts rather than rewriting their existing whitespace.
+/archive/** -whitespace

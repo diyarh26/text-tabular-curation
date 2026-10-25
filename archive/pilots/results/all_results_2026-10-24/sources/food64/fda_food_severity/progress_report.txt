@@ -1,0 +1,21 @@
+===== CUMULATIVE RESULTS: FULLY COMPLETED FOLDS ONLY =====
+FDA Food | completed folds [0, 1, 2, 3, 4, 5] | 120/120 evaluations in this table
+PRELIMINARY until all six folds complete. No performance-based early exit.
+Official metric: NEGATIVE LOG LOSS (higher is better; closer to zero)
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM          -1.164467     -0.667556     -0.728080  -0.659710    -0.060524   0.068370
+CatBoost      -0.870034     -0.677512     -0.660566  -0.635054     0.016946   0.025512
+LightGBM      -0.923247     -0.705577     -0.711835  -0.704064    -0.006257   0.007770
+TabPFN-v2     -0.877019     -0.642129     -0.634201  -0.621507     0.007928   0.012694
+TabPFN-v2p5   -0.880899     -0.628189     -0.616291  -0.599300     0.011898   0.016990
+Joint Signal: 3/5 | TAR Gain: 5/5 | need >=3/5 independently on six-fold means.
+Joint delta = joint frozen - better unimodal; TAR delta = joint TAR - joint frozen.
+Supplementary macro OvR AUROC (not the official log-loss verdict):
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM           0.596236      0.826705      0.793869   0.824680    -0.032836   0.030811
+CatBoost       0.641255      0.818751      0.828252   0.840159     0.009501   0.011907
+LightGBM       0.617900      0.814574      0.814254   0.837659    -0.000320   0.023405
+TabPFN-v2      0.637524      0.836882      0.840462   0.846312     0.003581   0.005850
+TabPFN-v2p5    0.629681      0.844439      0.850983   0.858454     0.006543   0.007471

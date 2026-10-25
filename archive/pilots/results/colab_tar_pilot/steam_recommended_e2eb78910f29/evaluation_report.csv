@@ -1,0 +1,3 @@
+dataset,model,condition,test_score_mean,test_score_std,test_error_mean,test_error_std,auroc_mean,auroc_std,n_folds,metric,n_failed
+steam_recommended,CatBoost,joint_tar,0.9685142132093066,,0.03148578679069336,,0.9685142132093066,,1,roc_auc,0
+steam_recommended,LightGBM,joint_tar,0.9657654172561008,,0.03423458274389923,,0.9657654172561008,,1,roc_auc,0

@@ -17,6 +17,7 @@ PROTOCOL = "linkedin_vm_physical256_v1"
 MODELS = {"tabm": "TabM", "cat": "CatBoost", "light": "LightGBM",
           "tabpfnv2": "TabPFN-v2", "tabpfnv2p5": "TabPFN-v2p5"}
 CONDITIONS = ["structured", "unstructured", "joint_frozen", "joint_tar"]
+ORIGINAL_RESULTS_INDEX = ROOT / "reproduction/original_vm256/original_run_sha256.json"
 
 
 def audit(output):
@@ -37,6 +38,10 @@ def audit(output):
                 name = f"folds/fold{fold}/runs/{short}_{condition}_10k_fold{fold}.json"
                 expected[name] = (short, condition, fold)
     actual = {p.relative_to(output).as_posix(): p for p in output.glob("folds/*/runs/*.json")}
+    original_hashes=json.loads(ORIGINAL_RESULTS_INDEX.read_text(encoding="utf-8"))
+    for name,digest in original_hashes.items():
+        if name not in actual or hashlib.sha256(actual[name].read_bytes()).hexdigest()!=digest:
+            raise ValueError("Original saved result missing or modified: "+name)
     if set(actual) - set(expected):
         raise ValueError("Unexpected/duplicate run files: " + str(sorted(set(actual)-set(expected))))
     records, hashes, failures = [], {}, []

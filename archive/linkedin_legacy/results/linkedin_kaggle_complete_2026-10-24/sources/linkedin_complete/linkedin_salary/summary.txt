@@ -1,0 +1,8 @@
+COMPLETE: all 120 evaluations passed the audit.
+learner         struct     text   frozen      TAR  joint  TAR-gain  folds
+CatBoost       -0.3940  -0.3250  -0.3070  -0.2810    ✅     ✅     6
+LightGBM       -0.3990  -0.3400  -0.3220  -0.2850    ✅     ✅     6
+TabM           -0.4040  -0.3080  -0.2930  -0.2780    ✅     ✅     6
+TabPFN-v2      -0.3930  -0.3180  -0.3040  -0.2840    ✅     ✅     6
+TabPFN-v2p5    -0.3900  -0.3040  -0.2910  -0.2790    ✅     ✅     6
+5/5 learners satisfy both criteria -> dataset PASSES (needs 3 of 5)

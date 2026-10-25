@@ -1,0 +1,9 @@
+# Complete cases from the full accepted-loan source, selected before random sampling.
+name: lendingclub_default_complete
+csv: data/processed/lendingclub_default_complete.csv
+target: charged_off
+task: classification
+
+text_columns: [desc, title, emp_title]
+categorical_columns: [term, emp_length, home_ownership, purpose, grade]
+numerical_columns: [loan_amnt, annual_inc, dti, fico_score, int_rate]

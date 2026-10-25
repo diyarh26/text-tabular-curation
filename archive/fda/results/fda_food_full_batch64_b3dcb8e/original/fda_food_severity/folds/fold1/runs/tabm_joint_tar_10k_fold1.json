@@ -1,0 +1,29 @@
+{
+  "dataset": "fda_food_severity",
+  "model": "TabM",
+  "short_name": "tabm",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 1,
+  "size": "10k",
+  "task": "multiclass",
+  "n_train": 5279,
+  "n_test": 2639,
+  "n_features": 11,
+  "timestamp": "2026-10-23 20:35:36",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "log_loss",
+  "test_score": -0.6699132831775695,
+  "test_error": 0.6699132831775695,
+  "auroc": 0.8159089381095009,
+  "status": "ok",
+  "runtime_s": 88.32176232337952,
+  "tar_finetune": {
+    "best_val_loss": 0.8274373412132263,
+    "epochs": 10.0,
+    "finetune_seconds": 2707.1181383132935,
+    "rows": 5279
+  }
+}

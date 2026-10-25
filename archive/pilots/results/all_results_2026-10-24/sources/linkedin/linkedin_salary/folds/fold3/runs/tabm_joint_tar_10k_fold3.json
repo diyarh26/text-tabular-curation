@@ -1,0 +1,29 @@
+{
+  "dataset": "linkedin_salary",
+  "model": "TabM",
+  "short_name": "tabm",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 3,
+  "size": "10k",
+  "task": "regression",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 14,
+  "timestamp": "2026-10-23 21:15:32",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "root_mean_squared_error",
+  "test_score": -0.27187737521286826,
+  "test_error": 0.27187737521286826,
+  "r2": 0.7555700375224604,
+  "status": "ok",
+  "runtime_s": 255.79631304740906,
+  "tar_finetune": {
+    "best_val_loss": 2.3987064361572266,
+    "epochs": 41.0,
+    "finetune_seconds": 16274.353296995163,
+    "rows": 10000
+  }
+}

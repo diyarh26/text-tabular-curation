@@ -1,0 +1,6 @@
+model,structured,unstructured,joint_frozen,joint_tar,Joint delta,TAR delta,joint_signal,tar_gain,passes_both
+TabM,0.6,0.824,0.796,0.821,-0.028,0.025,False,True,False
+CatBoost,0.631,0.822,0.826,0.839,0.004,0.013,True,True,True
+LightGBM,0.607,0.821,0.818,0.836,-0.003,0.018,False,True,False
+TabPFN-v2,0.62,0.833,0.835,0.84,0.002,0.005,True,True,True
+TabPFN-v2p5,0.613,0.843,0.848,0.859,0.005,0.011,True,True,True

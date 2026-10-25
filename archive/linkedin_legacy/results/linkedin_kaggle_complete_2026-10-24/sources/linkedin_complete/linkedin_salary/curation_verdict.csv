@@ -1,0 +1,6 @@
+model,score_structured,score_unstructured,score_joint_frozen,score_joint_tar,folds,delta_frozen_vs_best_unimodal,joint_signal,joint_signal_fold_wins,delta_tar_vs_frozen,tar_gain,tar_gain_fold_wins,passes
+CatBoost,-0.394,-0.325,-0.307,-0.281,6,0.018,True,6,0.026,True,6,True
+LightGBM,-0.399,-0.34,-0.322,-0.285,6,0.018,True,6,0.037,True,6,True
+TabM,-0.404,-0.308,-0.293,-0.278,6,0.015,True,6,0.015,True,6,True
+TabPFN-v2,-0.393,-0.318,-0.304,-0.284,6,0.014,True,6,0.02,True,6,True
+TabPFN-v2p5,-0.39,-0.304,-0.291,-0.279,6,0.013,True,6,0.012,True,6,True

@@ -1,0 +1,23 @@
+===== FOLD 5 COMPLETE: ALL 20 EVALUATIONS AUDITED =====
+FDA Food | completed folds [5] | 20/120 evaluations in this table
+PRELIMINARY until all six folds complete. No performance-based early exit.
+Official metric: NEGATIVE LOG LOSS (higher is better; closer to zero)
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM          -1.291297     -0.654527     -0.720979  -0.656099    -0.066451   0.064879
+CatBoost      -0.883488     -0.667172     -0.658346  -0.625869     0.008826   0.032478
+LightGBM      -0.945145     -0.693075     -0.703871  -0.708811    -0.010796  -0.004940
+TabPFN-v2     -0.884237     -0.640761     -0.636389  -0.629647     0.004372   0.006742
+TabPFN-v2p5   -0.888436     -0.626566     -0.617302  -0.597626     0.009264   0.019675
+Joint Signal: 3/5 | TAR Gain: 4/5 | need >=3/5 independently on six-fold means.
+Joint delta = joint frozen - better unimodal; TAR delta = joint TAR - joint frozen.
+Supplementary macro OvR AUROC (not the official log-loss verdict):
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM           0.599707      0.824498      0.795839   0.824620    -0.028659   0.028781
+CatBoost       0.631226      0.822379      0.825983   0.843394     0.003603   0.017411
+LightGBM       0.606964      0.820908      0.818399   0.837904    -0.002510   0.019506
+TabPFN-v2      0.620475      0.833456      0.835143   0.839349     0.001687   0.004206
+TabPFN-v2p5    0.612792      0.842691      0.847921   0.858094     0.005230   0.010174
+Worker time for this fold in this session: 78.6 minutes (may include reused runs).
+TAR training metadata: {"best_val_loss": 0.812015950679779, "epochs": 15.0, "finetune_seconds": 4071.897099018097, "rows": 5279}

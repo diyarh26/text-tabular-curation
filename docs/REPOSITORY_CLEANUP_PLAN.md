@@ -1,12 +1,14 @@
 # LinkedIn-focused repository cleanup plan
 
-Prepared 2026-10-25. This is the reviewable plan before the broad code/data reorganization. The only historical files moved in this preparation phase are the Airbnb paper files, explicitly authorized by the user; the LinkedIn paper will be written in a separate chat.
+Prepared 2026-10-25; implementation update on the same date. Native dataset integration and the broad code/data reorganization are now implemented. The LinkedIn paper remains assigned to a separate chat.
+
+Completed: original VM code snapshot and recovery tags, three registered native feature views, exact loader/split parity, real native LightGBM structured CLI parity, 1,662 files archived with verified hashes, original 95 result records imported unchanged, a LinkedIn README, and a guarded final-package builder. The remaining 25 evaluations and paper are still pending.
 
 ## Target
 
 Make the repository understandable as a LinkedIn salary text-tabular curation project. The normal workflow should expose one physical-batch-256 evaluation protocol and the official-source dataset integration. Keep earlier attempts together in `archive/`, with their origin and limitations visible. Preserve original results and source revisions rather than rewriting experiment history.
 
-The current GitHub default branch is `main`, which points to older candidate work. The active evaluation tooling is on `kaggle-fda-batch256-auroc`. This preparation branch, `linkedin-submission-preparation`, does not silently replace the default branch. A later reviewed merge must preserve the other agent's already-pushed FDA results on `origin/main`.
+Work was prepared on `linkedin-submission-preparation`. The other agent's FDA results from `origin/main` were merged before archiving. The LinkedIn-focused default-branch update will be published only after the final local validation; no history rewrite is needed.
 
 ## Proposed layout
 

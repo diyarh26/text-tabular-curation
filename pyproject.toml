@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tt-curation"
 version = "0.1.0"
-description = "Curating a new text-tabular dataset with the MulTaBench curation pipeline"
+description = "LinkedIn salary text-tabular dataset curation and native MulTaBench integration"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
@@ -22,6 +22,9 @@ bench = [
     "multabench[bench,catboost,lightgbm,pytabkit,tabpfn] @ git+https://github.com/alanarazi7/MulTaBench@ff0c9c8b40a2085a06a7771190e53a261341802f",
 ]
 dev = ["pytest"]
+
+[project.urls]
+Repository = "https://github.com/diyarh26/text-tabular-curation"
 
 [tool.setuptools.packages.find]
 where = ["src"]

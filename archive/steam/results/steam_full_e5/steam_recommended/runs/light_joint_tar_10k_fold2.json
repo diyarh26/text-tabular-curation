@@ -1,0 +1,29 @@
+{
+  "dataset": "steam_recommended",
+  "model": "LightGBM",
+  "short_name": "light",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 2,
+  "size": "10k",
+  "task": "binary",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 9,
+  "timestamp": "2026-10-22 19:25:54",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": "0d37ec18618f1ecc7f3d42514525e213b18292b0",
+  "metric": "roc_auc",
+  "test_score": 0.9724023296827566,
+  "test_error": 0.02759767031724336,
+  "auroc": 0.9724023296827566,
+  "status": "ok",
+  "runtime_s": 0.5629160404205322,
+  "tar_finetune": {
+    "best_val_loss": 0.12550880014896393,
+    "epochs": 13.0,
+    "finetune_seconds": 2060.0463774204254,
+    "rows": 10000
+  }
+}

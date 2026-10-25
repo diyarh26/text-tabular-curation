@@ -1,0 +1,137 @@
+{
+  "protocol_version": "candidate_full_v1",
+  "dataset": "fda_food_severity",
+  "rows": 7918,
+  "task": "multiclass",
+  "class_counts": {
+    "Class I": 3182,
+    "Class II": 4065,
+    "Class III": 671
+  },
+  "csv_sha256_lf": "0a8ff4ce3ff48fd2beb16edb9ff197b4f38fc026a87cc82308be220baaee539d",
+  "config_sha256_lf": "6400cc37e0c6d638f593f63b5d3e5aa1d1f64cf99f05e66abc1a1f2aa7ffe660",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "source_revision": "5f9aaeed0e66deea58f041253bffc5997f44e14c",
+  "models": [
+    "tabm",
+    "cat",
+    "light",
+    "tabpfnv2",
+    "tabpfnv2p5"
+  ],
+  "conditions": [
+    "structured",
+    "unstructured",
+    "joint_frozen",
+    "joint_tar"
+  ],
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "expected_evaluations": 120,
+  "size": "10k",
+  "metric": "log_loss",
+  "frozen_encoder": "e5-small",
+  "curation_metric": "macro_ovr_auroc",
+  "course_rule": {
+    "round_scores": false,
+    "delta_strictly_greater_than": 0,
+    "independent_counts": true,
+    "min_learners": 3
+  },
+  "paper_rule": {
+    "round_condition_means": 3,
+    "delta_at_least": 0.001,
+    "same_learners": true,
+    "min_learners": 3,
+    "applied_to": "six course folds; not the paper's five-seed experiment"
+  },
+  "tar_parameters": {
+    "learning_rate": 0.0001,
+    "epochs": 50,
+    "lora_rank": 16,
+    "layers": 3,
+    "patience": 3,
+    "weight_decay": 0.001,
+    "batch_size": 256
+  },
+  "tar_max_epochs": 50,
+  "micro_batch": 256,
+  "gradient_accumulation_steps": 1,
+  "effective_batch": 256,
+  "precision": "float32",
+  "accumulation_loss": "reference_single_batch_mean",
+  "restore_early_stopping_state": true,
+  "splits": {
+    "0": {
+      "n_train": 5278,
+      "n_test": 2640,
+      "train_indices_sha256": "5a0c43e7edc0766e1352d36324273eab34c0081e32ee105fc68f8f4c30bd2188",
+      "test_indices_sha256": "43646858968e725d1c20a7e006d0efb4a27bb6eea216f41e29372e92f31f4856"
+    },
+    "1": {
+      "n_train": 5279,
+      "n_test": 2639,
+      "train_indices_sha256": "c749622cde5261e7ad5da1006e54473984473ea7c15008d0e6bc2feea2bd9223",
+      "test_indices_sha256": "4dcfdb7be0ca8226f6d6781705838c43353d5a6d27bb2f49b61b50d17ad3235c"
+    },
+    "2": {
+      "n_train": 5279,
+      "n_test": 2639,
+      "train_indices_sha256": "f051c7a8e4984bb8b7978806ebe92683912c2067f5324088f8167b6ee92f53b7",
+      "test_indices_sha256": "47532468d13715c3a0deb9092160f0b6a1bc93aae84a9dabaf30abf2e53272e5"
+    },
+    "3": {
+      "n_train": 5278,
+      "n_test": 2640,
+      "train_indices_sha256": "db38c6db689417b1d1e151bffac45907c37fa1859143c63b134a8f7bb6313903",
+      "test_indices_sha256": "b1b489389150d7ec2d69c8dbbc101d25c1ffe3f475f3b852a2ec262aa5a3d649"
+    },
+    "4": {
+      "n_train": 5279,
+      "n_test": 2639,
+      "train_indices_sha256": "9f68938f78e1f97132a9631f619c3f1d2b322152478738995b65ae4738581783",
+      "test_indices_sha256": "58f5385e73424ea4eb457b87894c9be47c373b606af7708ac8a2cbc085debc80"
+    },
+    "5": {
+      "n_train": 5279,
+      "n_test": 2639,
+      "train_indices_sha256": "bdb206bf1ef7a121097f1eef0fb7cbebaa62c29ad82dcf85e3e25a6db891a4b8",
+      "test_indices_sha256": "5f115ed06768c0935f51d3586657b28eebfff2cb2dc74b1e3db64e68ecfacec6"
+    }
+  },
+  "code": {
+    "src/tt_curation/__init__.py": "a10c17c4694e00de9db2185eaabb4edfb2c751b91230d55cfe952564cd78fdb2",
+    "src/tt_curation/__main__.py": "5c22cd7edc6a9a7349a08570f3d0a28b24338a758e8869495d487ce373e32429",
+    "src/tt_curation/conditions.py": "443c2e45fbbd008f18dc5d2f8f20b8e2519655b11dcad6c19405d1327d85e450",
+    "src/tt_curation/criteria.py": "575a81de69351b1bd55ef3b42a05108eefd9ef7a75dc8c6e8ecdd0b312a3f1db",
+    "src/tt_curation/data.py": "8c33d999951a973f120179e50bb6c1fff0ddaaf75b5f79b26c668437143d6430",
+    "src/tt_curation/runner.py": "32cbf3c4b6186eb37a141f9fbc2bdc9e11ac7041d87f589ede6aa394f0da9508",
+    "src/tt_curation/spec.py": "693906dedcbb93485ffe9962e7e722bd3666bec32332e45c855732e5fb826374",
+    "scripts/run_full_candidate.py": "ff9409e77e5a6d2ee3966925d72896c986ae10264615cf58def47d8059ef1794",
+    "scripts/kaggle_candidates.py": "84893f2fd131caf4773b8a90898ef5cd1d909e976417d8ca62642a81daa50882",
+    "scripts/run_full_linkedin.py": "3d025ea9cb48af4e54a76f705d80bdc8e692426759edb5b1b652c51c711c39be",
+    "scripts/colab_tar_compare.py": "3713365e29392192a146f3a3830ef2a4581a4235b2adb1f986a0965e75cee00e",
+    "scripts/kaggle_linkedin.py": "b9b4ae0e66e2db15bc496abfd1e1a3d6d8f2b6551ceeabb7f094e5995b8f05a9"
+  },
+  "packages": {
+    "multabench": "0.0.6",
+    "torch": "2.7.1",
+    "transformers": "4.57.3",
+    "accelerate": "1.12.0",
+    "peft": "0.18.0",
+    "catboost": "1.2.8",
+    "lightgbm": "4.6.0",
+    "pytabkit": "1.7.0",
+    "tabpfn": "9.2.0",
+    "scikit-learn": "1.6.1",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "skrub": "0.10.1"
+  }
+}

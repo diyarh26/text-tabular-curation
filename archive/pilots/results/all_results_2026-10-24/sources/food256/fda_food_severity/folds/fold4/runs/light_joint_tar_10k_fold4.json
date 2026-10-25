@@ -1,0 +1,29 @@
+{
+  "dataset": "fda_food_severity",
+  "model": "LightGBM",
+  "short_name": "light",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 4,
+  "size": "10k",
+  "task": "multiclass",
+  "n_train": 5279,
+  "n_test": 2639,
+  "n_features": 11,
+  "timestamp": "2026-10-24 04:19:54",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "log_loss",
+  "test_score": -0.7228026165999535,
+  "test_error": 0.7228026165999535,
+  "auroc": 0.8337867849275602,
+  "status": "ok",
+  "runtime_s": 3.0112061500549316,
+  "tar_finetune": {
+    "best_val_loss": 0.7982528209686279,
+    "epochs": 15.0,
+    "finetune_seconds": 4011.693865299225,
+    "rows": 5279
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "protocol_version": "candidate_full_v1",
+  "dataset": "lendingclub_longdesc_no_purpose",
+  "rows": 15000,
+  "task": "binary",
+  "class_counts": {
+    "0": 12822,
+    "1": 2178
+  },
+  "csv_sha256_lf": "46d3b72cefc9634840fc5556b80deb860f7d07f956bbc3f00f0363ead8d9af24",
+  "config_sha256_lf": "3578c090c166c8d3b8f26adb30e53808ab852a50beeac54e6f2ac730f75dd53f",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "source_revision": "b3dcb8e3e828774fdbd787f4c447641243a54518",
+  "models": [
+    "tabm",
+    "cat",
+    "light",
+    "tabpfnv2",
+    "tabpfnv2p5"
+  ],
+  "conditions": [
+    "structured",
+    "unstructured",
+    "joint_frozen",
+    "joint_tar"
+  ],
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "expected_evaluations": 120,
+  "size": "10k",
+  "metric": "roc_auc",
+  "frozen_encoder": "e5-small",
+  "tar_max_epochs": 50,
+  "micro_batch": 64,
+  "gradient_accumulation_steps": 4,
+  "effective_batch": 256,
+  "precision": "float32",
+  "accumulation_loss": "ce_sum_over_effective_batch_items_v1",
+  "restore_early_stopping_state": true,
+  "splits": {
+    "0": {
+      "n_train": 10000,
+      "n_test": 5000,
+      "train_indices_sha256": "0df9bdd07334e3c22d5a8ab45f10bf141dd457de21e0151f2cb3a5cebb7d7af2",
+      "test_indices_sha256": "2cdb489e806f3d6f76699a98532cf3be5e5921e0a21f76fa5e615f9f68eafe4b"
+    },
+    "1": {
+      "n_train": 10000,
+      "n_test": 5000,
+      "train_indices_sha256": "a6150a30858ab3d08054a6011a43919455b1f7ef97e950d899770641db514774",
+      "test_indices_sha256": "b5fcd8a8e869d19e440bdb607afce2753774d190ca94b1325ad8bed1dc924862"
+    },
+    "2": {
+      "n_train": 10000,
+      "n_test": 5000,
+      "train_indices_sha256": "c4e64fcfa92ade92d88c663f10c5c4b3f01bb78e9319a15364ef82783c4e5f3b",
+      "test_indices_sha256": "fc10d354717d3d07fe26aee313ddb8338979a09dea8ff7f25a3b52a60965adfd"
+    },
+    "3": {
+      "n_train": 10000,
+      "n_test": 5000,
+      "train_indices_sha256": "ff7e110ed3322111c6365b4b8cdbef0596af99cc1ee00553e3a0afc6e6afa43e",
+      "test_indices_sha256": "d485bebabba4f84da068267036d114b5194165e5df66513719370ddd17e4d05d"
+    },
+    "4": {
+      "n_train": 10000,
+      "n_test": 5000,
+      "train_indices_sha256": "c90407d5d6cce6960092e4483c0e0b85cd83cf7d2914f05fc0b8fd9888c762ab",
+      "test_indices_sha256": "a98435a54457fff3152c0f2eeba5fab1fc966d5061987b2e388b207d0fbf83e1"
+    },
+    "5": {
+      "n_train": 10000,
+      "n_test": 5000,
+      "train_indices_sha256": "43243343edca969f441a6b19a1497683ebe64bcee82cc60a009004575eb21569",
+      "test_indices_sha256": "e95c53e31c917e26df869ffa1a1d384c0cd02077d5c33d0ca724d0da3c28e1c8"
+    }
+  },
+  "code": {
+    "src/tt_curation/__init__.py": "a10c17c4694e00de9db2185eaabb4edfb2c751b91230d55cfe952564cd78fdb2",
+    "src/tt_curation/__main__.py": "5c22cd7edc6a9a7349a08570f3d0a28b24338a758e8869495d487ce373e32429",
+    "src/tt_curation/conditions.py": "443c2e45fbbd008f18dc5d2f8f20b8e2519655b11dcad6c19405d1327d85e450",
+    "src/tt_curation/criteria.py": "575a81de69351b1bd55ef3b42a05108eefd9ef7a75dc8c6e8ecdd0b312a3f1db",
+    "src/tt_curation/data.py": "8c33d999951a973f120179e50bb6c1fff0ddaaf75b5f79b26c668437143d6430",
+    "src/tt_curation/runner.py": "32cbf3c4b6186eb37a141f9fbc2bdc9e11ac7041d87f589ede6aa394f0da9508",
+    "src/tt_curation/spec.py": "693906dedcbb93485ffe9962e7e722bd3666bec32332e45c855732e5fb826374",
+    "scripts/run_full_candidate.py": "4b452d5c3dbd1764d82fe97238d290f25960441e46fe0b9bfec7d5218ed557ab",
+    "scripts/kaggle_candidates.py": "df8984fb08948449900d74142e60e93047db6a5a12e25530f19aea3dd5983e69",
+    "scripts/run_full_linkedin.py": "3d025ea9cb48af4e54a76f705d80bdc8e692426759edb5b1b652c51c711c39be",
+    "scripts/colab_tar_compare.py": "3713365e29392192a146f3a3830ef2a4581a4235b2adb1f986a0965e75cee00e",
+    "scripts/kaggle_linkedin.py": "b9b4ae0e66e2db15bc496abfd1e1a3d6d8f2b6551ceeabb7f094e5995b8f05a9"
+  },
+  "packages": {
+    "multabench": "0.0.6",
+    "torch": "2.7.1",
+    "transformers": "4.57.3",
+    "accelerate": "1.12.0",
+    "peft": "0.18.0",
+    "catboost": "1.2.8",
+    "lightgbm": "4.6.0",
+    "pytabkit": "1.7.0",
+    "tabpfn": "9.2.0",
+    "scikit-learn": "1.6.1",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "skrub": "0.10.1"
+  }
+}

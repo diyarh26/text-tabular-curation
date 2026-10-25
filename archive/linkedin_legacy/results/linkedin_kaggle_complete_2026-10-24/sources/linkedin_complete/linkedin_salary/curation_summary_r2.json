@@ -1,0 +1,14 @@
+{
+  "metric": "r2",
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "joint_learners": 5,
+  "tar_learners": 5,
+  "accepted": true
+}

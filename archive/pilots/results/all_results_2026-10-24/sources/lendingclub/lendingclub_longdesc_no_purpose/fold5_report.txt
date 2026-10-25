@@ -1,0 +1,15 @@
+===== FOLD 5 COMPLETE: ALL 20 EVALUATIONS AUDITED =====
+LendingClub | completed folds [5] | 20/120 evaluations in this table
+PRELIMINARY until all six folds complete. No performance-based early exit.
+Official metric: AUROC (higher is better)
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM           0.707495      0.546405      0.678437   0.677431    -0.029058  -0.001006
+CatBoost       0.702031      0.593507      0.716432   0.711836     0.014401  -0.004596
+LightGBM       0.672301      0.587447      0.690867   0.684559     0.018566  -0.006308
+TabPFN-v2      0.708252      0.596406      0.726131   0.723230     0.017879  -0.002900
+TabPFN-v2p5    0.708465      0.619122      0.727456   0.723426     0.018991  -0.004031
+Joint Signal: 4/5 | TAR Gain: 0/5 | need >=3/5 independently on six-fold means.
+Joint delta = joint frozen - better unimodal; TAR delta = joint TAR - joint frozen.
+Worker time for this fold in this session: 94.2 minutes (may include reused runs).
+TAR training metadata: {"best_val_loss": 0.4124228060245514, "epochs": 8.0, "finetune_seconds": 4397.367919683456, "rows": 10000}

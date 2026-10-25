@@ -1,0 +1,17 @@
+{
+  "dataset": "lendingclub_longdesc_no_purpose",
+  "expected_runs": 18,
+  "successful_runs": 18,
+  "failed_runs": 0,
+  "device": "cpu",
+  "text_encoder": "tfidf",
+  "folds": [
+    0,
+    1,
+    2
+  ],
+  "data_config_pipeline_hashes_match": true,
+  "rows": 15000,
+  "purpose_present": false,
+  "all_earlier_versions_audited": true
+}

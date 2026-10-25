@@ -1,0 +1,15 @@
+{
+  "expected_runs": 18,
+  "successful_runs": 18,
+  "failed_runs": 0,
+  "dataset": "lendingclub_default_complete",
+  "device": "cpu",
+  "text_encoder": "tfidf",
+  "folds": [
+    0,
+    1,
+    2
+  ],
+  "data_config_runner_hashes_match": true,
+  "previous_and_new_results_audited": true
+}

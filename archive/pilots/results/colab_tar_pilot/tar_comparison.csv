@@ -1,0 +1,5 @@
+dataset,experiment,learner,metric,folds,n_folds,max_epochs,E5_TAR_joint,TFIDF_joint_same_folds,TAR_minus_TFIDF_not_isolated_TAR_gain
+linkedin_salary,linkedin_salary_81312a3d1c69,CatBoost,r2,0,1,10,0.7159918493668984,0.6840126290086,0.031979220358298366
+linkedin_salary,linkedin_salary_81312a3d1c69,LightGBM,r2,0,1,10,0.69686184581335,0.6507072614889859,0.046154584324364034
+steam_recommended,steam_recommended_e2eb78910f29,CatBoost,auroc,0,1,10,0.9685142132093066,0.8967813002651873,0.07173291294411932
+steam_recommended,steam_recommended_e2eb78910f29,LightGBM,auroc,0,1,10,0.9657654172561008,0.893056961979976,0.0727084552761248

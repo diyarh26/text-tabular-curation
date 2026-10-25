@@ -26,6 +26,20 @@ def execute(code, env):
                           text=True, capture_output=True).stdout
 
 
+def test_fresh_patch_application_is_idempotent_and_protects_upstream_code(native_env,tmp_path):
+    checkout=tmp_path/'upstream'
+    subprocess.run(['git','clone','--quiet','--shared','--no-checkout',str(NATIVE),str(checkout)],check=True)
+    subprocess.run(['git','-C',str(checkout),'-c','core.autocrlf=false','checkout','--quiet','--detach',
+        'ff0c9c8b40a2085a06a7771190e53a261341802f'],check=True)
+    command=[sys.executable,str(ROOT/'scripts/setup_native_multabench.py'),'--checkout',str(checkout)]
+    first=subprocess.run(command,check=True,capture_output=True,text=True).stdout
+    second=subprocess.run(command,check=True,capture_output=True,text=True).stdout
+    assert json.loads(first)==json.loads(second)
+    (checkout/'benchmark.py').write_text('changed')
+    bad=subprocess.run(command,capture_output=True,text=True)
+    assert bad.returncode!=0 and 'Unexpected upstream modifications' in bad.stderr
+
+
 def test_native_loader_exact_parity_for_all_views_and_six_splits(native_env):
     output = execute("from scripts.verify_native_linkedin import verify; verify(r'"+str(DATA)+"')", native_env)
     assert '"loader_parity_passed": true' in output

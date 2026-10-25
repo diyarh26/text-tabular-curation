@@ -14,7 +14,7 @@ from report_linkedin import ROOT, report
 def build(results, paper, destination):
     results,paper,destination=Path(results).resolve(),Path(paper).resolve(),Path(destination).resolve()
     if not paper.is_file() or paper.read_bytes()[:5] != b"%PDF-":
-        raise ValueError("Supply the final LinkedIn paper PDF; no placeholder paper is accepted")
+        raise ValueError("Supply the final LinkedIn paper PDF; file missing or PDF header invalid")
     status=report(results)
     if not status["complete"]:
         raise ValueError("Submission is not complete: all 120 original batch-256 evaluations are required")
@@ -35,6 +35,8 @@ def build(results, paper, destination):
         paths[rel]=ROOT/rel
     for name in ["LINKEDIN_DATASET_CARD.md","MULTABENCH_COMPLIANCE_AUDIT.md","NATIVE_MULTABENCH.md","SUBMISSION_REQUIREMENTS.md"]:
         paths["docs/"+name]=ROOT/"docs"/name
+    for path in (ROOT/"docs/audit").glob("*.json"):
+        paths[path.relative_to(ROOT).as_posix()]=path
     missing=[str(p) for p in paths.values() if not p.is_file()]
     if missing: raise FileNotFoundError("Missing delivery files: "+str(missing))
     package=dict(code_revision=source_revision,original_experiment_revision=status["original_project_revision"],

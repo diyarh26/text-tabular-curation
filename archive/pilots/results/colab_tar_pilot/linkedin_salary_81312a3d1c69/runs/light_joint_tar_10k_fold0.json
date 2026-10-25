@@ -1,0 +1,29 @@
+{
+  "dataset": "linkedin_salary",
+  "model": "LightGBM",
+  "short_name": "light",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 0,
+  "size": "10k",
+  "task": "regression",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 14,
+  "timestamp": "2026-10-22 13:52:44",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "root_mean_squared_error",
+  "test_score": -0.30465562361791854,
+  "test_error": 0.30465562361791854,
+  "r2": 0.69686184581335,
+  "status": "ok",
+  "runtime_s": 196.54506659507751,
+  "tar_finetune": {
+    "best_val_loss": 2.559373617172241,
+    "epochs": 10.0,
+    "finetune_seconds": 3556.479964494705,
+    "rows": 10000
+  }
+}

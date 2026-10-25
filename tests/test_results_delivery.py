@@ -14,6 +14,11 @@ import report_linkedin as reporting
 from build_submission import build
 
 
+@pytest.fixture(autouse=True)
+def synthetic_original_index(tmp_path,monkeypatch):
+    monkeypatch.setattr(reporting,'ORIGINAL_RESULTS_INDEX',tmp_path/'original_run_sha256.json')
+
+
 def fixture(output,complete=False):
     manifest=json.loads((ROOT/"tests/fixtures/vm256_manifest.json").read_text())
     output.mkdir()
@@ -31,6 +36,11 @@ def fixture(output,complete=False):
                 if condition=="joint_tar": row.update(tar_parameters=manifest['tar_parameters'],training_arguments=manifest['training_arguments'],tar_finetune=dict(rows=10000,epochs=10.,best_val_loss=.5))
                 path=output/f'folds/fold{fold}/runs/{short}_{condition}_10k_fold{fold}.json'
                 path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(row))
+    original={p.relative_to(output).as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
+              for p in output.glob('folds/*/runs/*.json')
+              if int(p.parent.parent.name.removeprefix('fold'))<4 or
+                 (p.parent.parent.name=='fold4' and '_joint_tar_' not in p.name)}
+    reporting.ORIGINAL_RESULTS_INDEX.write_text(json.dumps(original))
     return output
 
 
@@ -47,7 +57,7 @@ def test_partial_report_excludes_partial_fold_and_preserves_all_original_bytes(t
     assert all(p.read_bytes()==data for p,data in before.items())
 
 
-@pytest.mark.parametrize('update',[{'git':'wrong'},{'protocol':'16x16'},{'r2':float('nan')},{'n_features':13},{'text_encoder':'tfidf'},{'training_arguments':{'per_device_train_batch_size':16}}])
+@pytest.mark.parametrize('update',[{'git':'wrong'},{'protocol':'16x16'},{'r2':float('nan')},{'r2':.55},{'n_features':13},{'text_encoder':'tfidf'},{'training_arguments':{'per_device_train_batch_size':16}}])
 def test_mixed_or_invalid_tar_records_are_rejected(tmp_path,update):
     output=fixture(tmp_path/'results')
     p=output/'folds/fold0/runs/cat_joint_tar_10k_fold0.json'

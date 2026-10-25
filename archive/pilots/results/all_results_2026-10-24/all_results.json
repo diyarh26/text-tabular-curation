@@ -1,0 +1,3190 @@
+{
+  "experiments": [
+    {
+      "key": "linkedin",
+      "title": "LinkedIn salary \u2014 provisional",
+      "dataset": "linkedin_salary",
+      "rows": 15000,
+      "metric": "r2",
+      "successful_evaluations": 115,
+      "expected_evaluations": 120,
+      "completed_folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "missing": [
+        {
+          "model": "cat",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "light",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "tabm",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "joint_tar",
+          "fold": 5
+        }
+      ],
+      "complete": false,
+      "micro_batch": 16,
+      "accumulation": 16,
+      "joint_count": 5,
+      "tar_count": 5,
+      "joint_mean_passing": 0.03199137691098437,
+      "tar_mean_passing": 0.04194055726997901,
+      "joint_mean_all": 0.03199137691098437,
+      "tar_mean_all": 0.04194055726997901,
+      "course_acceptance": null,
+      "preliminary_course_counts_meet_rule": true,
+      "paper_both_count": 5,
+      "paper_rule_acceptance": null,
+      "source": {
+        "type": "downloaded_zip",
+        "file": "C:\\Users\\Diyar\\Downloads\\linkedin_full_checkpoint.zip",
+        "sha256": "b1d8fffc5e605ee75225c9cdb2f8dcdf6e3ded3fc2f9065dbc40e800f0b66940",
+        "trainer_states": [
+          {
+            "path": "linkedin_full/linkedin_salary/folds/fold0/checkpoints/trainer/checkpoint-1491/trainer_state.json",
+            "epoch": 21.0,
+            "step": 1491,
+            "best_metric": 2.3853094577789307
+          },
+          {
+            "path": "linkedin_full/linkedin_salary/folds/fold1/checkpoints/trainer/checkpoint-1562/trainer_state.json",
+            "epoch": 22.0,
+            "step": 1562,
+            "best_metric": 2.423424243927002
+          },
+          {
+            "path": "linkedin_full/linkedin_salary/folds/fold2/checkpoints/trainer/checkpoint-1207/trainer_state.json",
+            "epoch": 17.0,
+            "step": 1207,
+            "best_metric": 2.392544984817505
+          },
+          {
+            "path": "linkedin_full/linkedin_salary/folds/fold3/checkpoints/trainer/checkpoint-2698/trainer_state.json",
+            "epoch": 38.0,
+            "step": 2698,
+            "best_metric": 2.3987064361572266
+          },
+          {
+            "path": "linkedin_full/linkedin_salary/folds/fold4/checkpoints/trainer/checkpoint-1633/trainer_state.json",
+            "epoch": 23.0,
+            "step": 1633,
+            "best_metric": 2.4651310443878174
+          },
+          {
+            "path": "linkedin_full/linkedin_salary/folds/fold5/checkpoints/trainer/checkpoint-2130/trainer_state.json",
+            "epoch": 30.0,
+            "step": 2130,
+            "best_metric": 2.430061101913452
+          }
+        ],
+        "dataset_csv_verified": true,
+        "config_verified": true,
+        "runtime_source_revision": "b75bdbb835d2ec0da13e076fce5249933879127b",
+        "source_file_hashes_verified": 9
+      },
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.49276118456282314,
+          "unstructured": 0.6551763628298309,
+          "joint_frozen": 0.6927003084289536,
+          "joint_tar": 0.7429689275436229,
+          "Joint delta": 0.03752394559912264,
+          "TAR delta": 0.05026861911466929
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.4815685267035567,
+          "unstructured": 0.622941600514746,
+          "joint_frozen": 0.6637717252663691,
+          "joint_tar": 0.7349131526820664,
+          "Joint delta": 0.040830124751623065,
+          "TAR delta": 0.07114142741569729
+        },
+        {
+          "model": "TabM",
+          "structured": 0.46905799067475334,
+          "unstructured": 0.690110255719633,
+          "joint_frozen": 0.7204665862767343,
+          "joint_tar": 0.7470347549726901,
+          "Joint delta": 0.030356330557101296,
+          "TAR delta": 0.026568168695955796
+        },
+        {
+          "model": "TabPFN-v2",
+          "structured": 0.4962817805976261,
+          "unstructured": 0.6705105606681254,
+          "joint_frozen": 0.6968661332689855,
+          "joint_tar": 0.7359917284615443,
+          "Joint delta": 0.026355572600860078,
+          "TAR delta": 0.03912559519255876
+        },
+        {
+          "model": "TabPFN-v2p5",
+          "structured": 0.504103660987113,
+          "unstructured": 0.6979383110277106,
+          "joint_frozen": 0.7228292220739254,
+          "joint_tar": 0.7454281980049393,
+          "Joint delta": 0.02489091104621477,
+          "TAR delta": 0.022598975931013898
+        }
+      ],
+      "per_fold": [
+        {
+          "fold": 0,
+          "model": "CatBoost",
+          "structured": 0.48049161697165077,
+          "unstructured": 0.6427420646183255,
+          "joint_frozen": 0.682991768133612,
+          "joint_tar": 0.7278314573691862,
+          "Joint delta": 0.04024970351528645,
+          "TAR delta": 0.04483968923557424
+        },
+        {
+          "fold": 0,
+          "model": "LightGBM",
+          "structured": 0.46864784199856857,
+          "unstructured": 0.6145529661683613,
+          "joint_frozen": 0.6535726483027127,
+          "joint_tar": 0.7220552896476669,
+          "Joint delta": 0.03901968213435136,
+          "TAR delta": 0.06848264134495419
+        },
+        {
+          "fold": 0,
+          "model": "TabM",
+          "structured": 0.4586949009251018,
+          "unstructured": 0.6793576565839171,
+          "joint_frozen": 0.7107105327493162,
+          "joint_tar": 0.7267742174908757,
+          "Joint delta": 0.03135287616539906,
+          "TAR delta": 0.016063684741559503
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2",
+          "structured": 0.48322475176457036,
+          "unstructured": 0.663317841130608,
+          "joint_frozen": 0.6922949799114457,
+          "joint_tar": 0.7226040353223758,
+          "Joint delta": 0.02897713878083774,
+          "TAR delta": 0.030309055410930097
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2p5",
+          "structured": 0.4905038749053243,
+          "unstructured": 0.6875927835576734,
+          "joint_frozen": 0.7140363795606597,
+          "joint_tar": 0.7298808772873575,
+          "Joint delta": 0.02644359600298629,
+          "TAR delta": 0.015844497726697826
+        },
+        {
+          "fold": 1,
+          "model": "CatBoost",
+          "structured": 0.49549711504548144,
+          "unstructured": 0.6623487791610768,
+          "joint_frozen": 0.6941175190020736,
+          "joint_tar": 0.7576074376980305,
+          "Joint delta": 0.03176873984099682,
+          "TAR delta": 0.06348991869595688
+        },
+        {
+          "fold": 1,
+          "model": "LightGBM",
+          "structured": 0.48916469386085837,
+          "unstructured": 0.630048690666416,
+          "joint_frozen": 0.6678871666789936,
+          "joint_tar": 0.7467190601443635,
+          "Joint delta": 0.037838476012577615,
+          "TAR delta": 0.0788318934653699
+        },
+        {
+          "fold": 1,
+          "model": "TabM",
+          "structured": 0.4737166009287509,
+          "unstructured": 0.6934308145424412,
+          "joint_frozen": 0.7325165521665828,
+          "joint_tar": 0.7597878426433605,
+          "Joint delta": 0.03908573762414169,
+          "TAR delta": 0.027271290476777676
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2",
+          "structured": 0.5060249834589713,
+          "unstructured": 0.679197530064346,
+          "joint_frozen": 0.7023953517894277,
+          "joint_tar": 0.7508071784298592,
+          "Joint delta": 0.02319782172508167,
+          "TAR delta": 0.04841182664043153
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2p5",
+          "structured": 0.513025061838249,
+          "unstructured": 0.7065931005888197,
+          "joint_frozen": 0.7322193333799294,
+          "joint_tar": 0.7596668812107525,
+          "Joint delta": 0.02562623279110965,
+          "TAR delta": 0.02744754783082315
+        },
+        {
+          "fold": 2,
+          "model": "CatBoost",
+          "structured": 0.5054309343857046,
+          "unstructured": 0.6606151554665418,
+          "joint_frozen": 0.6990472477032077,
+          "joint_tar": 0.7416919247929226,
+          "Joint delta": 0.03843209223666588,
+          "TAR delta": 0.042644677089714866
+        },
+        {
+          "fold": 2,
+          "model": "LightGBM",
+          "structured": 0.49050901861012697,
+          "unstructured": 0.6226817872780761,
+          "joint_frozen": 0.6681723041629104,
+          "joint_tar": 0.7356334245504361,
+          "Joint delta": 0.0454905168848343,
+          "TAR delta": 0.06746112038752572
+        },
+        {
+          "fold": 2,
+          "model": "TabM",
+          "structured": 0.4795827673663128,
+          "unstructured": 0.6954716131048487,
+          "joint_frozen": 0.7223523570503061,
+          "joint_tar": 0.7452271705340981,
+          "Joint delta": 0.026880743945457364,
+          "TAR delta": 0.022874813483792056
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2",
+          "structured": 0.5041472090237614,
+          "unstructured": 0.6719016895669883,
+          "joint_frozen": 0.6954323426807676,
+          "joint_tar": 0.7311868466926693,
+          "Joint delta": 0.023530653113779332,
+          "TAR delta": 0.03575450401190172
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2p5",
+          "structured": 0.513306433182171,
+          "unstructured": 0.7006178408834837,
+          "joint_frozen": 0.7254199316809651,
+          "joint_tar": 0.742181838083505,
+          "Joint delta": 0.024802090797481413,
+          "TAR delta": 0.01676190640253994
+        },
+        {
+          "fold": 3,
+          "model": "CatBoost",
+          "structured": 0.49892299805252616,
+          "unstructured": 0.6549855618698255,
+          "joint_frozen": 0.6970828007713541,
+          "joint_tar": 0.7505693680895384,
+          "Joint delta": 0.04209723890152861,
+          "TAR delta": 0.05348656731818435
+        },
+        {
+          "fold": 3,
+          "model": "LightGBM",
+          "structured": 0.49093203137441543,
+          "unstructured": 0.6255795508354256,
+          "joint_frozen": 0.6693380422938403,
+          "joint_tar": 0.7450193419152578,
+          "Joint delta": 0.043758491458414706,
+          "TAR delta": 0.07568129962141745
+        },
+        {
+          "fold": 3,
+          "model": "TabM",
+          "structured": 0.47765046568060143,
+          "unstructured": 0.6947391375534048,
+          "joint_frozen": 0.7233465274416387,
+          "joint_tar": 0.7555700375224604,
+          "Joint delta": 0.02860738988823397,
+          "TAR delta": 0.03222351008082169
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2",
+          "structured": 0.504427089515544,
+          "unstructured": 0.6713954642453712,
+          "joint_frozen": 0.7025164810649625,
+          "joint_tar": 0.7446257612930763,
+          "Joint delta": 0.03112101681959123,
+          "TAR delta": 0.04210928022811389
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2p5",
+          "structured": 0.5114384338552069,
+          "unstructured": 0.6998243937561605,
+          "joint_frozen": 0.7256199789702196,
+          "joint_tar": 0.7528563547288232,
+          "Joint delta": 0.025795585214059114,
+          "TAR delta": 0.027236375758603604
+        },
+        {
+          "fold": 4,
+          "model": "CatBoost",
+          "structured": 0.4834632583587526,
+          "unstructured": 0.6551902530333852,
+          "joint_frozen": 0.6902622065345203,
+          "joint_tar": 0.7371444497684365,
+          "Joint delta": 0.03507195350113512,
+          "TAR delta": 0.04688224323391621
+        },
+        {
+          "fold": 4,
+          "model": "LightGBM",
+          "structured": 0.46858904767381415,
+          "unstructured": 0.6218450076254507,
+          "joint_frozen": 0.6598884648933887,
+          "joint_tar": 0.7251386471526073,
+          "Joint delta": 0.03804345726793801,
+          "TAR delta": 0.06525018225921864
+        },
+        {
+          "fold": 4,
+          "model": "TabM",
+          "structured": 0.45564521847299977,
+          "unstructured": 0.6875520568135532,
+          "joint_frozen": 0.7134069619758278,
+          "joint_tar": 0.7478145066726561,
+          "Joint delta": 0.02585490516227451,
+          "TAR delta": 0.034407544696828385
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2",
+          "structured": 0.48358486922528343,
+          "unstructured": 0.6667402783333135,
+          "joint_frozen": 0.6916915108983239,
+          "joint_tar": 0.7307348205697405,
+          "Joint delta": 0.024951232565010417,
+          "TAR delta": 0.03904330967141656
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2p5",
+          "structured": 0.4922445011546136,
+          "unstructured": 0.6950634363524156,
+          "joint_frozen": 0.7168504867778536,
+          "joint_tar": 0.7425550387142579,
+          "Joint delta": 0.021787050425437937,
+          "TAR delta": 0.025704551936404307
+        }
+      ]
+    },
+    {
+      "key": "food256",
+      "title": "FDA Food \u2014 physical batch 256",
+      "dataset": "fda_food_severity",
+      "rows": 7918,
+      "metric": "auroc",
+      "successful_evaluations": 120,
+      "expected_evaluations": 120,
+      "completed_folds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "missing": [],
+      "complete": true,
+      "micro_batch": 256,
+      "accumulation": 1,
+      "joint_count": 3,
+      "tar_count": 5,
+      "joint_mean_passing": 0.006541716879105726,
+      "tar_mean_passing": 0.017049874816289435,
+      "joint_mean_all": -0.002706170722490664,
+      "tar_mean_all": 0.017049874816289435,
+      "course_acceptance": true,
+      "preliminary_course_counts_meet_rule": true,
+      "paper_both_count": 3,
+      "paper_rule_acceptance": true,
+      "source": {
+        "type": "downloaded_zip",
+        "file": "C:\\Users\\Diyar\\Downloads\\fda_food_full_batch256_checkpoint.zip",
+        "sha256": "b17e78618bf01228a48e7e715386c90cdf327cea4722e3910cd0648623fe9b49",
+        "trainer_states": [
+          {
+            "path": "fda_food_full_batch256/fda_food_severity/folds/fold0/checkpoints/trainer/checkpoint-1232/trainer_state.json",
+            "epoch": 22.0,
+            "step": 1232,
+            "best_metric": 0.8202787041664124
+          },
+          {
+            "path": "fda_food_full_batch256/fda_food_severity/folds/fold1/checkpoints/trainer/checkpoint-616/trainer_state.json",
+            "epoch": 11.0,
+            "step": 616,
+            "best_metric": 0.8252902626991272
+          },
+          {
+            "path": "fda_food_full_batch256/fda_food_severity/folds/fold2/checkpoints/trainer/checkpoint-616/trainer_state.json",
+            "epoch": 11.0,
+            "step": 616,
+            "best_metric": 0.8439099192619324
+          },
+          {
+            "path": "fda_food_full_batch256/fda_food_severity/folds/fold3/checkpoints/trainer/checkpoint-672/trainer_state.json",
+            "epoch": 12.0,
+            "step": 672,
+            "best_metric": 0.8318237066268921
+          },
+          {
+            "path": "fda_food_full_batch256/fda_food_severity/folds/fold4/checkpoints/trainer/checkpoint-672/trainer_state.json",
+            "epoch": 12.0,
+            "step": 672,
+            "best_metric": 0.7982528209686279
+          },
+          {
+            "path": "fda_food_full_batch256/fda_food_severity/folds/fold5/checkpoints/trainer/checkpoint-616/trainer_state.json",
+            "epoch": 11.0,
+            "step": 616,
+            "best_metric": 0.8094293475151062
+          }
+        ],
+        "dataset_csv_verified": true,
+        "config_verified": true,
+        "runtime_source_revision": "5f9aaeed0e66deea58f041253bffc5997f44e14c",
+        "source_file_hashes_verified": 12
+      },
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.6412550681000718,
+          "unstructured": 0.8187508455966833,
+          "joint_frozen": 0.8282519095286304,
+          "joint_tar": 0.8395614037592173,
+          "Joint delta": 0.009501063931947051,
+          "TAR delta": 0.011309494230586914
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.6179000030431181,
+          "unstructured": 0.8145742097386183,
+          "joint_frozen": 0.8142539494430677,
+          "joint_tar": 0.8391938765897028,
+          "Joint delta": -0.00032026029555054514,
+          "TAR delta": 0.024939927146635066
+        },
+        {
+          "model": "TabM",
+          "structured": 0.5962358178950702,
+          "unstructured": 0.8267047604251004,
+          "joint_frozen": 0.7938690164708805,
+          "joint_tar": 0.8282556715129705,
+          "Joint delta": -0.032835743954219954,
+          "TAR delta": 0.03438665504209004
+        },
+        {
+          "model": "TabPFN-v2",
+          "structured": 0.6375235054049733,
+          "unstructured": 0.8368815518414289,
+          "joint_frozen": 0.8404624106285897,
+          "joint_tar": 0.8474283223944067,
+          "Joint delta": 0.0035808587871608566,
+          "TAR delta": 0.006965911765816957
+        },
+        {
+          "model": "TabPFN-v2p5",
+          "structured": 0.6296809977380754,
+          "unstructured": 0.8444393822961866,
+          "joint_frozen": 0.8509826102143959,
+          "joint_tar": 0.8586299961107141,
+          "Joint delta": 0.006543227918209271,
+          "TAR delta": 0.007647385896318193
+        }
+      ],
+      "per_fold": [
+        {
+          "fold": 0,
+          "model": "CatBoost",
+          "structured": 0.6500737550213428,
+          "unstructured": 0.8161541658142694,
+          "joint_frozen": 0.8278700409755301,
+          "joint_tar": 0.8308781467890869,
+          "Joint delta": 0.011715875161260714,
+          "TAR delta": 0.003008105813556816
+        },
+        {
+          "fold": 0,
+          "model": "LightGBM",
+          "structured": 0.6130770328285113,
+          "unstructured": 0.8125911040197247,
+          "joint_frozen": 0.8131379890929499,
+          "joint_tar": 0.8361321200186239,
+          "Joint delta": 0.0005468850732252006,
+          "TAR delta": 0.02299413092567404
+        },
+        {
+          "fold": 0,
+          "model": "TabM",
+          "structured": 0.594827521739436,
+          "unstructured": 0.8229174282171052,
+          "joint_frozen": 0.7932610389122398,
+          "joint_tar": 0.8304866396445131,
+          "Joint delta": -0.02965638930486547,
+          "TAR delta": 0.03722560073227332
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2",
+          "structured": 0.6364575778635021,
+          "unstructured": 0.8328072831730015,
+          "joint_frozen": 0.8388684640611516,
+          "joint_tar": 0.836736047223151,
+          "Joint delta": 0.006061180888150108,
+          "TAR delta": -0.0021324168380005837
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6321740351115134,
+          "unstructured": 0.8433066632346149,
+          "joint_frozen": 0.8490287637974135,
+          "joint_tar": 0.845854772059897,
+          "Joint delta": 0.005722100562798649,
+          "TAR delta": -0.003173991737516535
+        },
+        {
+          "fold": 1,
+          "model": "CatBoost",
+          "structured": 0.6376588944855452,
+          "unstructured": 0.8127460692125,
+          "joint_frozen": 0.8196857997544792,
+          "joint_tar": 0.8375803209846975,
+          "Joint delta": 0.006939730541979161,
+          "TAR delta": 0.017894521230218285
+        },
+        {
+          "fold": 1,
+          "model": "LightGBM",
+          "structured": 0.6189800985345811,
+          "unstructured": 0.815167559823073,
+          "joint_frozen": 0.8176857927443967,
+          "joint_tar": 0.8393937978677423,
+          "Joint delta": 0.002518232921323693,
+          "TAR delta": 0.021708005123345586
+        },
+        {
+          "fold": 1,
+          "model": "TabM",
+          "structured": 0.5982747078845918,
+          "unstructured": 0.8259383514739137,
+          "joint_frozen": 0.7893705321166257,
+          "joint_tar": 0.8252265377785154,
+          "Joint delta": -0.036567819357288034,
+          "TAR delta": 0.035856005661889734
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2",
+          "structured": 0.6295535696032615,
+          "unstructured": 0.8336548176055777,
+          "joint_frozen": 0.8371572747789661,
+          "joint_tar": 0.8475919303175988,
+          "Joint delta": 0.0035024571733883736,
+          "TAR delta": 0.010434655538632764
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6212363250619884,
+          "unstructured": 0.8405671835984014,
+          "joint_frozen": 0.8455732280163003,
+          "joint_tar": 0.8585671832767855,
+          "Joint delta": 0.0050060444178988694,
+          "TAR delta": 0.01299395526048519
+        },
+        {
+          "fold": 2,
+          "model": "CatBoost",
+          "structured": 0.6393415019522902,
+          "unstructured": 0.819489275713359,
+          "joint_frozen": 0.8302944529459854,
+          "joint_tar": 0.8456887901464105,
+          "Joint delta": 0.010805177232626306,
+          "TAR delta": 0.015394337200425157
+        },
+        {
+          "fold": 2,
+          "model": "LightGBM",
+          "structured": 0.6176805990240575,
+          "unstructured": 0.8179936406026581,
+          "joint_frozen": 0.8118016612550925,
+          "joint_tar": 0.841934669745584,
+          "Joint delta": -0.006191979347565657,
+          "TAR delta": 0.030133008490491497
+        },
+        {
+          "fold": 2,
+          "model": "TabM",
+          "structured": 0.5879721430921988,
+          "unstructured": 0.8287053837913207,
+          "joint_frozen": 0.7961380971435662,
+          "joint_tar": 0.8312294975305546,
+          "Joint delta": -0.032567286647754545,
+          "TAR delta": 0.035091400386988436
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2",
+          "structured": 0.6399008697861831,
+          "unstructured": 0.844927255421077,
+          "joint_frozen": 0.847725711070332,
+          "joint_tar": 0.855486490167518,
+          "Joint delta": 0.0027984556492549606,
+          "TAR delta": 0.007760779097185977
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6280230627040435,
+          "unstructured": 0.848808908702343,
+          "joint_frozen": 0.8563208375865078,
+          "joint_tar": 0.86558159766836,
+          "Joint delta": 0.0075119288841647425,
+          "TAR delta": 0.00926076008185217
+        },
+        {
+          "fold": 3,
+          "model": "CatBoost",
+          "structured": 0.6422445255382961,
+          "unstructured": 0.828967666296676,
+          "joint_frozen": 0.8387356325279841,
+          "joint_tar": 0.8463046482390523,
+          "Joint delta": 0.009767966231308156,
+          "TAR delta": 0.007569015711068161
+        },
+        {
+          "fold": 3,
+          "model": "LightGBM",
+          "structured": 0.6362656733490697,
+          "unstructured": 0.8184582531919252,
+          "joint_frozen": 0.8228368532205522,
+          "joint_tar": 0.8482973399849248,
+          "Joint delta": 0.004378600028627,
+          "TAR delta": 0.025460486764372625
+        },
+        {
+          "fold": 3,
+          "model": "TabM",
+          "structured": 0.5973280922558976,
+          "unstructured": 0.8390481551618746,
+          "joint_frozen": 0.8052050313044719,
+          "joint_tar": 0.8374455842428167,
+          "Joint delta": -0.033843123857402735,
+          "TAR delta": 0.032240552938344824
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2",
+          "structured": 0.6543334296665588,
+          "unstructured": 0.8437074769760278,
+          "joint_frozen": 0.846433030878576,
+          "joint_tar": 0.8546501405431175,
+          "Joint delta": 0.00272555390254825,
+          "TAR delta": 0.008217109664541478
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6459209824346744,
+          "unstructured": 0.8518924436950543,
+          "joint_frozen": 0.8595436733697097,
+          "joint_tar": 0.8691075854815002,
+          "Joint delta": 0.007651229674655369,
+          "TAR delta": 0.009563912111790529
+        },
+        {
+          "fold": 4,
+          "model": "CatBoost",
+          "structured": 0.6469852798464971,
+          "unstructured": 0.8127684198396438,
+          "joint_frozen": 0.8269427137004327,
+          "joint_tar": 0.8382099233530261,
+          "Joint delta": 0.014174293860788945,
+          "TAR delta": 0.011267209652593424
+        },
+        {
+          "fold": 4,
+          "model": "LightGBM",
+          "structured": 0.6144330946039599,
+          "unstructured": 0.8023264122469653,
+          "joint_frozen": 0.801662792705752,
+          "joint_tar": 0.8337867849275602,
+          "Joint delta": -0.0006636195412133006,
+          "TAR delta": 0.03212399222180817
+        },
+        {
+          "fold": 4,
+          "model": "TabM",
+          "structured": 0.5993050325027659,
+          "unstructured": 0.8191213309915494,
+          "joint_frozen": 0.7834001947523624,
+          "joint_tar": 0.8240715750238666,
+          "Joint delta": -0.035721136239186935,
+          "TAR delta": 0.04067138027150419
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2",
+          "structured": 0.6444205950649261,
+          "unstructured": 0.8327362452044063,
+          "joint_frozen": 0.8374470467561754,
+          "joint_tar": 0.8496568390175961,
+          "Joint delta": 0.004710801551769173,
+          "TAR delta": 0.012209792261420715
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2p5",
+          "structured": 0.637939691114413,
+          "unstructured": 0.8393701721816104,
+          "joint_frozen": 0.8475083328877263,
+          "joint_tar": 0.8537752263197517,
+          "Joint delta": 0.008138160706115949,
+          "TAR delta": 0.0062668934320253555
+        },
+        {
+          "fold": 5,
+          "model": "CatBoost",
+          "structured": 0.6312264517564596,
+          "unstructured": 0.8223794767036511,
+          "joint_frozen": 0.8259828172673703,
+          "joint_tar": 0.8387065930430305,
+          "Joint delta": 0.0036033405637192484,
+          "TAR delta": 0.012723775775660195
+        },
+        {
+          "fold": 5,
+          "model": "LightGBM",
+          "structured": 0.6069635199185291,
+          "unstructured": 0.8209082885473632,
+          "joint_frozen": 0.8183986076396638,
+          "joint_tar": 0.8356185469937817,
+          "Joint delta": -0.0025096809076994298,
+          "TAR delta": 0.01721993935411792
+        },
+        {
+          "fold": 5,
+          "model": "TabM",
+          "structured": 0.5997074098955312,
+          "unstructured": 0.8244979129148384,
+          "joint_frozen": 0.7958392045960169,
+          "joint_tar": 0.8210741948575566,
+          "Joint delta": -0.028658708318821557,
+          "TAR delta": 0.025234990261539747
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2",
+          "structured": 0.620474990445408,
+          "unstructured": 0.8334562326684832,
+          "joint_frozen": 0.8351429362263368,
+          "joint_tar": 0.8404484870974591,
+          "Joint delta": 0.0016867035578536083,
+          "TAR delta": 0.005305550871122278
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6127918900018196,
+          "unstructured": 0.8426909223650959,
+          "joint_frozen": 0.8479208256287173,
+          "joint_tar": 0.8588936118579906,
+          "Joint delta": 0.005229903263621383,
+          "TAR delta": 0.010972786229273335
+        }
+      ]
+    },
+    {
+      "key": "food64",
+      "title": "FDA Food \u2014 batch 64 x 4",
+      "dataset": "fda_food_severity",
+      "rows": 7918,
+      "metric": "auroc",
+      "successful_evaluations": 120,
+      "expected_evaluations": 120,
+      "completed_folds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "missing": [],
+      "complete": true,
+      "micro_batch": 64,
+      "accumulation": 4,
+      "joint_count": 3,
+      "tar_count": 5,
+      "joint_mean_passing": 0.006541716879105726,
+      "tar_mean_passing": 0.015888541676590994,
+      "joint_mean_all": -0.002706170722490664,
+      "tar_mean_all": 0.015888541676590994,
+      "course_acceptance": true,
+      "preliminary_course_counts_meet_rule": true,
+      "paper_both_count": 3,
+      "paper_rule_acceptance": true,
+      "source": {
+        "type": "downloaded_zip",
+        "file": "C:\\Users\\Diyar\\Downloads\\fda_food_full_checkpoint.zip",
+        "sha256": "d84776eada9e048ac134dad708eb6eb9117cff71f55a3b10fb8438e7c559abb9",
+        "trainer_states": [
+          {
+            "path": "fda_food_full/fda_food_severity/folds/fold0/checkpoints/trainer/checkpoint-1008/trainer_state.json",
+            "epoch": 18.0,
+            "step": 1008,
+            "best_metric": 0.8205587863922119
+          },
+          {
+            "path": "fda_food_full/fda_food_severity/folds/fold1/checkpoints/trainer/checkpoint-392/trainer_state.json",
+            "epoch": 7.0,
+            "step": 392,
+            "best_metric": 0.8274373412132263
+          },
+          {
+            "path": "fda_food_full/fda_food_severity/folds/fold2/checkpoints/trainer/checkpoint-616/trainer_state.json",
+            "epoch": 11.0,
+            "step": 616,
+            "best_metric": 0.8432644009590149
+          },
+          {
+            "path": "fda_food_full/fda_food_severity/folds/fold3/checkpoints/trainer/checkpoint-672/trainer_state.json",
+            "epoch": 12.0,
+            "step": 672,
+            "best_metric": 0.8310476541519165
+          },
+          {
+            "path": "fda_food_full/fda_food_severity/folds/fold4/checkpoints/trainer/checkpoint-616/trainer_state.json",
+            "epoch": 11.0,
+            "step": 616,
+            "best_metric": 0.8011948466300964
+          },
+          {
+            "path": "fda_food_full/fda_food_severity/folds/fold5/checkpoints/trainer/checkpoint-672/trainer_state.json",
+            "epoch": 12.0,
+            "step": 672,
+            "best_metric": 0.812015950679779
+          }
+        ],
+        "dataset_csv_verified": true,
+        "config_verified": true,
+        "runtime_source_revision": "b3dcb8e3e828774fdbd787f4c447641243a54518",
+        "source_file_hashes_verified": 12
+      },
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.6412550681000718,
+          "unstructured": 0.8187508455966833,
+          "joint_frozen": 0.8282519095286304,
+          "joint_tar": 0.8401585035271858,
+          "Joint delta": 0.009501063931947051,
+          "TAR delta": 0.011906593998555426
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.6179000030431181,
+          "unstructured": 0.8145742097386183,
+          "joint_frozen": 0.8142539494430677,
+          "joint_tar": 0.8376585633116035,
+          "Joint delta": -0.00032026029555054514,
+          "TAR delta": 0.023404613868535762
+        },
+        {
+          "model": "TabM",
+          "structured": 0.5962358178950702,
+          "unstructured": 0.8267047604251004,
+          "joint_frozen": 0.7938690164708805,
+          "joint_tar": 0.8246795861197098,
+          "Joint delta": -0.032835743954219954,
+          "TAR delta": 0.030810569648829333
+        },
+        {
+          "model": "TabPFN-v2",
+          "structured": 0.6375235054049733,
+          "unstructured": 0.8368815518414289,
+          "joint_frozen": 0.8404624106285897,
+          "joint_tar": 0.8463122644136187,
+          "Joint delta": 0.0035808587871608566,
+          "TAR delta": 0.005849853785029002
+        },
+        {
+          "model": "TabPFN-v2p5",
+          "structured": 0.6296809977380754,
+          "unstructured": 0.8444393822961866,
+          "joint_frozen": 0.8509826102143959,
+          "joint_tar": 0.8584536872964014,
+          "Joint delta": 0.006543227918209271,
+          "TAR delta": 0.007471077082005451
+        }
+      ],
+      "per_fold": [
+        {
+          "fold": 0,
+          "model": "CatBoost",
+          "structured": 0.6500737550213428,
+          "unstructured": 0.8161541658142694,
+          "joint_frozen": 0.8278700409755301,
+          "joint_tar": 0.8317366956908305,
+          "Joint delta": 0.011715875161260714,
+          "TAR delta": 0.003866654715300455
+        },
+        {
+          "fold": 0,
+          "model": "LightGBM",
+          "structured": 0.6130770328285113,
+          "unstructured": 0.8125911040197247,
+          "joint_frozen": 0.8131379890929499,
+          "joint_tar": 0.8298649733872088,
+          "Joint delta": 0.0005468850732252006,
+          "TAR delta": 0.016726984294258895
+        },
+        {
+          "fold": 0,
+          "model": "TabM",
+          "structured": 0.594827521739436,
+          "unstructured": 0.8229174282171052,
+          "joint_frozen": 0.7932610389122398,
+          "joint_tar": 0.8215785178434046,
+          "Joint delta": -0.02965638930486547,
+          "TAR delta": 0.028317478931164874
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2",
+          "structured": 0.6364575778635021,
+          "unstructured": 0.8328072831730015,
+          "joint_frozen": 0.8388684640611516,
+          "joint_tar": 0.8394443645775401,
+          "Joint delta": 0.006061180888150108,
+          "TAR delta": 0.0005759005163885611
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6321740351115134,
+          "unstructured": 0.8433066632346149,
+          "joint_frozen": 0.8490287637974135,
+          "joint_tar": 0.849673710161365,
+          "Joint delta": 0.005722100562798649,
+          "TAR delta": 0.0006449463639514041
+        },
+        {
+          "fold": 1,
+          "model": "CatBoost",
+          "structured": 0.6376588944855452,
+          "unstructured": 0.8127460692125,
+          "joint_frozen": 0.8196857997544792,
+          "joint_tar": 0.8381803588878,
+          "Joint delta": 0.006939730541979161,
+          "TAR delta": 0.018494559133320765
+        },
+        {
+          "fold": 1,
+          "model": "LightGBM",
+          "structured": 0.6189800985345811,
+          "unstructured": 0.815167559823073,
+          "joint_frozen": 0.8176857927443967,
+          "joint_tar": 0.8335154977720202,
+          "Joint delta": 0.002518232921323693,
+          "TAR delta": 0.015829705027623486
+        },
+        {
+          "fold": 1,
+          "model": "TabM",
+          "structured": 0.5982747078845918,
+          "unstructured": 0.8259383514739137,
+          "joint_frozen": 0.7893705321166257,
+          "joint_tar": 0.8159089381095009,
+          "Joint delta": -0.036567819357288034,
+          "TAR delta": 0.02653840599287527
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2",
+          "structured": 0.6295535696032615,
+          "unstructured": 0.8336548176055777,
+          "joint_frozen": 0.8371572747789661,
+          "joint_tar": 0.8417120533449668,
+          "Joint delta": 0.0035024571733883736,
+          "TAR delta": 0.004554778566000728
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6212363250619884,
+          "unstructured": 0.8405671835984014,
+          "joint_frozen": 0.8455732280163003,
+          "joint_tar": 0.8551541528265346,
+          "Joint delta": 0.0050060444178988694,
+          "TAR delta": 0.009580924810234315
+        },
+        {
+          "fold": 2,
+          "model": "CatBoost",
+          "structured": 0.6393415019522902,
+          "unstructured": 0.819489275713359,
+          "joint_frozen": 0.8302944529459854,
+          "joint_tar": 0.8449462393257475,
+          "Joint delta": 0.010805177232626306,
+          "TAR delta": 0.014651786379762166
+        },
+        {
+          "fold": 2,
+          "model": "LightGBM",
+          "structured": 0.6176805990240575,
+          "unstructured": 0.8179936406026581,
+          "joint_frozen": 0.8118016612550925,
+          "joint_tar": 0.8417541781097753,
+          "Joint delta": -0.006191979347565657,
+          "TAR delta": 0.02995251685468281
+        },
+        {
+          "fold": 2,
+          "model": "TabM",
+          "structured": 0.5879721430921988,
+          "unstructured": 0.8287053837913207,
+          "joint_frozen": 0.7961380971435662,
+          "joint_tar": 0.8315165917322339,
+          "Joint delta": -0.032567286647754545,
+          "TAR delta": 0.03537849458866771
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2",
+          "structured": 0.6399008697861831,
+          "unstructured": 0.844927255421077,
+          "joint_frozen": 0.847725711070332,
+          "joint_tar": 0.8563105312524929,
+          "Joint delta": 0.0027984556492549606,
+          "TAR delta": 0.00858482018216089
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6280230627040435,
+          "unstructured": 0.848808908702343,
+          "joint_frozen": 0.8563208375865078,
+          "joint_tar": 0.8666869717511023,
+          "Joint delta": 0.0075119288841647425,
+          "TAR delta": 0.010366134164594532
+        },
+        {
+          "fold": 3,
+          "model": "CatBoost",
+          "structured": 0.6422445255382961,
+          "unstructured": 0.828967666296676,
+          "joint_frozen": 0.8387356325279841,
+          "joint_tar": 0.8471992555277291,
+          "Joint delta": 0.009767966231308156,
+          "TAR delta": 0.008463622999745013
+        },
+        {
+          "fold": 3,
+          "model": "LightGBM",
+          "structured": 0.6362656733490697,
+          "unstructured": 0.8184582531919252,
+          "joint_frozen": 0.8228368532205522,
+          "joint_tar": 0.8438569029282809,
+          "Joint delta": 0.004378600028627,
+          "TAR delta": 0.02102004970772864
+        },
+        {
+          "fold": 3,
+          "model": "TabM",
+          "structured": 0.5973280922558976,
+          "unstructured": 0.8390481551618746,
+          "joint_frozen": 0.8052050313044719,
+          "joint_tar": 0.8333455107887712,
+          "Joint delta": -0.033843123857402735,
+          "TAR delta": 0.02814047948429932
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2",
+          "structured": 0.6543334296665588,
+          "unstructured": 0.8437074769760278,
+          "joint_frozen": 0.846433030878576,
+          "joint_tar": 0.8539558031271574,
+          "Joint delta": 0.00272555390254825,
+          "TAR delta": 0.007522772248581333
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6459209824346744,
+          "unstructured": 0.8518924436950543,
+          "joint_frozen": 0.8595436733697097,
+          "joint_tar": 0.8681240712463586,
+          "Joint delta": 0.007651229674655369,
+          "TAR delta": 0.008580397876648882
+        },
+        {
+          "fold": 4,
+          "model": "CatBoost",
+          "structured": 0.6469852798464971,
+          "unstructured": 0.8127684198396438,
+          "joint_frozen": 0.8269427137004327,
+          "joint_tar": 0.8354942980019606,
+          "Joint delta": 0.014174293860788945,
+          "TAR delta": 0.008551584301527915
+        },
+        {
+          "fold": 4,
+          "model": "LightGBM",
+          "structured": 0.6144330946039599,
+          "unstructured": 0.8023264122469653,
+          "joint_frozen": 0.801662792705752,
+          "joint_tar": 0.8390555629095484,
+          "Joint delta": -0.0006636195412133006,
+          "TAR delta": 0.03739277020379639
+        },
+        {
+          "fold": 4,
+          "model": "TabM",
+          "structured": 0.5993050325027659,
+          "unstructured": 0.8191213309915494,
+          "joint_frozen": 0.7834001947523624,
+          "joint_tar": 0.8211079099576578,
+          "Joint delta": -0.035721136239186935,
+          "TAR delta": 0.03770771520529537
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2",
+          "structured": 0.6444205950649261,
+          "unstructured": 0.8327362452044063,
+          "joint_frozen": 0.8374470467561754,
+          "joint_tar": 0.8471017898001435,
+          "Joint delta": 0.004710801551769173,
+          "TAR delta": 0.009654743043968073
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2p5",
+          "structured": 0.637939691114413,
+          "unstructured": 0.8393701721816104,
+          "joint_frozen": 0.8475083328877263,
+          "joint_tar": 0.8529887367438435,
+          "Joint delta": 0.008138160706115949,
+          "TAR delta": 0.005480403856117144
+        },
+        {
+          "fold": 5,
+          "model": "CatBoost",
+          "structured": 0.6312264517564596,
+          "unstructured": 0.8223794767036511,
+          "joint_frozen": 0.8259828172673703,
+          "joint_tar": 0.8433941737290466,
+          "Joint delta": 0.0036033405637192484,
+          "TAR delta": 0.017411356461676242
+        },
+        {
+          "fold": 5,
+          "model": "LightGBM",
+          "structured": 0.6069635199185291,
+          "unstructured": 0.8209082885473632,
+          "joint_frozen": 0.8183986076396638,
+          "joint_tar": 0.837904264762788,
+          "Joint delta": -0.0025096809076994298,
+          "TAR delta": 0.019505657123124243
+        },
+        {
+          "fold": 5,
+          "model": "TabM",
+          "structured": 0.5997074098955312,
+          "unstructured": 0.8244979129148384,
+          "joint_frozen": 0.7958392045960169,
+          "joint_tar": 0.8246200482866901,
+          "Joint delta": -0.028658708318821557,
+          "TAR delta": 0.02878084369067324
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2",
+          "structured": 0.620474990445408,
+          "unstructured": 0.8334562326684832,
+          "joint_frozen": 0.8351429362263368,
+          "joint_tar": 0.8393490443794116,
+          "Joint delta": 0.0016867035578536083,
+          "TAR delta": 0.004206108153074761
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6127918900018196,
+          "unstructured": 0.8426909223650959,
+          "joint_frozen": 0.8479208256287173,
+          "joint_tar": 0.8580944810492039,
+          "Joint delta": 0.005229903263621383,
+          "TAR delta": 0.01017365542048665
+        }
+      ]
+    },
+    {
+      "key": "lendingclub",
+      "title": "LendingClub long descriptions, purpose removed",
+      "dataset": "lendingclub_longdesc_no_purpose",
+      "rows": 15000,
+      "metric": "auroc",
+      "successful_evaluations": 120,
+      "expected_evaluations": 120,
+      "completed_folds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "missing": [],
+      "complete": true,
+      "micro_batch": 64,
+      "accumulation": 4,
+      "joint_count": 4,
+      "tar_count": 1,
+      "joint_mean_passing": 0.015776006760075345,
+      "tar_mean_passing": 0.0010802176699569177,
+      "joint_mean_all": 0.010797713167751887,
+      "tar_mean_all": -0.0028724035780444356,
+      "course_acceptance": false,
+      "preliminary_course_counts_meet_rule": false,
+      "paper_both_count": 1,
+      "paper_rule_acceptance": false,
+      "source": {
+        "type": "downloaded_zip",
+        "file": "C:\\Users\\Diyar\\Downloads\\lendingclub_full_checkpoint.zip",
+        "sha256": "f89a28eaf4e33872e7422cd2f707b6516a0ca0ded0f37726fae3ca0aa6aed2b8",
+        "trainer_states": [
+          {
+            "path": "lendingclub_full/lendingclub_longdesc_no_purpose/folds/fold0/checkpoints/trainer/checkpoint-742/trainer_state.json",
+            "epoch": 7.0,
+            "step": 742,
+            "best_metric": 0.4100910425186157
+          },
+          {
+            "path": "lendingclub_full/lendingclub_longdesc_no_purpose/folds/fold1/checkpoints/trainer/checkpoint-530/trainer_state.json",
+            "epoch": 5.0,
+            "step": 530,
+            "best_metric": 0.4133129417896271
+          },
+          {
+            "path": "lendingclub_full/lendingclub_longdesc_no_purpose/folds/fold2/checkpoints/trainer/checkpoint-742/trainer_state.json",
+            "epoch": 7.0,
+            "step": 742,
+            "best_metric": 0.4092893600463867
+          },
+          {
+            "path": "lendingclub_full/lendingclub_longdesc_no_purpose/folds/fold3/checkpoints/trainer/checkpoint-742/trainer_state.json",
+            "epoch": 7.0,
+            "step": 742,
+            "best_metric": 0.40929314494132996
+          },
+          {
+            "path": "lendingclub_full/lendingclub_longdesc_no_purpose/folds/fold4/checkpoints/trainer/checkpoint-318/trainer_state.json",
+            "epoch": 3.0,
+            "step": 318,
+            "best_metric": 0.4128762185573578
+          },
+          {
+            "path": "lendingclub_full/lendingclub_longdesc_no_purpose/folds/fold5/checkpoints/trainer/checkpoint-530/trainer_state.json",
+            "epoch": 5.0,
+            "step": 530,
+            "best_metric": 0.4124228060245514
+          }
+        ],
+        "dataset_csv_verified": true,
+        "config_verified": true,
+        "runtime_source_revision": "b3dcb8e3e828774fdbd787f4c447641243a54518",
+        "source_file_hashes_verified": 12
+      },
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.6928498195035822,
+          "unstructured": 0.6020117905992327,
+          "joint_frozen": 0.7055454253257035,
+          "joint_tar": 0.7066256429956604,
+          "Joint delta": 0.01269560582212137,
+          "TAR delta": 0.0010802176699569177
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.6688794182519455,
+          "unstructured": 0.5766492615782189,
+          "joint_frozen": 0.6841763338923759,
+          "joint_tar": 0.6808384070423038,
+          "Joint delta": 0.015296915640430342,
+          "TAR delta": -0.0033379268500720594
+        },
+        {
+          "model": "TabM",
+          "structured": 0.6934169190092958,
+          "unstructured": 0.5613828279390666,
+          "joint_frozen": 0.6843014578077539,
+          "joint_tar": 0.6734008524432653,
+          "Joint delta": -0.009115461201541941,
+          "TAR delta": -0.010900605364488558
+        },
+        {
+          "model": "TabPFN-v2",
+          "structured": 0.6955218153371895,
+          "unstructured": 0.6099748441577472,
+          "joint_frozen": 0.7128641135479524,
+          "joint_tar": 0.7121923278387311,
+          "Joint delta": 0.01734229821076294,
+          "TAR delta": -0.0006717857092213286
+        },
+        {
+          "model": "TabPFN-v2p5",
+          "structured": 0.6964676973504131,
+          "unstructured": 0.6202849581018849,
+          "joint_frozen": 0.7142369047173999,
+          "joint_tar": 0.7137049870810027,
+          "Joint delta": 0.017769207366986728,
+          "TAR delta": -0.0005319176363971501
+        }
+      ],
+      "per_fold": [
+        {
+          "fold": 0,
+          "model": "CatBoost",
+          "structured": 0.6948436378074359,
+          "unstructured": 0.6066413486118255,
+          "joint_frozen": 0.7049073712408038,
+          "joint_tar": 0.7115085641801088,
+          "Joint delta": 0.010063733433367972,
+          "TAR delta": 0.006601192939304945
+        },
+        {
+          "fold": 0,
+          "model": "LightGBM",
+          "structured": 0.671718675674944,
+          "unstructured": 0.5717481317621701,
+          "joint_frozen": 0.6957946762473073,
+          "joint_tar": 0.6731979255695595,
+          "Joint delta": 0.024076000572363254,
+          "TAR delta": -0.0225967506777478
+        },
+        {
+          "fold": 0,
+          "model": "TabM",
+          "structured": 0.6950631082166369,
+          "unstructured": 0.5462863415281843,
+          "joint_frozen": 0.6535756273759848,
+          "joint_tar": 0.6657130500134711,
+          "Joint delta": -0.041487480840652013,
+          "TAR delta": 0.012137422637486295
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2",
+          "structured": 0.6970718586726584,
+          "unstructured": 0.6138638909622021,
+          "joint_frozen": 0.7158854035741771,
+          "joint_tar": 0.7122778385806421,
+          "Joint delta": 0.018813544901518653,
+          "TAR delta": -0.003607564993534984
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6977170565569767,
+          "unstructured": 0.6214583405845583,
+          "joint_frozen": 0.7186199210808901,
+          "joint_tar": 0.7138250888516766,
+          "Joint delta": 0.020902864523913434,
+          "TAR delta": -0.004794832229213508
+        },
+        {
+          "fold": 1,
+          "model": "CatBoost",
+          "structured": 0.6943399193792693,
+          "unstructured": 0.6030888929280898,
+          "joint_frozen": 0.7029186019380429,
+          "joint_tar": 0.7092693859082595,
+          "Joint delta": 0.008578682558773587,
+          "TAR delta": 0.0063507839702166
+        },
+        {
+          "fold": 1,
+          "model": "LightGBM",
+          "structured": 0.6704189338830084,
+          "unstructured": 0.5826140118159516,
+          "joint_frozen": 0.6780804170517872,
+          "joint_tar": 0.687982689875743,
+          "Joint delta": 0.007661483168778793,
+          "TAR delta": 0.009902272823955727
+        },
+        {
+          "fold": 1,
+          "model": "TabM",
+          "structured": 0.6926772940619881,
+          "unstructured": 0.5337389829721901,
+          "joint_frozen": 0.706688594370987,
+          "joint_tar": 0.6675161879569078,
+          "Joint delta": 0.014011300308998886,
+          "TAR delta": -0.03917240641407915
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2",
+          "structured": 0.6953454225756094,
+          "unstructured": 0.6118817283310838,
+          "joint_frozen": 0.7148154450447384,
+          "joint_tar": 0.7123200568238216,
+          "Joint delta": 0.01947002246912899,
+          "TAR delta": -0.002495388220916772
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6971875559955706,
+          "unstructured": 0.6201324943827177,
+          "joint_frozen": 0.7138276670650007,
+          "joint_tar": 0.713232422063834,
+          "Joint delta": 0.016640111069430086,
+          "TAR delta": -0.0005952450011666999
+        },
+        {
+          "fold": 2,
+          "model": "CatBoost",
+          "structured": 0.6948191447808584,
+          "unstructured": 0.6136946957128181,
+          "joint_frozen": 0.7117560726592079,
+          "joint_tar": 0.7121179893545572,
+          "Joint delta": 0.01693692787834955,
+          "TAR delta": 0.0003619166953492403
+        },
+        {
+          "fold": 2,
+          "model": "LightGBM",
+          "structured": 0.6755929246091751,
+          "unstructured": 0.5815611339497841,
+          "joint_frozen": 0.6851511670927165,
+          "joint_tar": 0.6884793182172687,
+          "Joint delta": 0.009558242483541424,
+          "TAR delta": 0.0033281511245522033
+        },
+        {
+          "fold": 2,
+          "model": "TabM",
+          "structured": 0.693115106912061,
+          "unstructured": 0.6197641321540586,
+          "joint_frozen": 0.6724856941388188,
+          "joint_tar": 0.6806824788489825,
+          "Joint delta": -0.02062941277324226,
+          "TAR delta": 0.008196784710163718
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2",
+          "structured": 0.693905490434184,
+          "unstructured": 0.6098853855266839,
+          "joint_frozen": 0.7126175181860722,
+          "joint_tar": 0.7153359218595106,
+          "Joint delta": 0.018712027751888183,
+          "TAR delta": 0.002718403673438341
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2p5",
+          "structured": 0.69563643840455,
+          "unstructured": 0.6212778656518818,
+          "joint_frozen": 0.712870988783483,
+          "joint_tar": 0.7176379440811312,
+          "Joint delta": 0.017234550378932956,
+          "TAR delta": 0.0047669552976482565
+        },
+        {
+          "fold": 3,
+          "model": "CatBoost",
+          "structured": 0.6816254603722167,
+          "unstructured": 0.6079310998271308,
+          "joint_frozen": 0.7022231288939077,
+          "joint_tar": 0.6994289902040784,
+          "Joint delta": 0.02059766852169098,
+          "TAR delta": -0.002794138689829251
+        },
+        {
+          "fold": 3,
+          "model": "LightGBM",
+          "structured": 0.6640895813110473,
+          "unstructured": 0.5777447336770091,
+          "joint_frozen": 0.6765937547938654,
+          "joint_tar": 0.6748463707135592,
+          "Joint delta": 0.01250417348281807,
+          "TAR delta": -0.001747384080306169
+        },
+        {
+          "fold": 3,
+          "model": "TabM",
+          "structured": 0.6837089790146327,
+          "unstructured": 0.5995291860193804,
+          "joint_frozen": 0.6877680536165243,
+          "joint_tar": 0.7080113789445053,
+          "Joint delta": 0.004059074601891588,
+          "TAR delta": 0.02024332532798101
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2",
+          "structured": 0.6874731704675977,
+          "unstructured": 0.6275822417822673,
+          "joint_frozen": 0.7014287169134662,
+          "joint_tar": 0.7090789203989528,
+          "Joint delta": 0.013955546445868494,
+          "TAR delta": 0.0076502034854866174
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2p5",
+          "structured": 0.6877023091767636,
+          "unstructured": 0.6366723774091793,
+          "joint_frozen": 0.7062946111474211,
+          "joint_tar": 0.7089603225860511,
+          "Joint delta": 0.018592301970657532,
+          "TAR delta": 0.0026657114386300362
+        },
+        {
+          "fold": 4,
+          "model": "CatBoost",
+          "structured": 0.689439380403774,
+          "unstructured": 0.5872077434058972,
+          "joint_frozen": 0.695035070146739,
+          "joint_tar": 0.6955929310547084,
+          "Joint delta": 0.005595689742965093,
+          "TAR delta": 0.0005578609079693875
+        },
+        {
+          "fold": 4,
+          "model": "LightGBM",
+          "structured": 0.6591553644240078,
+          "unstructured": 0.5587810078493705,
+          "joint_frozen": 0.6785705998600029,
+          "joint_tar": 0.6759649930194873,
+          "Joint delta": 0.019415235435995104,
+          "TAR delta": -0.002605606840515584
+        },
+        {
+          "fold": 4,
+          "model": "TabM",
+          "structured": 0.6884417729857387,
+          "unstructured": 0.5225729022045013,
+          "joint_frozen": 0.7068539223003851,
+          "joint_tar": 0.6410514727399059,
+          "Joint delta": 0.01841214931464641,
+          "TAR delta": -0.0658024495604792
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2",
+          "structured": 0.6910829913977913,
+          "unstructured": 0.6002302989051618,
+          "joint_frozen": 0.7063070187990423,
+          "joint_tar": 0.7009111405886835,
+          "Joint delta": 0.015224027401251061,
+          "TAR delta": -0.0053958782103588065
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2p5",
+          "structured": 0.692097518340765,
+          "unstructured": 0.6030468358232428,
+          "joint_frozen": 0.7063518152555461,
+          "joint_tar": 0.705148434186593,
+          "Joint delta": 0.014254296914781084,
+          "TAR delta": -0.0012033810689531244
+        },
+        {
+          "fold": 5,
+          "model": "CatBoost",
+          "structured": 0.7020313742779392,
+          "unstructured": 0.5935069631096347,
+          "joint_frozen": 0.7164323070755196,
+          "joint_tar": 0.7118359972722503,
+          "Joint delta": 0.014400932797580479,
+          "TAR delta": -0.004596309803269305
+        },
+        {
+          "fold": 5,
+          "model": "LightGBM",
+          "structured": 0.6723010296094909,
+          "unstructured": 0.5874465504150279,
+          "joint_frozen": 0.6908673883085761,
+          "joint_tar": 0.6845591448582048,
+          "Joint delta": 0.018566358699085184,
+          "TAR delta": -0.006308243450371287
+        },
+        {
+          "fold": 5,
+          "model": "TabM",
+          "structured": 0.7074952528647174,
+          "unstructured": 0.5464054227560843,
+          "joint_frozen": 0.6784368550438232,
+          "joint_tar": 0.6774305461558195,
+          "Joint delta": -0.029058397820894144,
+          "TAR delta": -0.001006308888003682
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2",
+          "structured": 0.7082519584752961,
+          "unstructured": 0.5964055194390839,
+          "joint_frozen": 0.726130578770218,
+          "joint_tar": 0.7232300887807758,
+          "Joint delta": 0.017878620294921932,
+          "TAR delta": -0.0029004899894422564
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7084653056278529,
+          "unstructured": 0.6191218347597299,
+          "joint_frozen": 0.7274564249720585,
+          "joint_tar": 0.7234257107167303,
+          "Joint delta": 0.01899111934420561,
+          "TAR delta": -0.004030714255328194
+        }
+      ]
+    },
+    {
+      "key": "device",
+      "title": "FDA Device \u2014 Azure VM, physical batch 256",
+      "dataset": "fda_device_severity",
+      "rows": 15000,
+      "metric": "auroc",
+      "successful_evaluations": 120,
+      "expected_evaluations": 120,
+      "completed_folds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "missing": [],
+      "complete": true,
+      "micro_batch": 256,
+      "accumulation": 1,
+      "joint_count": 4,
+      "tar_count": 4,
+      "joint_mean_passing": 0.012439337660346772,
+      "tar_mean_passing": 0.017156147943838573,
+      "joint_mean_all": -0.0063918590240244376,
+      "tar_mean_all": 0.013707797220122896,
+      "course_acceptance": true,
+      "preliminary_course_counts_meet_rule": true,
+      "paper_both_count": 3,
+      "paper_rule_acceptance": true,
+      "source": {
+        "type": "github_commit",
+        "commit": "1b5f0fc5ad676b3ed8cf1bb86851b70d0fdebdb9",
+        "folder": "results/fda_device_full_e5/fda_device_severity/",
+        "original_final_audit_run_hashes_verified": 120,
+        "dataset_csv_verified": true,
+        "config_verified": true,
+        "runtime_source_revision": "481a40c87dcf6bbbd2fcfe27d061f579544f8b6d",
+        "source_file_hashes_verified": 11
+      },
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.7449028195823947,
+          "unstructured": 0.8188165821123587,
+          "joint_frozen": 0.8382273658106557,
+          "joint_tar": 0.8381417601359159,
+          "Joint delta": 0.019410783698296963,
+          "TAR delta": -8.560567473980818e-05
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.7261801374324017,
+          "unstructured": 0.8074792150709929,
+          "joint_frozen": 0.8212989598168533,
+          "joint_tar": 0.8331335999198667,
+          "Joint delta": 0.013819744745860452,
+          "TAR delta": 0.011834640103013383
+        },
+        {
+          "model": "TabM",
+          "structured": 0.6860187880432239,
+          "unstructured": 0.8293479963713642,
+          "joint_frozen": 0.747631350609855,
+          "joint_tar": 0.7855852167164636,
+          "Joint delta": -0.08171664576150928,
+          "TAR delta": 0.03795386610660867
+        },
+        {
+          "model": "TabPFN-v2",
+          "structured": 0.7394221075176133,
+          "unstructured": 0.8139630570567915,
+          "joint_frozen": 0.8220515063237058,
+          "joint_tar": 0.8387548151856481,
+          "Joint delta": 0.008088449266914322,
+          "TAR delta": 0.016703308861942268
+        },
+        {
+          "model": "TabPFN-v2p5",
+          "structured": 0.7459583264631315,
+          "unstructured": 0.8383960643806265,
+          "joint_frozen": 0.8468344373109419,
+          "joint_tar": 0.8489672140147319,
+          "Joint delta": 0.008438372930315352,
+          "TAR delta": 0.0021327767037899736
+        }
+      ],
+      "per_fold": [
+        {
+          "fold": 0,
+          "model": "CatBoost",
+          "structured": 0.7465985340772127,
+          "unstructured": 0.8252772753692496,
+          "joint_frozen": 0.8496682991257742,
+          "joint_tar": 0.8433391861849544,
+          "Joint delta": 0.024391023756524688,
+          "TAR delta": -0.0063291129408198366
+        },
+        {
+          "fold": 0,
+          "model": "LightGBM",
+          "structured": 0.723749188711935,
+          "unstructured": 0.8100901524418784,
+          "joint_frozen": 0.8280872576359241,
+          "joint_tar": 0.8427369376267827,
+          "Joint delta": 0.017997105194045626,
+          "TAR delta": 0.014649679990858644
+        },
+        {
+          "fold": 0,
+          "model": "TabM",
+          "structured": 0.6983715127067421,
+          "unstructured": 0.8331041385251906,
+          "joint_frozen": 0.7506225842959434,
+          "joint_tar": 0.8003231635490224,
+          "Joint delta": -0.08248155422924719,
+          "TAR delta": 0.049700579253079025
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2",
+          "structured": 0.7354707104484576,
+          "unstructured": 0.8245249354838089,
+          "joint_frozen": 0.8259751497196793,
+          "joint_tar": 0.8419747192934444,
+          "Joint delta": 0.0014502142358704395,
+          "TAR delta": 0.015999569573765027
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7422605578227562,
+          "unstructured": 0.8441096105437705,
+          "joint_frozen": 0.8504474692430709,
+          "joint_tar": 0.849676921316246,
+          "Joint delta": 0.006337858699300369,
+          "TAR delta": -0.0007705479268249604
+        },
+        {
+          "fold": 1,
+          "model": "CatBoost",
+          "structured": 0.7430679453504725,
+          "unstructured": 0.8109465189490677,
+          "joint_frozen": 0.827209663270536,
+          "joint_tar": 0.8414119906646206,
+          "Joint delta": 0.01626314432146836,
+          "TAR delta": 0.014202327394084557
+        },
+        {
+          "fold": 1,
+          "model": "LightGBM",
+          "structured": 0.7306887197668787,
+          "unstructured": 0.8002245555254763,
+          "joint_frozen": 0.8132262360376639,
+          "joint_tar": 0.832647054666218,
+          "Joint delta": 0.01300168051218753,
+          "TAR delta": 0.01942081862855416
+        },
+        {
+          "fold": 1,
+          "model": "TabM",
+          "structured": 0.703381797477121,
+          "unstructured": 0.8210365348175022,
+          "joint_frozen": 0.7610217517212323,
+          "joint_tar": 0.7767399027150356,
+          "Joint delta": -0.06001478309626984,
+          "TAR delta": 0.015718150993803248
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2",
+          "structured": 0.7398832134568026,
+          "unstructured": 0.8153522173879044,
+          "joint_frozen": 0.8238741574715046,
+          "joint_tar": 0.8448753719763076,
+          "Joint delta": 0.008521940083600188,
+          "TAR delta": 0.021001214504802967
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7402214007096021,
+          "unstructured": 0.8372850914429963,
+          "joint_frozen": 0.8460020193561523,
+          "joint_tar": 0.8562152943611113,
+          "Joint delta": 0.008716927913155925,
+          "TAR delta": 0.010213275004959055
+        },
+        {
+          "fold": 2,
+          "model": "CatBoost",
+          "structured": 0.7491536436994947,
+          "unstructured": 0.8200954202164282,
+          "joint_frozen": 0.8388527777157061,
+          "joint_tar": 0.8375989753855322,
+          "Joint delta": 0.01875735749927787,
+          "TAR delta": -0.0012538023301739143
+        },
+        {
+          "fold": 2,
+          "model": "LightGBM",
+          "structured": 0.7241952476960049,
+          "unstructured": 0.808605656849279,
+          "joint_frozen": 0.8274605613017796,
+          "joint_tar": 0.832940653592992,
+          "Joint delta": 0.018854904452500598,
+          "TAR delta": 0.0054800922912123795
+        },
+        {
+          "fold": 2,
+          "model": "TabM",
+          "structured": 0.6718452860624575,
+          "unstructured": 0.8324369043728952,
+          "joint_frozen": 0.7537224397537025,
+          "joint_tar": 0.7777292749295833,
+          "Joint delta": -0.07871446461919274,
+          "TAR delta": 0.02400683517588087
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2",
+          "structured": 0.7414969567621096,
+          "unstructured": 0.803087456671962,
+          "joint_frozen": 0.8161030183371784,
+          "joint_tar": 0.824570534289387,
+          "Joint delta": 0.013015561665216335,
+          "TAR delta": 0.008467515952208626
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7490501220652233,
+          "unstructured": 0.8320033486297294,
+          "joint_frozen": 0.8414197400167419,
+          "joint_tar": 0.8395426040947238,
+          "Joint delta": 0.009416391387012557,
+          "TAR delta": -0.0018771359220181028
+        },
+        {
+          "fold": 3,
+          "model": "CatBoost",
+          "structured": 0.7547201796508164,
+          "unstructured": 0.8262353512387254,
+          "joint_frozen": 0.8489974222785971,
+          "joint_tar": 0.8380493201161462,
+          "Joint delta": 0.022762071039871712,
+          "TAR delta": -0.010948102162450901
+        },
+        {
+          "fold": 3,
+          "model": "LightGBM",
+          "structured": 0.7338935028269044,
+          "unstructured": 0.8159665719405211,
+          "joint_frozen": 0.8221782907048132,
+          "joint_tar": 0.8301881152298399,
+          "Joint delta": 0.006211718764292051,
+          "TAR delta": 0.008009824525026743
+        },
+        {
+          "fold": 3,
+          "model": "TabM",
+          "structured": 0.6807410989050555,
+          "unstructured": 0.8430143646739076,
+          "joint_frozen": 0.7479796585375111,
+          "joint_tar": 0.7891735480368833,
+          "Joint delta": -0.09503470613639642,
+          "TAR delta": 0.041193889499372194
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2",
+          "structured": 0.7441781474238517,
+          "unstructured": 0.8214868922480023,
+          "joint_frozen": 0.8311053561072653,
+          "joint_tar": 0.8477790395119955,
+          "Joint delta": 0.009618463859263016,
+          "TAR delta": 0.01667368340473019
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7568258701773498,
+          "unstructured": 0.8488778778308372,
+          "joint_frozen": 0.8576380927414561,
+          "joint_tar": 0.8525409091364663,
+          "Joint delta": 0.008760214910618846,
+          "TAR delta": -0.005097183604989786
+        },
+        {
+          "fold": 4,
+          "model": "CatBoost",
+          "structured": 0.7275967344047382,
+          "unstructured": 0.8083886617526548,
+          "joint_frozen": 0.8204871419805331,
+          "joint_tar": 0.8285242414056806,
+          "Joint delta": 0.012098480227878294,
+          "TAR delta": 0.00803709942514752
+        },
+        {
+          "fold": 4,
+          "model": "LightGBM",
+          "structured": 0.7120263611460947,
+          "unstructured": 0.7986580645375184,
+          "joint_frozen": 0.8075379237371513,
+          "joint_tar": 0.8222661230186793,
+          "Joint delta": 0.008879859199632856,
+          "TAR delta": 0.01472819928152802
+        },
+        {
+          "fold": 4,
+          "model": "TabM",
+          "structured": 0.6656696123057957,
+          "unstructured": 0.8141547650223995,
+          "joint_frozen": 0.746275041478128,
+          "joint_tar": 0.7734611123211715,
+          "Joint delta": -0.06787972354427152,
+          "TAR delta": 0.027186070843043586
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2",
+          "structured": 0.731215081263194,
+          "unstructured": 0.8023611882940761,
+          "joint_frozen": 0.8087265534209435,
+          "joint_tar": 0.8284740734038752,
+          "Joint delta": 0.006365365126867362,
+          "TAR delta": 0.019747519982931783
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7383921223630313,
+          "unstructured": 0.8305335822327408,
+          "joint_frozen": 0.838475035966371,
+          "joint_tar": 0.8438947310635411,
+          "Joint delta": 0.0079414537336302,
+          "TAR delta": 0.0054196950971701074
+        },
+        {
+          "fold": 5,
+          "model": "CatBoost",
+          "structured": 0.7482798803116343,
+          "unstructured": 0.8219562651480272,
+          "joint_frozen": 0.8441488904927876,
+          "joint_tar": 0.8399268470585612,
+          "Joint delta": 0.02219262534476041,
+          "TAR delta": -0.004222043434226386
+        },
+        {
+          "fold": 5,
+          "model": "LightGBM",
+          "structured": 0.7325278044465926,
+          "unstructured": 0.8113302891312842,
+          "joint_frozen": 0.8293034894837882,
+          "joint_tar": 0.8380227153846883,
+          "Joint delta": 0.017973200352503937,
+          "TAR delta": 0.00871922590090013
+        },
+        {
+          "fold": 5,
+          "model": "TabM",
+          "structured": 0.696103420802172,
+          "unstructured": 0.8323412708162904,
+          "joint_frozen": 0.7261666278726127,
+          "joint_tar": 0.7960842987470854,
+          "Joint delta": -0.10617464294367773,
+          "TAR delta": 0.06991767087447276
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2",
+          "structured": 0.744288535751264,
+          "unstructured": 0.8169656522549954,
+          "joint_frozen": 0.8265248028856639,
+          "joint_tar": 0.8448551526388791,
+          "Joint delta": 0.009559150630668478,
+          "TAR delta": 0.018330349753215236
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7489998856408269,
+          "unstructured": 0.8375668756036854,
+          "joint_frozen": 0.847024266541859,
+          "joint_tar": 0.8519328241163026,
+          "Joint delta": 0.00945739093817366,
+          "TAR delta": 0.004908557574443528
+        }
+      ]
+    },
+    {
+      "key": "steam",
+      "title": "Steam recommendations \u2014 physical batch 256",
+      "dataset": "steam_recommended",
+      "rows": 15000,
+      "metric": "auroc",
+      "successful_evaluations": 120,
+      "expected_evaluations": 120,
+      "completed_folds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "missing": [],
+      "complete": true,
+      "micro_batch": 256,
+      "accumulation": 1,
+      "joint_count": 5,
+      "tar_count": 5,
+      "joint_mean_passing": 0.004454640659750875,
+      "tar_mean_passing": 0.005189613173936003,
+      "joint_mean_all": 0.004454640659750875,
+      "tar_mean_all": 0.005189613173936003,
+      "course_acceptance": true,
+      "preliminary_course_counts_meet_rule": true,
+      "paper_both_count": 5,
+      "paper_rule_acceptance": true,
+      "source": {
+        "type": "local_results",
+        "folder": "C:\\Users\\Diyar\\OneDrive\\Documents\\nlp-final-try2\\results\\steam_full_e5\\steam_recommended",
+        "dataset_csv_verified": true,
+        "config_verified": true,
+        "runtime_source_revision": "0d37ec18618f1ecc7f3d42514525e213b18292b0",
+        "source_file_hashes_verified": 9
+      },
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.8120600916628685,
+          "unstructured": 0.9537201149686241,
+          "joint_frozen": 0.9629410714652814,
+          "joint_tar": 0.9676638758423658,
+          "Joint delta": 0.009220956496657329,
+          "TAR delta": 0.004722804377084389
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.8006694071912235,
+          "unstructured": 0.9517568332780287,
+          "joint_frozen": 0.9581213042526203,
+          "joint_tar": 0.9653415550006156,
+          "Joint delta": 0.006364470974591585,
+          "TAR delta": 0.0072202507479952605
+        },
+        {
+          "model": "TabM",
+          "structured": 0.8058817508583417,
+          "unstructured": 0.9584965584757023,
+          "joint_frozen": 0.9586076402002862,
+          "joint_tar": 0.965263744896781,
+          "Joint delta": 0.00011108172458396126,
+          "TAR delta": 0.006656104696494802
+        },
+        {
+          "model": "TabPFN-v2",
+          "structured": 0.8143062835331425,
+          "unstructured": 0.9574523662582033,
+          "joint_frozen": 0.9606432820707629,
+          "joint_tar": 0.9653429734095474,
+          "Joint delta": 0.0031909158125595916,
+          "TAR delta": 0.004699691338784562
+        },
+        {
+          "model": "TabPFN-v2p5",
+          "structured": 0.8046565365927177,
+          "unstructured": 0.9606603284266383,
+          "joint_frozen": 0.9640461067170002,
+          "joint_tar": 0.9666953214263212,
+          "Joint delta": 0.003385778290361907,
+          "TAR delta": 0.0026492147093210017
+        }
+      ],
+      "per_fold": [
+        {
+          "fold": 0,
+          "model": "CatBoost",
+          "structured": 0.8064098398719954,
+          "unstructured": 0.9576496635748507,
+          "joint_frozen": 0.9673199639786788,
+          "joint_tar": 0.9684977785868669,
+          "Joint delta": 0.009670300403828103,
+          "TAR delta": 0.0011778146081881102
+        },
+        {
+          "fold": 0,
+          "model": "LightGBM",
+          "structured": 0.7952345073131963,
+          "unstructured": 0.9549703987165824,
+          "joint_frozen": 0.9612973069553429,
+          "joint_tar": 0.9669225832360951,
+          "Joint delta": 0.006326908238760476,
+          "TAR delta": 0.005625276280752267
+        },
+        {
+          "fold": 0,
+          "model": "TabM",
+          "structured": 0.8003998248659209,
+          "unstructured": 0.9606987074380151,
+          "joint_frozen": 0.9575217685002227,
+          "joint_tar": 0.9646482843307674,
+          "Joint delta": -0.003176938937792362,
+          "TAR delta": 0.0071265158305446885
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2",
+          "structured": 0.8105345087038182,
+          "unstructured": 0.9596770217430055,
+          "joint_frozen": 0.9639683545023913,
+          "joint_tar": 0.9661387781658878,
+          "Joint delta": 0.0042913327593857575,
+          "TAR delta": 0.0021704236634965124
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7982405683176719,
+          "unstructured": 0.9625130476153152,
+          "joint_frozen": 0.9654527380291684,
+          "joint_tar": 0.9677506353667175,
+          "Joint delta": 0.0029396904138532243,
+          "TAR delta": 0.0022978973375490375
+        },
+        {
+          "fold": 1,
+          "model": "CatBoost",
+          "structured": 0.8194052022401572,
+          "unstructured": 0.9460831745882162,
+          "joint_frozen": 0.9563592564670405,
+          "joint_tar": 0.9600803710260433,
+          "Joint delta": 0.010276081878824228,
+          "TAR delta": 0.003721114559002814
+        },
+        {
+          "fold": 1,
+          "model": "LightGBM",
+          "structured": 0.8162021829416872,
+          "unstructured": 0.9450404631767423,
+          "joint_frozen": 0.9530533753811566,
+          "joint_tar": 0.9576676415748413,
+          "Joint delta": 0.008012912204414357,
+          "TAR delta": 0.004614266193684657
+        },
+        {
+          "fold": 1,
+          "model": "TabM",
+          "structured": 0.8106817233325032,
+          "unstructured": 0.9537700422721979,
+          "joint_frozen": 0.9547873011759478,
+          "joint_tar": 0.9601478937944683,
+          "Joint delta": 0.0010172589037499291,
+          "TAR delta": 0.00536059261852051
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2",
+          "structured": 0.8185945083164491,
+          "unstructured": 0.9519820561924058,
+          "joint_frozen": 0.9542607918632751,
+          "joint_tar": 0.9594280716338743,
+          "Joint delta": 0.0022787356708692252,
+          "TAR delta": 0.005167279770599276
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2p5",
+          "structured": 0.8142644267337996,
+          "unstructured": 0.9557742694919932,
+          "joint_frozen": 0.9582852330019318,
+          "joint_tar": 0.959691221114559,
+          "Joint delta": 0.002510963509938624,
+          "TAR delta": 0.0014059881126271545
+        },
+        {
+          "fold": 2,
+          "model": "CatBoost",
+          "structured": 0.8106871924663942,
+          "unstructured": 0.9558670344168388,
+          "joint_frozen": 0.9637451114357065,
+          "joint_tar": 0.9731781052900828,
+          "Joint delta": 0.007878077018867669,
+          "TAR delta": 0.009432993854376237
+        },
+        {
+          "fold": 2,
+          "model": "LightGBM",
+          "structured": 0.7960850256796871,
+          "unstructured": 0.9535190931671166,
+          "joint_frozen": 0.9607311979590876,
+          "joint_tar": 0.9724023296827566,
+          "Joint delta": 0.007212104791970986,
+          "TAR delta": 0.01167113172366907
+        },
+        {
+          "fold": 2,
+          "model": "TabM",
+          "structured": 0.8076293155673427,
+          "unstructured": 0.9622044984888363,
+          "joint_frozen": 0.9651708725708632,
+          "joint_tar": 0.9682428430072495,
+          "Joint delta": 0.0029663740820269346,
+          "TAR delta": 0.0030719704363862954
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2",
+          "structured": 0.815471843215918,
+          "unstructured": 0.9607648541676483,
+          "joint_frozen": 0.9640698938483182,
+          "joint_tar": 0.9702102587489315,
+          "Joint delta": 0.0033050396806698634,
+          "TAR delta": 0.006140364900613315
+        },
+        {
+          "fold": 2,
+          "model": "TabPFN-v2p5",
+          "structured": 0.8048247016377112,
+          "unstructured": 0.9638267277414665,
+          "joint_frozen": 0.9674329904887555,
+          "joint_tar": 0.9714485968726653,
+          "Joint delta": 0.003606262747289035,
+          "TAR delta": 0.004015606383909742
+        },
+        {
+          "fold": 3,
+          "model": "CatBoost",
+          "structured": 0.825439447055021,
+          "unstructured": 0.9515309272203281,
+          "joint_frozen": 0.9630579185592819,
+          "joint_tar": 0.9664409223784354,
+          "Joint delta": 0.011526991338953851,
+          "TAR delta": 0.003383003819153463
+        },
+        {
+          "fold": 3,
+          "model": "LightGBM",
+          "structured": 0.80275608618316,
+          "unstructured": 0.9495008299484332,
+          "joint_frozen": 0.9556627598619324,
+          "joint_tar": 0.9617663257957412,
+          "Joint delta": 0.006161929913499176,
+          "TAR delta": 0.0061035659338087855
+        },
+        {
+          "fold": 3,
+          "model": "TabM",
+          "structured": 0.8145312824610131,
+          "unstructured": 0.9541840652429227,
+          "joint_frozen": 0.9616108289834259,
+          "joint_tar": 0.9634776335323608,
+          "Joint delta": 0.007426763740503217,
+          "TAR delta": 0.0018668045489349527
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2",
+          "structured": 0.8208994879561609,
+          "unstructured": 0.9554295146434593,
+          "joint_frozen": 0.9596171828613016,
+          "joint_tar": 0.9632433348124494,
+          "Joint delta": 0.004187668217842333,
+          "TAR delta": 0.0036261519511477935
+        },
+        {
+          "fold": 3,
+          "model": "TabPFN-v2p5",
+          "structured": 0.821686874931259,
+          "unstructured": 0.9579261023523,
+          "joint_frozen": 0.9626019631367204,
+          "joint_tar": 0.9648046239442336,
+          "Joint delta": 0.004675860784420394,
+          "TAR delta": 0.0022026608075131904
+        },
+        {
+          "fold": 4,
+          "model": "CatBoost",
+          "structured": 0.8070077274654857,
+          "unstructured": 0.951885504944097,
+          "joint_frozen": 0.9612919945342318,
+          "joint_tar": 0.9651300644179832,
+          "Joint delta": 0.009406489590134792,
+          "TAR delta": 0.0038380698837514604
+        },
+        {
+          "fold": 4,
+          "model": "LightGBM",
+          "structured": 0.7991071428571428,
+          "unstructured": 0.9478995580939815,
+          "joint_frozen": 0.9558043497283945,
+          "joint_tar": 0.9648835326902754,
+          "Joint delta": 0.007904791634412933,
+          "TAR delta": 0.009079182961880927
+        },
+        {
+          "fold": 4,
+          "model": "TabM",
+          "structured": 0.7998122404264913,
+          "unstructured": 0.9542643678354347,
+          "joint_frozen": 0.9501705107666211,
+          "joint_tar": 0.963936531121896,
+          "Joint delta": -0.0040938570688136,
+          "TAR delta": 0.013766020355274966
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2",
+          "structured": 0.8091343791439207,
+          "unstructured": 0.9529747039936457,
+          "joint_frozen": 0.955338842293738,
+          "joint_tar": 0.9616519056145286,
+          "Joint delta": 0.0023641383000923,
+          "TAR delta": 0.006313063320790624
+        },
+        {
+          "fold": 4,
+          "model": "TabPFN-v2p5",
+          "structured": 0.792667448051642,
+          "unstructured": 0.9563954368912433,
+          "joint_frozen": 0.9608048209153143,
+          "joint_tar": 0.9633593271450785,
+          "Joint delta": 0.004409384024070984,
+          "TAR delta": 0.002554506229764275
+        },
+        {
+          "fold": 5,
+          "model": "CatBoost",
+          "structured": 0.8034111408781578,
+          "unstructured": 0.9593043850674134,
+          "joint_frozen": 0.9658721838167486,
+          "joint_tar": 0.9726560133547836,
+          "Joint delta": 0.0065677987493351075,
+          "TAR delta": 0.006783829538035024
+        },
+        {
+          "fold": 5,
+          "model": "LightGBM",
+          "structured": 0.7946314981724678,
+          "unstructured": 0.9596106565653166,
+          "joint_frozen": 0.9621788356298087,
+          "joint_tar": 0.9684069170239835,
+          "Joint delta": 0.0025681790644920266,
+          "TAR delta": 0.006228081394174856
+        },
+        {
+          "fold": 5,
+          "model": "TabM",
+          "structured": 0.8022361184967791,
+          "unstructured": 0.9658576695768069,
+          "joint_frozen": 0.9623845592046365,
+          "joint_tar": 0.9711292835939445,
+          "Joint delta": -0.0034731103721703516,
+          "TAR delta": 0.008744724389307956
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2",
+          "structured": 0.8112029738625883,
+          "unstructured": 0.9638860468090549,
+          "joint_frozen": 0.966604627055553,
+          "joint_tar": 0.9713854914816136,
+          "Joint delta": 0.00271858024649807,
+          "TAR delta": 0.004780864426060627
+        },
+        {
+          "fold": 5,
+          "model": "TabPFN-v2p5",
+          "structured": 0.7962551998842227,
+          "unstructured": 0.9675263864675117,
+          "joint_frozen": 0.9696988947301108,
+          "joint_tar": 0.9731175241146734,
+          "Joint delta": 0.002172508262599182,
+          "TAR delta": 0.0034186293845626103
+        }
+      ]
+    },
+    {
+      "key": "airbnb",
+      "title": "LA Airbnb log price \u2014 historical partial evaluation",
+      "dataset": "la_airbnb_price",
+      "rows": 22569,
+      "metric": "r2",
+      "successful_evaluations": 55,
+      "expected_evaluations": 120,
+      "completed_folds": [
+        0,
+        1
+      ],
+      "missing": [
+        {
+          "model": "cat",
+          "condition": "joint_frozen",
+          "fold": 3
+        },
+        {
+          "model": "cat",
+          "condition": "joint_frozen",
+          "fold": 4
+        },
+        {
+          "model": "cat",
+          "condition": "joint_frozen",
+          "fold": 5
+        },
+        {
+          "model": "cat",
+          "condition": "joint_tar",
+          "fold": 2
+        },
+        {
+          "model": "cat",
+          "condition": "joint_tar",
+          "fold": 3
+        },
+        {
+          "model": "cat",
+          "condition": "joint_tar",
+          "fold": 4
+        },
+        {
+          "model": "cat",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "cat",
+          "condition": "structured",
+          "fold": 3
+        },
+        {
+          "model": "cat",
+          "condition": "structured",
+          "fold": 4
+        },
+        {
+          "model": "cat",
+          "condition": "structured",
+          "fold": 5
+        },
+        {
+          "model": "cat",
+          "condition": "unstructured",
+          "fold": 3
+        },
+        {
+          "model": "cat",
+          "condition": "unstructured",
+          "fold": 4
+        },
+        {
+          "model": "cat",
+          "condition": "unstructured",
+          "fold": 5
+        },
+        {
+          "model": "light",
+          "condition": "joint_frozen",
+          "fold": 3
+        },
+        {
+          "model": "light",
+          "condition": "joint_frozen",
+          "fold": 4
+        },
+        {
+          "model": "light",
+          "condition": "joint_frozen",
+          "fold": 5
+        },
+        {
+          "model": "light",
+          "condition": "joint_tar",
+          "fold": 2
+        },
+        {
+          "model": "light",
+          "condition": "joint_tar",
+          "fold": 3
+        },
+        {
+          "model": "light",
+          "condition": "joint_tar",
+          "fold": 4
+        },
+        {
+          "model": "light",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "light",
+          "condition": "structured",
+          "fold": 3
+        },
+        {
+          "model": "light",
+          "condition": "structured",
+          "fold": 4
+        },
+        {
+          "model": "light",
+          "condition": "structured",
+          "fold": 5
+        },
+        {
+          "model": "light",
+          "condition": "unstructured",
+          "fold": 3
+        },
+        {
+          "model": "light",
+          "condition": "unstructured",
+          "fold": 4
+        },
+        {
+          "model": "light",
+          "condition": "unstructured",
+          "fold": 5
+        },
+        {
+          "model": "tabm",
+          "condition": "joint_frozen",
+          "fold": 3
+        },
+        {
+          "model": "tabm",
+          "condition": "joint_frozen",
+          "fold": 4
+        },
+        {
+          "model": "tabm",
+          "condition": "joint_frozen",
+          "fold": 5
+        },
+        {
+          "model": "tabm",
+          "condition": "joint_tar",
+          "fold": 2
+        },
+        {
+          "model": "tabm",
+          "condition": "joint_tar",
+          "fold": 3
+        },
+        {
+          "model": "tabm",
+          "condition": "joint_tar",
+          "fold": 4
+        },
+        {
+          "model": "tabm",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "tabm",
+          "condition": "structured",
+          "fold": 3
+        },
+        {
+          "model": "tabm",
+          "condition": "structured",
+          "fold": 4
+        },
+        {
+          "model": "tabm",
+          "condition": "structured",
+          "fold": 5
+        },
+        {
+          "model": "tabm",
+          "condition": "unstructured",
+          "fold": 3
+        },
+        {
+          "model": "tabm",
+          "condition": "unstructured",
+          "fold": 4
+        },
+        {
+          "model": "tabm",
+          "condition": "unstructured",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "joint_frozen",
+          "fold": 3
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "joint_frozen",
+          "fold": 4
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "joint_frozen",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "joint_tar",
+          "fold": 2
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "joint_tar",
+          "fold": 3
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "joint_tar",
+          "fold": 4
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "structured",
+          "fold": 3
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "structured",
+          "fold": 4
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "structured",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "unstructured",
+          "fold": 3
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "unstructured",
+          "fold": 4
+        },
+        {
+          "model": "tabpfnv2",
+          "condition": "unstructured",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "joint_frozen",
+          "fold": 3
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "joint_frozen",
+          "fold": 4
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "joint_frozen",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "joint_tar",
+          "fold": 2
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "joint_tar",
+          "fold": 3
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "joint_tar",
+          "fold": 4
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "joint_tar",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "structured",
+          "fold": 3
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "structured",
+          "fold": 4
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "structured",
+          "fold": 5
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "unstructured",
+          "fold": 3
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "unstructured",
+          "fold": 4
+        },
+        {
+          "model": "tabpfnv2p5",
+          "condition": "unstructured",
+          "fold": 5
+        }
+      ],
+      "complete": false,
+      "micro_batch": null,
+      "accumulation": null,
+      "joint_count": 3,
+      "tar_count": 2,
+      "joint_mean_passing": 0.005870915581646467,
+      "tar_mean_passing": 0.004126855683809549,
+      "joint_mean_all": 0.002964865527065741,
+      "tar_mean_all": 0.0002817387160455764,
+      "course_acceptance": null,
+      "preliminary_course_counts_meet_rule": false,
+      "paper_both_count": 0,
+      "paper_rule_acceptance": null,
+      "source": {
+        "type": "local_results",
+        "folder": "C:\\Users\\Diyar\\OneDrive\\Documents\\nlp-final-try2\\results\\la_airbnb_price",
+        "dataset_csv_verified": false,
+        "config_verified": false
+      },
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.8390395683289829,
+          "unstructured": 0.5664307191338753,
+          "joint_frozen": 0.8377946534276941,
+          "joint_tar": 0.840570183507303,
+          "Joint delta": -0.0012449149012887517,
+          "TAR delta": 0.0027755300796088456
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.8277119466395584,
+          "unstructured": 0.5319080157195355,
+          "joint_frozen": 0.8261684424312364,
+          "joint_tar": 0.8316466237192467,
+          "Joint delta": -0.0015435042083219441,
+          "TAR delta": 0.005478181288010253
+        },
+        {
+          "model": "TabM",
+          "structured": 0.8339064925598288,
+          "unstructured": 0.6107387832781986,
+          "joint_frozen": 0.8432984086171234,
+          "joint_tar": 0.8418485944700285,
+          "Joint delta": 0.009391916057294503,
+          "TAR delta": -0.0014498141470948855
+        },
+        {
+          "model": "TabPFN-v2",
+          "structured": 0.83888315434658,
+          "unstructured": 0.5895553011156448,
+          "joint_frozen": 0.8418494306575671,
+          "joint_tar": 0.8391978965491795,
+          "Joint delta": 0.002966276310987115,
+          "TAR delta": -0.0026515341083875876
+        },
+        {
+          "model": "TabPFN-v2p5",
+          "structured": 0.8497403591389732,
+          "unstructured": 0.6173579336169472,
+          "joint_frozen": 0.854994913515631,
+          "joint_tar": 0.8522512439837222,
+          "Joint delta": 0.005254554376657783,
+          "TAR delta": -0.0027436695319087434
+        }
+      ],
+      "per_fold": [
+        {
+          "fold": 0,
+          "model": "CatBoost",
+          "structured": 0.8334067103064271,
+          "unstructured": 0.5668629867366963,
+          "joint_frozen": 0.832935526586671,
+          "joint_tar": 0.8382923081088933,
+          "Joint delta": -0.0004711837197560742,
+          "TAR delta": 0.005356781522222298
+        },
+        {
+          "fold": 0,
+          "model": "LightGBM",
+          "structured": 0.8234474912852747,
+          "unstructured": 0.5347100740789165,
+          "joint_frozen": 0.8236707301304143,
+          "joint_tar": 0.8276758255737253,
+          "Joint delta": 0.0002232388451395284,
+          "TAR delta": 0.004005095443311069
+        },
+        {
+          "fold": 0,
+          "model": "TabM",
+          "structured": 0.825922953737512,
+          "unstructured": 0.6067269237683426,
+          "joint_frozen": 0.8364467225529159,
+          "joint_tar": 0.8363214626647709,
+          "Joint delta": 0.010523768815403844,
+          "TAR delta": -0.00012525988814493516
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2",
+          "structured": 0.8324621309810267,
+          "unstructured": 0.5866335068885535,
+          "joint_frozen": 0.8377584925848913,
+          "joint_tar": 0.8358169145196361,
+          "Joint delta": 0.005296361603864597,
+          "TAR delta": -0.0019415780652551895
+        },
+        {
+          "fold": 0,
+          "model": "TabPFN-v2p5",
+          "structured": 0.8427010987673182,
+          "unstructured": 0.6168064334496206,
+          "joint_frozen": 0.849981257854983,
+          "joint_tar": 0.8481847973304268,
+          "Joint delta": 0.007280159087664773,
+          "TAR delta": -0.001796460524556176
+        },
+        {
+          "fold": 1,
+          "model": "CatBoost",
+          "structured": 0.8446724263515387,
+          "unstructured": 0.5659984515310543,
+          "joint_frozen": 0.8426537802687173,
+          "joint_tar": 0.8428480589057126,
+          "Joint delta": -0.002018646082821429,
+          "TAR delta": 0.00019427863699528203
+        },
+        {
+          "fold": 1,
+          "model": "LightGBM",
+          "structured": 0.8319764019938419,
+          "unstructured": 0.5291059573601544,
+          "joint_frozen": 0.8286661547320586,
+          "joint_tar": 0.8356174218647681,
+          "Joint delta": -0.0033102472617833056,
+          "TAR delta": 0.006951267132709438
+        },
+        {
+          "fold": 1,
+          "model": "TabM",
+          "structured": 0.8418900313821457,
+          "unstructured": 0.6147506427880547,
+          "joint_frozen": 0.850150094681331,
+          "joint_tar": 0.8473757262752861,
+          "Joint delta": 0.008260063299185272,
+          "TAR delta": -0.002774368406044836
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2",
+          "structured": 0.8453041777121333,
+          "unstructured": 0.5924770953427361,
+          "joint_frozen": 0.8459403687302429,
+          "joint_tar": 0.8425788785787229,
+          "Joint delta": 0.0006361910181096331,
+          "TAR delta": -0.0033614901515199858
+        },
+        {
+          "fold": 1,
+          "model": "TabPFN-v2p5",
+          "structured": 0.8567796195106281,
+          "unstructured": 0.6179094337842739,
+          "joint_frozen": 0.860008569176279,
+          "joint_tar": 0.8563176906370176,
+          "Joint delta": 0.0032289496656509042,
+          "TAR delta": -0.003690878539261422
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "experiment": "fda_device_severity_screen_tfidf",
+      "metric": "auroc",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.7462733743757267,
+          "unstructured": 0.8085256664069082,
+          "joint_frozen": 0.8363413872874226,
+          "Joint delta": 0.027815720880514427
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.7262110520582729,
+          "unstructured": 0.8012717802571955,
+          "joint_frozen": 0.8223665891315762,
+          "Joint delta": 0.021094808874380755
+        }
+      ]
+    },
+    {
+      "experiment": "fda_food_severity_screen_tfidf",
+      "metric": "auroc",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.6423580504863927,
+          "unstructured": 0.8192703360860284,
+          "joint_frozen": 0.8296240742289509,
+          "Joint delta": 0.010353738142922508
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.6165792434623834,
+          "unstructured": 0.8161143800024534,
+          "joint_frozen": 0.8187194158096848,
+          "Joint delta": 0.0026050358072313706
+        }
+      ]
+    },
+    {
+      "experiment": "glassdoor_outlook_B_screen_tfidf",
+      "metric": "auroc",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.6503071622676612,
+          "unstructured": 0.7269303860829993,
+          "joint_frozen": 0.7473998320555193,
+          "Joint delta": 0.020469445972519984
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.6288004452631474,
+          "unstructured": 0.7218278221637328,
+          "joint_frozen": 0.736583242970933,
+          "Joint delta": 0.01475542080720027
+        }
+      ]
+    },
+    {
+      "experiment": "glassdoor_outlook_screen_tfidf",
+      "metric": "auroc",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.8465220958096977,
+          "unstructured": 0.7269303860829993,
+          "joint_frozen": 0.8461496398565043,
+          "Joint delta": -0.00037245595319346236
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.8290927106519765,
+          "unstructured": 0.7218278221637328,
+          "joint_frozen": 0.8346381941140714,
+          "Joint delta": 0.005545483462094825
+        }
+      ]
+    },
+    {
+      "experiment": "lendingclub_default_complete_screen_tfidf",
+      "metric": "auroc",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.6977193418376267,
+          "unstructured": 0.5512783819085133,
+          "joint_frozen": 0.694243509234206,
+          "Joint delta": -0.00347583260342077
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.6716966308397406,
+          "unstructured": 0.5349630266503814,
+          "joint_frozen": 0.6684959282798159,
+          "Joint delta": -0.003200702559924773
+        }
+      ]
+    },
+    {
+      "experiment": "lendingclub_default_screen_tfidf",
+      "metric": "auroc",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.6916723727320532,
+          "unstructured": 0.5686610196982357,
+          "joint_frozen": 0.6940313577818288,
+          "Joint delta": 0.002358985049775608
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.6675006658405284,
+          "unstructured": 0.5537727076028116,
+          "joint_frozen": 0.6632597492899286,
+          "Joint delta": -0.0042409165505997715
+        }
+      ]
+    },
+    {
+      "experiment": "lendingclub_longdesc_no_purpose_screen_tfidf",
+      "metric": "auroc",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.6946675673225212,
+          "unstructured": 0.5964070233968563,
+          "joint_frozen": 0.7047950041101018,
+          "Joint delta": 0.010127436787580546
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.6725768447223759,
+          "unstructured": 0.5886196374774245,
+          "joint_frozen": 0.6821202624793045,
+          "Joint delta": 0.009543417756928574
+        }
+      ]
+    },
+    {
+      "experiment": "linkedin_salary_screen_tfidf",
+      "metric": "r2",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.49380655546761226,
+          "unstructured": 0.641940887263346,
+          "joint_frozen": 0.6941177105341412,
+          "Joint delta": 0.0521768232707952
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.48277385148985125,
+          "unstructured": 0.6097351885170158,
+          "joint_frozen": 0.6603942988766945,
+          "Joint delta": 0.05065911035967874
+        }
+      ]
+    },
+    {
+      "experiment": "steam_recommended_screen_tfidf",
+      "metric": "auroc",
+      "rows": 18,
+      "per_model": [
+        {
+          "model": "CatBoost",
+          "structured": 0.8121674115261822,
+          "unstructured": 0.8344907528031954,
+          "joint_frozen": 0.8933107483316539,
+          "Joint delta": 0.05881999552845851
+        },
+        {
+          "model": "LightGBM",
+          "structured": 0.802507238644857,
+          "unstructured": 0.8299818322740015,
+          "joint_frozen": 0.893212631688234,
+          "Joint delta": 0.06323079941423249
+        }
+      ]
+    }
+  ],
+  "pilots": [
+    {
+      "dataset": "linkedin_salary",
+      "learner": "CatBoost",
+      "metric": "r2",
+      "joint_tar": 0.7159918493668984
+    },
+    {
+      "dataset": "linkedin_salary",
+      "learner": "LightGBM",
+      "metric": "r2",
+      "joint_tar": 0.69686184581335
+    },
+    {
+      "dataset": "steam_recommended",
+      "learner": "CatBoost",
+      "metric": "auroc",
+      "joint_tar": 0.9685142132093066
+    },
+    {
+      "dataset": "steam_recommended",
+      "learner": "LightGBM",
+      "metric": "auroc",
+      "joint_tar": 0.9657654172561008
+    }
+  ]
+}

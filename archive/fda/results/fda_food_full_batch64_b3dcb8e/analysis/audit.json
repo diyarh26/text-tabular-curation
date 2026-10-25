@@ -1,0 +1,41 @@
+{
+  "dataset": "fda_food_severity",
+  "archive": "C:\\Users\\Diyar\\Downloads\\fda_food_full_checkpoint.zip",
+  "archive_sha256": "d84776eada9e048ac134dad708eb6eb9117cff71f55a3b10fb8438e7c559abb9",
+  "source_revision": "b3dcb8e3e828774fdbd787f4c447641243a54518",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "evaluations": 120,
+  "successful": 120,
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "rows": 7918,
+  "micro_batch": 64,
+  "gradient_accumulation_steps": 4,
+  "effective_batch": 256,
+  "max_tar_epochs": 50,
+  "precision": "float32",
+  "validated": {
+    "csv_and_config": true,
+    "all_split_index_hashes": true,
+    "source_file_hashes": 12,
+    "exact_model_condition_fold_grid": true,
+    "finite_auroc_and_log_loss": true
+  },
+  "course": {
+    "metric": "macro_ovr_auroc",
+    "joint_learners": 3,
+    "tar_learners": 5,
+    "accepted": true
+  },
+  "paper_rule_on_six_folds": {
+    "both_learners": 3,
+    "accepted": true
+  },
+  "note": "Original log-loss reports retained unchanged under original/. No training rerun was performed. Checkpoint model/optimizer files remain in the downloaded ZIP."
+}

@@ -1,0 +1,3 @@
+dataset,model,condition,test_score_mean,test_score_std,test_error_mean,test_error_std,r2_mean,r2_std,n_folds,metric,n_failed
+linkedin_salary,CatBoost,joint_tar,-0.2948860989054662,,0.2948860989054662,,0.7159918493668984,,1,root_mean_squared_error,0
+linkedin_salary,LightGBM,joint_tar,-0.30465562361791854,,0.30465562361791854,,0.69686184581335,,1,root_mean_squared_error,0

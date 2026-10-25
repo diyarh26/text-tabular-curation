@@ -1,0 +1,508 @@
+{
+  "key": "airbnb",
+  "title": "LA Airbnb log price \u2014 historical partial evaluation",
+  "dataset": "la_airbnb_price",
+  "rows": 22569,
+  "metric": "r2",
+  "successful_evaluations": 55,
+  "expected_evaluations": 120,
+  "completed_folds": [
+    0,
+    1
+  ],
+  "missing": [
+    {
+      "model": "cat",
+      "condition": "joint_frozen",
+      "fold": 3
+    },
+    {
+      "model": "cat",
+      "condition": "joint_frozen",
+      "fold": 4
+    },
+    {
+      "model": "cat",
+      "condition": "joint_frozen",
+      "fold": 5
+    },
+    {
+      "model": "cat",
+      "condition": "joint_tar",
+      "fold": 2
+    },
+    {
+      "model": "cat",
+      "condition": "joint_tar",
+      "fold": 3
+    },
+    {
+      "model": "cat",
+      "condition": "joint_tar",
+      "fold": 4
+    },
+    {
+      "model": "cat",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "cat",
+      "condition": "structured",
+      "fold": 3
+    },
+    {
+      "model": "cat",
+      "condition": "structured",
+      "fold": 4
+    },
+    {
+      "model": "cat",
+      "condition": "structured",
+      "fold": 5
+    },
+    {
+      "model": "cat",
+      "condition": "unstructured",
+      "fold": 3
+    },
+    {
+      "model": "cat",
+      "condition": "unstructured",
+      "fold": 4
+    },
+    {
+      "model": "cat",
+      "condition": "unstructured",
+      "fold": 5
+    },
+    {
+      "model": "light",
+      "condition": "joint_frozen",
+      "fold": 3
+    },
+    {
+      "model": "light",
+      "condition": "joint_frozen",
+      "fold": 4
+    },
+    {
+      "model": "light",
+      "condition": "joint_frozen",
+      "fold": 5
+    },
+    {
+      "model": "light",
+      "condition": "joint_tar",
+      "fold": 2
+    },
+    {
+      "model": "light",
+      "condition": "joint_tar",
+      "fold": 3
+    },
+    {
+      "model": "light",
+      "condition": "joint_tar",
+      "fold": 4
+    },
+    {
+      "model": "light",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "light",
+      "condition": "structured",
+      "fold": 3
+    },
+    {
+      "model": "light",
+      "condition": "structured",
+      "fold": 4
+    },
+    {
+      "model": "light",
+      "condition": "structured",
+      "fold": 5
+    },
+    {
+      "model": "light",
+      "condition": "unstructured",
+      "fold": 3
+    },
+    {
+      "model": "light",
+      "condition": "unstructured",
+      "fold": 4
+    },
+    {
+      "model": "light",
+      "condition": "unstructured",
+      "fold": 5
+    },
+    {
+      "model": "tabm",
+      "condition": "joint_frozen",
+      "fold": 3
+    },
+    {
+      "model": "tabm",
+      "condition": "joint_frozen",
+      "fold": 4
+    },
+    {
+      "model": "tabm",
+      "condition": "joint_frozen",
+      "fold": 5
+    },
+    {
+      "model": "tabm",
+      "condition": "joint_tar",
+      "fold": 2
+    },
+    {
+      "model": "tabm",
+      "condition": "joint_tar",
+      "fold": 3
+    },
+    {
+      "model": "tabm",
+      "condition": "joint_tar",
+      "fold": 4
+    },
+    {
+      "model": "tabm",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "tabm",
+      "condition": "structured",
+      "fold": 3
+    },
+    {
+      "model": "tabm",
+      "condition": "structured",
+      "fold": 4
+    },
+    {
+      "model": "tabm",
+      "condition": "structured",
+      "fold": 5
+    },
+    {
+      "model": "tabm",
+      "condition": "unstructured",
+      "fold": 3
+    },
+    {
+      "model": "tabm",
+      "condition": "unstructured",
+      "fold": 4
+    },
+    {
+      "model": "tabm",
+      "condition": "unstructured",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "joint_frozen",
+      "fold": 3
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "joint_frozen",
+      "fold": 4
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "joint_frozen",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "joint_tar",
+      "fold": 2
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "joint_tar",
+      "fold": 3
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "joint_tar",
+      "fold": 4
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "structured",
+      "fold": 3
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "structured",
+      "fold": 4
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "structured",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "unstructured",
+      "fold": 3
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "unstructured",
+      "fold": 4
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "unstructured",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "joint_frozen",
+      "fold": 3
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "joint_frozen",
+      "fold": 4
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "joint_frozen",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "joint_tar",
+      "fold": 2
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "joint_tar",
+      "fold": 3
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "joint_tar",
+      "fold": 4
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "structured",
+      "fold": 3
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "structured",
+      "fold": 4
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "structured",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "unstructured",
+      "fold": 3
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "unstructured",
+      "fold": 4
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "unstructured",
+      "fold": 5
+    }
+  ],
+  "complete": false,
+  "micro_batch": null,
+  "accumulation": null,
+  "joint_count": 3,
+  "tar_count": 2,
+  "joint_mean_passing": 0.005870915581646467,
+  "tar_mean_passing": 0.004126855683809549,
+  "joint_mean_all": 0.002964865527065741,
+  "tar_mean_all": 0.0002817387160455764,
+  "course_acceptance": null,
+  "preliminary_course_counts_meet_rule": false,
+  "paper_both_count": 0,
+  "paper_rule_acceptance": null,
+  "source": {
+    "type": "local_results",
+    "folder": "C:\\Users\\Diyar\\OneDrive\\Documents\\nlp-final-try2\\results\\la_airbnb_price",
+    "dataset_csv_verified": false,
+    "config_verified": false
+  },
+  "per_model": [
+    {
+      "model": "CatBoost",
+      "structured": 0.8390395683289829,
+      "unstructured": 0.5664307191338753,
+      "joint_frozen": 0.8377946534276941,
+      "joint_tar": 0.840570183507303,
+      "Joint delta": -0.0012449149012887517,
+      "TAR delta": 0.0027755300796088456
+    },
+    {
+      "model": "LightGBM",
+      "structured": 0.8277119466395584,
+      "unstructured": 0.5319080157195355,
+      "joint_frozen": 0.8261684424312364,
+      "joint_tar": 0.8316466237192467,
+      "Joint delta": -0.0015435042083219441,
+      "TAR delta": 0.005478181288010253
+    },
+    {
+      "model": "TabM",
+      "structured": 0.8339064925598288,
+      "unstructured": 0.6107387832781986,
+      "joint_frozen": 0.8432984086171234,
+      "joint_tar": 0.8418485944700285,
+      "Joint delta": 0.009391916057294503,
+      "TAR delta": -0.0014498141470948855
+    },
+    {
+      "model": "TabPFN-v2",
+      "structured": 0.83888315434658,
+      "unstructured": 0.5895553011156448,
+      "joint_frozen": 0.8418494306575671,
+      "joint_tar": 0.8391978965491795,
+      "Joint delta": 0.002966276310987115,
+      "TAR delta": -0.0026515341083875876
+    },
+    {
+      "model": "TabPFN-v2p5",
+      "structured": 0.8497403591389732,
+      "unstructured": 0.6173579336169472,
+      "joint_frozen": 0.854994913515631,
+      "joint_tar": 0.8522512439837222,
+      "Joint delta": 0.005254554376657783,
+      "TAR delta": -0.0027436695319087434
+    }
+  ],
+  "per_fold": [
+    {
+      "fold": 0,
+      "model": "CatBoost",
+      "structured": 0.8334067103064271,
+      "unstructured": 0.5668629867366963,
+      "joint_frozen": 0.832935526586671,
+      "joint_tar": 0.8382923081088933,
+      "Joint delta": -0.0004711837197560742,
+      "TAR delta": 0.005356781522222298
+    },
+    {
+      "fold": 0,
+      "model": "LightGBM",
+      "structured": 0.8234474912852747,
+      "unstructured": 0.5347100740789165,
+      "joint_frozen": 0.8236707301304143,
+      "joint_tar": 0.8276758255737253,
+      "Joint delta": 0.0002232388451395284,
+      "TAR delta": 0.004005095443311069
+    },
+    {
+      "fold": 0,
+      "model": "TabM",
+      "structured": 0.825922953737512,
+      "unstructured": 0.6067269237683426,
+      "joint_frozen": 0.8364467225529159,
+      "joint_tar": 0.8363214626647709,
+      "Joint delta": 0.010523768815403844,
+      "TAR delta": -0.00012525988814493516
+    },
+    {
+      "fold": 0,
+      "model": "TabPFN-v2",
+      "structured": 0.8324621309810267,
+      "unstructured": 0.5866335068885535,
+      "joint_frozen": 0.8377584925848913,
+      "joint_tar": 0.8358169145196361,
+      "Joint delta": 0.005296361603864597,
+      "TAR delta": -0.0019415780652551895
+    },
+    {
+      "fold": 0,
+      "model": "TabPFN-v2p5",
+      "structured": 0.8427010987673182,
+      "unstructured": 0.6168064334496206,
+      "joint_frozen": 0.849981257854983,
+      "joint_tar": 0.8481847973304268,
+      "Joint delta": 0.007280159087664773,
+      "TAR delta": -0.001796460524556176
+    },
+    {
+      "fold": 1,
+      "model": "CatBoost",
+      "structured": 0.8446724263515387,
+      "unstructured": 0.5659984515310543,
+      "joint_frozen": 0.8426537802687173,
+      "joint_tar": 0.8428480589057126,
+      "Joint delta": -0.002018646082821429,
+      "TAR delta": 0.00019427863699528203
+    },
+    {
+      "fold": 1,
+      "model": "LightGBM",
+      "structured": 0.8319764019938419,
+      "unstructured": 0.5291059573601544,
+      "joint_frozen": 0.8286661547320586,
+      "joint_tar": 0.8356174218647681,
+      "Joint delta": -0.0033102472617833056,
+      "TAR delta": 0.006951267132709438
+    },
+    {
+      "fold": 1,
+      "model": "TabM",
+      "structured": 0.8418900313821457,
+      "unstructured": 0.6147506427880547,
+      "joint_frozen": 0.850150094681331,
+      "joint_tar": 0.8473757262752861,
+      "Joint delta": 0.008260063299185272,
+      "TAR delta": -0.002774368406044836
+    },
+    {
+      "fold": 1,
+      "model": "TabPFN-v2",
+      "structured": 0.8453041777121333,
+      "unstructured": 0.5924770953427361,
+      "joint_frozen": 0.8459403687302429,
+      "joint_tar": 0.8425788785787229,
+      "Joint delta": 0.0006361910181096331,
+      "TAR delta": -0.0033614901515199858
+    },
+    {
+      "fold": 1,
+      "model": "TabPFN-v2p5",
+      "structured": 0.8567796195106281,
+      "unstructured": 0.6179094337842739,
+      "joint_frozen": 0.860008569176279,
+      "joint_tar": 0.8563176906370176,
+      "Joint delta": 0.0032289496656509042,
+      "TAR delta": -0.003690878539261422
+    }
+  ]
+}

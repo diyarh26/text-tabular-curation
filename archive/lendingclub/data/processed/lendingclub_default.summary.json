@@ -1,0 +1,100 @@
+{
+  "dataset": "lendingclub_default",
+  "preparation_version": 1,
+  "seed": 42,
+  "preparation_script_sha256": "2914749ae52b78a761aa00a00107bb8bc185a10ba694bb99d52869b15bf18f00",
+  "source_archive": "C:\\Users\\Diyar\\Downloads\\archive (5).zip",
+  "source_member": "accepted_2007_to_2018q4.csv/accepted_2007_to_2018Q4.csv",
+  "source_archive_sha256": "b412cf8d26e30a6302cd5665f03d772987368ff15404e6987a5f910a0981da20",
+  "counts": {
+    "source_csv_rows": 2260701,
+    "footer_rows_missing_loan_status": 33,
+    "resolved_paid_or_charged_off_rows": 1345310,
+    "resolved_rows_with_nonempty_raw_description": 123292,
+    "eligible_rows_after_text_cleanup": 123292,
+    "eligible_rows_removed_by_row_cap": 108292,
+    "selected_rows": 15000
+  },
+  "csv": "data\\processed\\lendingclub_default.csv",
+  "csv_sha256": "c782b1664cd4a91d50f77b463ec10bf4947e27b2b9b33e97b731d87810a0211b",
+  "selection_trace": "data\\raw\\candidate_screens\\lendingclub_default.selected_rows.csv",
+  "selection_trace_sha256": "be56e5b4a6f3dd191a5092cb6424b57ef084737fb1bdd420b57f2263b0f41ace",
+  "text_columns": [
+    "desc",
+    "title",
+    "emp_title"
+  ],
+  "categorical_columns": [
+    "term",
+    "emp_length",
+    "home_ownership",
+    "purpose",
+    "grade"
+  ],
+  "numerical_columns": [
+    "loan_amnt",
+    "annual_inc",
+    "dti",
+    "fico_score",
+    "int_rate"
+  ],
+  "target": "charged_off",
+  "class_counts": {
+    "0": 12689,
+    "1": 2311
+  },
+  "missing_counts": {
+    "desc": 0,
+    "title": 1,
+    "emp_title": 1019,
+    "term": 0,
+    "emp_length": 610,
+    "home_ownership": 0,
+    "purpose": 0,
+    "grade": 0,
+    "loan_amnt": 0,
+    "annual_inc": 0,
+    "dti": 0,
+    "fico_score": 0,
+    "int_rate": 0,
+    "charged_off": 0
+  },
+  "constant_features": [],
+  "text_profiles": {
+    "desc": {
+      "nonempty": 15000,
+      "distinct": 14967,
+      "median_words_nonempty": 29.0,
+      "max_words": 766
+    },
+    "title": {
+      "nonempty": 14999,
+      "distinct": 5635,
+      "median_words_nonempty": 2.0,
+      "max_words": 16
+    },
+    "emp_title": {
+      "nonempty": 13981,
+      "distinct": 11681,
+      "median_words_nonempty": 2.0,
+      "max_words": 11
+    }
+  },
+  "duplicate_complete_feature_rows": 0,
+  "duplicate_combined_text_rows": 0,
+  "explicit_class_phrase_occurrences": 0,
+  "class_phrase_audit": "data\\raw\\candidate_screens\\lendingclub_default.class_mentions.json",
+  "rules": {
+    "target": "0 = Fully Paid; 1 = Charged Off. All other loan statuses excluded.",
+    "row_selection": "Accepted-loan table only, resolved loans with a nonempty cleaned desc, simple random sample up to 15000.",
+    "fico_score": "Mean of origination fico_range_low and fico_range_high, never last_fico_range values.",
+    "term_and_employment_length": "Retained as categorical strings (for example 36 months and 10+ years).",
+    "interest_rate": "Numeric percentage points; int_rate and grade are lender-assigned origination features.",
+    "missing_fields": "Keep missing ancillary features; the existing learner preprocessing handles them.",
+    "text_cleanup": "Remove HTML tags, decode entities, normalize whitespace; retain all words and date prefixes.",
+    "no_word_length_filter": true,
+    "no_text_truncation": true,
+    "no_class_balancing": true,
+    "no_performance_based_selection": true
+  }
+}

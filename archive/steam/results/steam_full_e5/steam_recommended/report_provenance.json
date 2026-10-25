@@ -1,0 +1,21 @@
+{
+  "reporting_rule_version": "course_forum_raw_independent_v1",
+  "rule_source": "Course staff forum clarifications supplied by the student on 2026-10-23",
+  "decision_scores": "Unrounded mean test_score across all six folds; higher is better",
+  "joint_signal_rule": "mean(joint_frozen) > max(mean(structured), mean(unstructured))",
+  "tar_gain_rule": "mean(joint_tar) > mean(joint_frozen)",
+  "dataset_rule": "At least 3 of 5 learners satisfy Joint Signal and at least 3 of 5 satisfy TAR Gain, counted independently; learners may differ",
+  "per_learner_passes_column": "Diagnostic that both criteria hold for that learner; not the dataset acceptance count",
+  "joint_signal_learners": 5,
+  "tar_gain_learners": 5,
+  "dataset_passes": true,
+  "n_evaluations": 120,
+  "original_experiment_manifest_sha256_lf": "39f16d24ea127621b3f0403d897ef744948c6e5d15da78e25d0ed2f845f73fd0",
+  "sorted_run_filename_to_sha256_lf_map_digest": "6ea42e78e2f35652e6a26da74c80602d6fa39f66143df39981da09490a88c3bd",
+  "reporting_code_sha256_lf": {
+    "src/tt_curation/criteria.py": "575a81de69351b1bd55ef3b42a05108eefd9ef7a75dc8c6e8ecdd0b312a3f1db",
+    "src/tt_curation/__main__.py": "5c22cd7edc6a9a7349a08570f3d0a28b24338a758e8869495d487ce373e32429"
+  },
+  "training_rerun": false,
+  "interpretation_note": "TabM joint gain is positive but negligible (about 0.000111 AUROC). Numerical acceptance is not evidence of statistical significance or large practical gains."
+}

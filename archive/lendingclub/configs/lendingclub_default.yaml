@@ -1,0 +1,9 @@
+# Resolved accepted loans with descriptions. Prepared by prep/candidate_screens.py.
+name: lendingclub_default
+csv: data/processed/lendingclub_default.csv
+target: charged_off
+task: classification
+
+text_columns: [desc, title, emp_title]
+categorical_columns: [term, emp_length, home_ownership, purpose, grade]
+numerical_columns: [loan_amnt, annual_inc, dti, fico_score, int_rate]

@@ -1,0 +1,199 @@
+{
+  "dataset": "lendingclub_default_complete",
+  "preparation_version": 2,
+  "seed": 42,
+  "preparation_script_sha256": "f024a41ce8ec17e85ce161aec69b86cdeb7876c73386aad12ebf6aa8eb464b4f",
+  "source_archive": "C:\\Users\\Diyar\\Downloads\\archive (5).zip",
+  "source_member": "accepted_2007_to_2018q4.csv/accepted_2007_to_2018Q4.csv",
+  "source_archive_sha256": "b412cf8d26e30a6302cd5665f03d772987368ff15404e6987a5f910a0981da20",
+  "counts": {
+    "source_csv_rows": 2260701,
+    "footer_rows_missing_loan_status": 33,
+    "resolved_paid_or_charged_off_rows": 1345310,
+    "resolved_rows_with_nonempty_raw_description": 123292,
+    "eligible_rows_after_text_cleanup": 123292,
+    "description_pool_rows_with_missing_inputs": 8193,
+    "description_pool_rows_with_nonfinite_values_only": 0,
+    "full_clean_pool_rows": 115099,
+    "full_clean_pool_rows_removed_by_sampling": 100099,
+    "selected_rows": 15000
+  },
+  "csv": "data\\processed\\lendingclub_default_complete.csv",
+  "csv_sha256": "c0e8baff542f6dd401590ac22b7549293113f8f35eab774d86678a41077cc766",
+  "selection_trace": "data\\raw\\candidate_screens\\lendingclub_default_complete.selected_rows.csv",
+  "selection_trace_sha256": "338f817e648edbfbbd19fa75e7ecb4742e8569d714edf88acc9ac6f8e2877d3c",
+  "text_columns": [
+    "desc",
+    "title",
+    "emp_title"
+  ],
+  "categorical_columns": [
+    "term",
+    "emp_length",
+    "home_ownership",
+    "purpose",
+    "grade"
+  ],
+  "numerical_columns": [
+    "loan_amnt",
+    "annual_inc",
+    "dti",
+    "fico_score",
+    "int_rate"
+  ],
+  "target": "charged_off",
+  "class_counts": {
+    "0": 12737,
+    "1": 2263
+  },
+  "missing_counts": {
+    "desc": 0,
+    "title": 0,
+    "emp_title": 0,
+    "term": 0,
+    "emp_length": 0,
+    "home_ownership": 0,
+    "purpose": 0,
+    "grade": 0,
+    "loan_amnt": 0,
+    "annual_inc": 0,
+    "dti": 0,
+    "fico_score": 0,
+    "int_rate": 0,
+    "charged_off": 0
+  },
+  "constant_features": [],
+  "text_profiles": {
+    "desc": {
+      "nonempty": 15000,
+      "distinct": 14970,
+      "median_words_nonempty": 30.0,
+      "max_words": 723
+    },
+    "title": {
+      "nonempty": 15000,
+      "distinct": 5722,
+      "median_words_nonempty": 2.0,
+      "max_words": 17
+    },
+    "emp_title": {
+      "nonempty": 15000,
+      "distinct": 12375,
+      "median_words_nonempty": 2.0,
+      "max_words": 11
+    }
+  },
+  "duplicate_complete_feature_rows": 0,
+  "duplicate_combined_text_rows": 0,
+  "explicit_class_phrase_occurrences": 1,
+  "class_phrase_audit": "data\\raw\\candidate_screens\\lendingclub_default_complete.class_mentions.json",
+  "rules": {
+    "target": "0 = Fully Paid; 1 = Charged Off. Other statuses excluded.",
+    "row_selection": "Filter the FULL accepted source for resolved loans, nonempty desc and complete chosen inputs BEFORE the random 15K sample.",
+    "missing_fields": "Zero missing chosen inputs or targets; no imputation.",
+    "fico_score": "Mean of origination fico_range_low/high, derived before completeness filtering.",
+    "complete_case_filter_before_sampling": true,
+    "text_cleanup": "Remove HTML tags, decode entities, normalize whitespace; retain date prefixes. Additional FDA leakage edits are documented separately.",
+    "no_word_length_filter": true,
+    "no_text_truncation": true,
+    "no_class_balancing": true,
+    "no_performance_based_selection": true
+  },
+  "shared_preparation_helpers_sha256": "214ac678f59fb60bed14f7bf42667fd4735c2eafe96de0ac63267b0a33d7ac54",
+  "full_clean_pool": {
+    "csv": "data\\raw\\candidate_screens\\lendingclub_default_complete_pool.csv",
+    "rows": 115099,
+    "csv_sha256": "8c50ab5c24586f94c0df31011bfc3bb9838e1d9c7b14f43a77ab4a7137e94aac",
+    "trace": "data\\raw\\candidate_screens\\lendingclub_default_complete_pool.selected_rows.csv",
+    "trace_sha256": "c7494861e4b1673a3a2032648fd2c3f7362854dec38db5717657e9307f70161d"
+  },
+  "original_status_distribution": {
+    "stage": "Original accepted table: all statuses",
+    "rows": 2260668,
+    "class_counts": {
+      "Fully Paid": 1076751,
+      "Current": 878317,
+      "Charged Off": 268559,
+      "In Grace Period": 8436,
+      "Late (31-120 days)": 21467,
+      "Late (16-30 days)": 4349,
+      "Default": 40,
+      "Does not meet the credit policy. Status:Fully Paid": 1988,
+      "Does not meet the credit policy. Status:Charged Off": 761
+    },
+    "class_percentages": {
+      "Fully Paid": 47.629771377309716,
+      "Current": 38.852100352639134,
+      "Charged Off": 11.879630268575482,
+      "In Grace Period": 0.37316403824002464,
+      "Late (31-120 days)": 0.9495865823729978,
+      "Late (16-30 days)": 0.1923767665132607,
+      "Default": 0.0017693885170224023,
+      "Does not meet the credit policy. Status:Fully Paid": 0.0879386092960134,
+      "Does not meet the credit policy. Status:Charged Off": 0.0336626165363512
+    }
+  },
+  "binary_class_distributions": [
+    {
+      "stage": "Original resolved loans: before feature filters",
+      "rows": 1345310,
+      "class_counts": {
+        "Fully Paid": 1076751,
+        "Charged Off": 268559
+      },
+      "class_percentages": {
+        "Fully Paid": 80.03738915194268,
+        "Charged Off": 19.962610848057324
+      }
+    },
+    {
+      "stage": "Resolved loans with a description",
+      "rows": 123292,
+      "class_counts": {
+        "Fully Paid": 104389,
+        "Charged Off": 18903
+      },
+      "class_percentages": {
+        "Fully Paid": 84.66810498653602,
+        "Charged Off": 15.331895013463972
+      }
+    },
+    {
+      "stage": "Full clean pool: all chosen inputs complete",
+      "rows": 115099,
+      "class_counts": {
+        "Fully Paid": 97789,
+        "Charged Off": 17310
+      },
+      "class_percentages": {
+        "Fully Paid": 84.96077289985143,
+        "Charged Off": 15.039227100148567
+      }
+    },
+    {
+      "stage": "NEW complete-case random 15K sample",
+      "rows": 15000,
+      "class_counts": {
+        "Fully Paid": 12737,
+        "Charged Off": 2263
+      },
+      "class_percentages": {
+        "Fully Paid": 84.91333333333333,
+        "Charged Off": 15.086666666666666
+      }
+    },
+    {
+      "stage": "Previous 15K sample: missing values allowed",
+      "rows": 15000,
+      "class_counts": {
+        "Fully Paid": 12689,
+        "Charged Off": 2311
+      },
+      "class_percentages": {
+        "Fully Paid": 84.59333333333333,
+        "Charged Off": 15.406666666666666
+      }
+    }
+  ],
+  "previous_dataset_and_results_unchanged": true
+}

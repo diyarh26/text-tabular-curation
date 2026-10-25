@@ -1,0 +1,22 @@
+===== CUMULATIVE RESULTS: FULLY COMPLETED FOLDS ONLY =====
+FDA Food | completed folds [0, 1, 2, 3, 4, 5] | 120/120 evaluations in this table
+PRELIMINARY until all six folds complete. No performance-based early exit.
+Primary curation metric: MACRO OvR AUROC (higher is better)
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM           0.596236      0.826705      0.793869   0.828256    -0.032836   0.034387
+CatBoost       0.641255      0.818751      0.828252   0.839561     0.009501   0.011309
+LightGBM       0.617900      0.814574      0.814254   0.839194    -0.000320   0.024940
+TabPFN-v2      0.637524      0.836882      0.840462   0.847428     0.003581   0.006966
+TabPFN-v2p5    0.629681      0.844439      0.850983   0.858630     0.006543   0.007647
+Course rule: Joint Signal: 3/5 | TAR Gain: 5/5 | need >=3/5 independently; raw mean deltas >0.
+Joint delta = joint frozen - better unimodal; TAR delta = joint TAR - joint frozen.
+Paper rule on these course folds: 3/5 learners meet BOTH criteria; need >=3/5, each delta >=0.001 after rounding condition means to three decimals.
+Diagnostic repository score: NEGATIVE LOG LOSS (not used for the AUROC curation verdict):
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM          -1.164467     -0.667556     -0.728080  -0.653741    -0.060524   0.074340
+CatBoost      -0.870034     -0.677512     -0.660566  -0.636803     0.016946   0.023762
+LightGBM      -0.923247     -0.705577     -0.711835  -0.708458    -0.006257   0.003377
+TabPFN-v2     -0.877019     -0.642129     -0.634201  -0.622122     0.007928   0.012079
+TabPFN-v2p5   -0.880899     -0.628189     -0.616291  -0.600635     0.011898   0.015656

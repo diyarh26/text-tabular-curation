@@ -1,0 +1,29 @@
+{
+  "dataset": "lendingclub_longdesc_no_purpose",
+  "model": "TabM",
+  "short_name": "tabm",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 0,
+  "size": "10k",
+  "task": "binary",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 12,
+  "timestamp": "2026-10-23 21:16:33",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "roc_auc",
+  "test_score": 0.6657130500134711,
+  "test_error": 0.33428694998652886,
+  "auroc": 0.6657130500134711,
+  "status": "ok",
+  "runtime_s": 156.06075620651245,
+  "tar_finetune": {
+    "best_val_loss": 0.4100910425186157,
+    "epochs": 10.0,
+    "finetune_seconds": 5306.497853040695,
+    "rows": 10000
+  }
+}

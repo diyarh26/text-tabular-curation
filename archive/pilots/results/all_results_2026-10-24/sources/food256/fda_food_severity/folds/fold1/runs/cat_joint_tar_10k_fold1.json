@@ -1,0 +1,29 @@
+{
+  "dataset": "fda_food_severity",
+  "model": "CatBoost",
+  "short_name": "cat",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 1,
+  "size": "10k",
+  "task": "multiclass",
+  "n_train": 5279,
+  "n_test": 2639,
+  "n_features": 11,
+  "timestamp": "2026-10-24 00:57:24",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "log_loss",
+  "test_score": -0.6360290191683031,
+  "test_error": 0.6360290191683031,
+  "auroc": 0.8375803209846975,
+  "status": "ok",
+  "runtime_s": 35.40881395339966,
+  "tar_finetune": {
+    "best_val_loss": 0.8252902626991272,
+    "epochs": 14.0,
+    "finetune_seconds": 3704.8923592567444,
+    "rows": 5279
+  }
+}

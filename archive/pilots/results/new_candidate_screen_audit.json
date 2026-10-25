@@ -1,0 +1,23 @@
+[
+  {
+    "dataset": "lendingclub_default",
+    "expected": 18,
+    "successful": 18,
+    "failed": 0,
+    "learner_runtime_seconds": 302.099018573761
+  },
+  {
+    "dataset": "fda_device_severity",
+    "expected": 18,
+    "successful": 18,
+    "failed": 0,
+    "learner_runtime_seconds": 709.3343892097473
+  },
+  {
+    "dataset": "fda_food_severity",
+    "expected": 18,
+    "successful": 18,
+    "failed": 0,
+    "learner_runtime_seconds": 513.7861838340759
+  }
+]

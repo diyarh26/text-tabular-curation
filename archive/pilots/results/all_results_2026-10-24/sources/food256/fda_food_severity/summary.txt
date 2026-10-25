@@ -1,0 +1,16 @@
+COMPLETE: all 120 evaluations audited.
+Primary curation metric: AUROC.
+COURSE VERDICT:
+Decision uses unrounded fold-mean test scores, strict improvement (> 0), and independent criterion counts.
+learner           struct       text     frozen        TAR    joint delta     TAR delta  joint  TAR-gain  folds
+CatBoost        0.641255   0.818751   0.828252   0.839561    0.009501064   0.011309494    ✅     ✅     6
+LightGBM        0.617900   0.814574   0.814254   0.839194   -0.000320260   0.024939927    ❌     ✅     6
+TabM            0.596236   0.826705   0.793869   0.828256   -0.032835744   0.034386655    ❌     ✅     6
+TabPFN-v2       0.637524   0.836882   0.840462   0.847428    0.003580859   0.006965912    ✅     ✅     6
+TabPFN-v2p5     0.629681   0.844439   0.850983   0.858630    0.006543228   0.007647386    ✅     ✅     6
+Joint Signal: 3/5 learners; needs 3 of 5.
+TAR Gain: 5/5 learners; needs 3 of 5.
+Dataset PASSES: each criterion must pass independently; the qualifying learners may differ.
+PAPER RULE ON SIX COURSE FOLDS: PASSES; 3/5 learners meet both rounded-score margins >=0.001.
+Repository negative-log-loss scores remain in evaluation_report.csv and raw JSONs as diagnostics.
+

@@ -1,0 +1,41 @@
+{
+  "dataset": "lendingclub_default_complete",
+  "models": [
+    "light",
+    "cat"
+  ],
+  "conditions": [
+    "structured",
+    "unstructured",
+    "joint_frozen"
+  ],
+  "folds": [
+    0,
+    1,
+    2
+  ],
+  "device": "cpu",
+  "text_encoder": "tfidf",
+  "split_size": "10k",
+  "expected_evaluations": 18,
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "python": "3.11.3 (tags/v3.11.3:f3909b8, Apr  4 2023, 23:49:59) [MSC v.1934 64 bit (AMD64)]",
+  "packages": {
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.6.1",
+    "skrub": "0.10.1",
+    "torch": "2.7.1+cpu",
+    "catboost": "1.2.8",
+    "lightgbm": "4.6.0",
+    "multabench": "0.0.6"
+  },
+  "csv_sha256": "c0e8baff542f6dd401590ac22b7549293113f8f35eab774d86678a41077cc766",
+  "config_sha256": "769327cb2d33b89e289b1d7a49c43d7c9abb31dfe058a4cd03da4ba0bce2504b",
+  "selected_rows": 15000,
+  "pipeline_files_sha256": {
+    "src\\tt_curation\\runner.py": "32cbf3c4b6186eb37a141f9fbc2bdc9e11ac7041d87f589ede6aa394f0da9508",
+    "src\\tt_curation\\conditions.py": "443c2e45fbbd008f18dc5d2f8f20b8e2519655b11dcad6c19405d1327d85e450",
+    "src\\tt_curation\\data.py": "8c33d999951a973f120179e50bb6c1fff0ddaaf75b5f79b26c668437143d6430"
+  }
+}

@@ -1,0 +1,11 @@
+FINAL: 120/120 evaluations audited.
+R2 curation metric; matching completed folds [0, 1, 2, 3, 4, 5]; raw means/deltas.
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+CatBoost       0.492263      0.654557      0.691551   0.742389     0.036994   0.050838
+LightGBM       0.480691      0.623402      0.662462   0.734879     0.039060   0.072417
+TabM           0.467717      0.689403      0.719763   0.747477     0.030360   0.027714
+TabPFN-v2      0.496956      0.670713      0.697635   0.736120     0.026922   0.038485
+TabPFN-v2p5    0.504455      0.697526      0.722821   0.745030     0.025295   0.022208
+Joint Signal 5/5; TAR Gain 5/5; need >=3/5 independently.
+PASSES the course numerical criteria.

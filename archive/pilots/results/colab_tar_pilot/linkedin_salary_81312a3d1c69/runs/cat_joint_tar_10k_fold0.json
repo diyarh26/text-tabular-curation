@@ -1,0 +1,29 @@
+{
+  "dataset": "linkedin_salary",
+  "model": "CatBoost",
+  "short_name": "cat",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 0,
+  "size": "10k",
+  "task": "regression",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 14,
+  "timestamp": "2026-10-22 13:56:01",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "root_mean_squared_error",
+  "test_score": -0.2948860989054662,
+  "test_error": 0.2948860989054662,
+  "r2": 0.7159918493668984,
+  "status": "ok",
+  "runtime_s": 53.73378133773804,
+  "tar_finetune": {
+    "best_val_loss": 2.559373617172241,
+    "epochs": 10.0,
+    "finetune_seconds": 3556.479964494705,
+    "rows": 10000
+  }
+}

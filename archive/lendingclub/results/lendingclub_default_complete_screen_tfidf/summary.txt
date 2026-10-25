@@ -1,0 +1,7 @@
+Decision uses unrounded fold-mean test scores, strict improvement (> 0), and independent criterion counts.
+learner           struct       text     frozen        TAR    joint delta     TAR delta  joint  TAR-gain  folds
+CatBoost        0.697719   0.551278   0.694244        nan   -0.003475833           nan    ❌     ?      3
+LightGBM        0.671697   0.534963   0.668496        nan   -0.003200703           nan    ❌     ?      3
+Joint Signal: 0/2 learners; needs 3 of 5.
+TAR Gain: 0/2 learners; needs 3 of 5.
+Dataset does NOT pass (yet): each criterion must pass independently; the qualifying learners may differ.

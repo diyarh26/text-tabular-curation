@@ -1,0 +1,10 @@
+{
+  "fold": 0,
+  "session_elapsed_seconds": 7522.611206940999,
+  "tar": {
+    "best_val_loss": 0.8202787041664124,
+    "epochs": 25.0,
+    "finetune_seconds": 6702.483194112778,
+    "rows": 5278
+  }
+}

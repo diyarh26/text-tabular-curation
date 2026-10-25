@@ -38,8 +38,8 @@ def setup(checkout):
     if not diff:
         if git(checkout, "status", "--porcelain", "--untracked-files=all").strip():
             raise ValueError("Refusing unrelated existing changes in the upstream checkout")
-        subprocess.run(["git", "-C", str(checkout), "apply", "--check", str(patch)], check=True)
-        subprocess.run(["git", "-C", str(checkout), "apply", str(patch)], check=True)
+        git(checkout, "apply", "--check", str(patch))
+        git(checkout, "apply", str(patch))
         for relative in OVERLAY_FILES:
             destination = checkout / relative
             destination.parent.mkdir(parents=True, exist_ok=True)

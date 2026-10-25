@@ -1,0 +1,23 @@
+{
+  "dataset": "linkedin_salary",
+  "task": "regression",
+  "csv_sha256": "af4c46eb05ea12d9a24ecd19cec926d341fd2612d20692c5fb08481057c58884",
+  "config_sha256": "441aa745b568070830b5b6017881dc23e1e23fb1e35b198ceb1df76b8e5e06d5",
+  "helper_sha256": "1a907b64fe1e889edc19deab3f448fc7ddb47be95cb498dd2d75a1797aee2c78",
+  "runner_sha256": "32cbf3c4b6186eb37a141f9fbc2bdc9e11ac7041d87f589ede6aa394f0da9508",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "max_epochs": 10,
+  "micro_batch": 16,
+  "effective_batch": 256,
+  "precision": "float32",
+  "size": "10k",
+  "packages": {
+    "torch": "2.7.1",
+    "transformers": "4.57.3",
+    "peft": "0.18.0",
+    "multabench": "0.0.6",
+    "catboost": "1.2.8",
+    "lightgbm": "4.6.0",
+    "scikit-learn": "1.6.1"
+  }
+}

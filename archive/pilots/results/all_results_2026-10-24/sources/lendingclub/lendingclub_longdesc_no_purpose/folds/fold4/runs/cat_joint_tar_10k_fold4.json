@@ -1,0 +1,29 @@
+{
+  "dataset": "lendingclub_longdesc_no_purpose",
+  "model": "CatBoost",
+  "short_name": "cat",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 4,
+  "size": "10k",
+  "task": "binary",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 12,
+  "timestamp": "2026-10-24 00:21:43",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "roc_auc",
+  "test_score": 0.6955929310547084,
+  "test_error": 0.30440706894529157,
+  "auroc": 0.6955929310547084,
+  "status": "ok",
+  "runtime_s": 14.073713779449463,
+  "tar_finetune": {
+    "best_val_loss": 0.4128762185573578,
+    "epochs": 6.0,
+    "finetune_seconds": 3187.957410812378,
+    "rows": 10000
+  }
+}

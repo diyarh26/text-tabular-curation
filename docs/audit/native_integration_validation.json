@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-25",
+  "native_dataset_registration": true,
+  "registered_views": [
+    "REG_TEXT_LINKEDIN_SALARY",
+    "REG_TEXT_LINKEDIN_SALARY_STRUCTURED",
+    "REG_TEXT_LINKEDIN_SALARY_TEXT"
+  ],
+  "exact_csv_values_dtypes_target_and_row_order": true,
+  "all_six_splits_match_original": true,
+  "native_lightgbm_structured_cli_rmse_matches_runner_within": 1e-12,
+  "upstream_benchmark_evaluation_models_preprocessing_splits_lora_unchanged": true,
+  "original_vm_source_snapshot_files": 18,
+  "original_result_records_protected_by_immutable_hash_index": 95,
+  "archived_files_byte_verified_at_move": 1662,
+  "full_local_pytest": "46 passed",
+  "subsequent_targeted_tests_after_immutable_result_guard": "13 passed; one additional parameterized case added",
+  "new_gpu_training_performed": false,
+  "original_experiment_relabelled": false,
+  "submission_complete": false,
+  "pending": [
+    "25 remaining evaluations from original batch-256 experiment",
+    "Final LinkedIn paper written separately"
+  ]
+}

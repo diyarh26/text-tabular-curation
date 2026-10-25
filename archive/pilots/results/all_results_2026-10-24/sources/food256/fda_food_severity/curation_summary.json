@@ -1,0 +1,24 @@
+{
+  "dataset": "fda_food_severity",
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "curation_metric": "macro_ovr_auroc",
+  "course": {
+    "joint_learners": 3,
+    "tar_learners": 5,
+    "accepted": true,
+    "rule": "raw AUROC mean deltas >0; >=3/5 independently"
+  },
+  "paper": {
+    "both_learners": 3,
+    "accepted": true,
+    "rule": "condition means rounded to 3 decimals; both deltas >=0.001 on the same >=3/5",
+    "evaluation": "applied to six course folds; not a five-seed paper reproduction"
+  }
+}

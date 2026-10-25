@@ -1,0 +1,29 @@
+{
+  "dataset": "la_airbnb_price",
+  "model": "TabPFN-v2p5",
+  "short_name": "tabpfnv2p5",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 1,
+  "size": "10k",
+  "task": "regression",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 53,
+  "timestamp": "2026-10-22 10:45:13",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": "3f16c048ba103d22a7ed04dba557c54e8d204030",
+  "metric": "root_mean_squared_error",
+  "test_score": -0.2716175453532185,
+  "test_error": 0.2716175453532185,
+  "r2": 0.8563176906370176,
+  "status": "ok",
+  "runtime_s": 587.5901896953583,
+  "tar_finetune": {
+    "best_val_loss": 2.7406890392303467,
+    "epochs": 16.0,
+    "finetune_seconds": 14164.781446695328,
+    "rows": 10000
+  }
+}

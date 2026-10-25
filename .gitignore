@@ -29,6 +29,7 @@ paper/*.bbl
 paper/*.blg
 paper/*.synctex.gz
 paper/*.pdf
+!paper/report.pdf
 
 catboost_info/
 *.log
@@ -50,3 +51,6 @@ docs/linkedin_vm256_resume_supplement.zip
 *.safetensors
 *.pt
 *.pth
+
+# Historical experiment checkpoints remain local after archival too.
+archive/**/checkpoints/

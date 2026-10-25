@@ -1,0 +1,62 @@
+{
+  "dataset": "linkedin_salary",
+  "csv_sha256_lf": "8880f84563535c60eda01be5b52010dea6f80e318f228ade00166d7cb66d57fa",
+  "config_sha256_lf": "859863d245ed81b761d27682bf4b1657e5687b8a60f87d22dbe26e87c8cbc2ce",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "models": [
+    "tabm",
+    "cat",
+    "light",
+    "tabpfnv2",
+    "tabpfnv2p5"
+  ],
+  "conditions": [
+    "structured",
+    "unstructured",
+    "joint_frozen",
+    "joint_tar"
+  ],
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "expected_evaluations": 120,
+  "size": "10k",
+  "frozen_encoder": "e5-small",
+  "source_revision": "b75bdbb835d2ec0da13e076fce5249933879127b",
+  "tar_max_epochs": 50,
+  "micro_batch": 16,
+  "effective_batch": 256,
+  "precision": "float32",
+  "accumulation_loss": "ce_sum_over_effective_batch_items_v1",
+  "restore_early_stopping_state": true,
+  "code": {
+    "src/tt_curation/__init__.py": "a10c17c4694e00de9db2185eaabb4edfb2c751b91230d55cfe952564cd78fdb2",
+    "src/tt_curation/__main__.py": "5c22cd7edc6a9a7349a08570f3d0a28b24338a758e8869495d487ce373e32429",
+    "src/tt_curation/conditions.py": "443c2e45fbbd008f18dc5d2f8f20b8e2519655b11dcad6c19405d1327d85e450",
+    "src/tt_curation/criteria.py": "242174eaf87152c8014aad98e8b8e7896d3f87e71ac69a388647c3f7f542c7a7",
+    "src/tt_curation/data.py": "8c33d999951a973f120179e50bb6c1fff0ddaaf75b5f79b26c668437143d6430",
+    "src/tt_curation/runner.py": "32cbf3c4b6186eb37a141f9fbc2bdc9e11ac7041d87f589ede6aa394f0da9508",
+    "src/tt_curation/spec.py": "693906dedcbb93485ffe9962e7e722bd3666bec32332e45c855732e5fb826374",
+    "scripts/run_full_linkedin.py": "3d025ea9cb48af4e54a76f705d80bdc8e692426759edb5b1b652c51c711c39be",
+    "scripts/colab_tar_compare.py": "3713365e29392192a146f3a3830ef2a4581a4235b2adb1f986a0965e75cee00e"
+  },
+  "packages": {
+    "multabench": "0.0.6",
+    "torch": "2.7.1",
+    "transformers": "4.57.3",
+    "peft": "0.18.0",
+    "catboost": "1.2.8",
+    "lightgbm": "4.6.0",
+    "pytabkit": "1.7.0",
+    "tabpfn": "9.2.0",
+    "scikit-learn": "1.6.1",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "skrub": "0.10.1"
+  }
+}

@@ -1,0 +1,402 @@
+{
+  "key": "linkedin",
+  "title": "LinkedIn salary \u2014 provisional",
+  "dataset": "linkedin_salary",
+  "rows": 15000,
+  "metric": "r2",
+  "successful_evaluations": 115,
+  "expected_evaluations": 120,
+  "completed_folds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "missing": [
+    {
+      "model": "cat",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "light",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "tabm",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2",
+      "condition": "joint_tar",
+      "fold": 5
+    },
+    {
+      "model": "tabpfnv2p5",
+      "condition": "joint_tar",
+      "fold": 5
+    }
+  ],
+  "complete": false,
+  "micro_batch": 16,
+  "accumulation": 16,
+  "joint_count": 5,
+  "tar_count": 5,
+  "joint_mean_passing": 0.03199137691098437,
+  "tar_mean_passing": 0.04194055726997901,
+  "joint_mean_all": 0.03199137691098437,
+  "tar_mean_all": 0.04194055726997901,
+  "course_acceptance": null,
+  "preliminary_course_counts_meet_rule": true,
+  "paper_both_count": 5,
+  "paper_rule_acceptance": null,
+  "source": {
+    "type": "downloaded_zip",
+    "file": "C:\\Users\\Diyar\\Downloads\\linkedin_full_checkpoint.zip",
+    "sha256": "b1d8fffc5e605ee75225c9cdb2f8dcdf6e3ded3fc2f9065dbc40e800f0b66940",
+    "trainer_states": [
+      {
+        "path": "linkedin_full/linkedin_salary/folds/fold0/checkpoints/trainer/checkpoint-1491/trainer_state.json",
+        "epoch": 21.0,
+        "step": 1491,
+        "best_metric": 2.3853094577789307
+      },
+      {
+        "path": "linkedin_full/linkedin_salary/folds/fold1/checkpoints/trainer/checkpoint-1562/trainer_state.json",
+        "epoch": 22.0,
+        "step": 1562,
+        "best_metric": 2.423424243927002
+      },
+      {
+        "path": "linkedin_full/linkedin_salary/folds/fold2/checkpoints/trainer/checkpoint-1207/trainer_state.json",
+        "epoch": 17.0,
+        "step": 1207,
+        "best_metric": 2.392544984817505
+      },
+      {
+        "path": "linkedin_full/linkedin_salary/folds/fold3/checkpoints/trainer/checkpoint-2698/trainer_state.json",
+        "epoch": 38.0,
+        "step": 2698,
+        "best_metric": 2.3987064361572266
+      },
+      {
+        "path": "linkedin_full/linkedin_salary/folds/fold4/checkpoints/trainer/checkpoint-1633/trainer_state.json",
+        "epoch": 23.0,
+        "step": 1633,
+        "best_metric": 2.4651310443878174
+      },
+      {
+        "path": "linkedin_full/linkedin_salary/folds/fold5/checkpoints/trainer/checkpoint-2130/trainer_state.json",
+        "epoch": 30.0,
+        "step": 2130,
+        "best_metric": 2.430061101913452
+      }
+    ],
+    "dataset_csv_verified": true,
+    "config_verified": true,
+    "runtime_source_revision": "b75bdbb835d2ec0da13e076fce5249933879127b",
+    "source_file_hashes_verified": 9
+  },
+  "per_model": [
+    {
+      "model": "CatBoost",
+      "structured": 0.49276118456282314,
+      "unstructured": 0.6551763628298309,
+      "joint_frozen": 0.6927003084289536,
+      "joint_tar": 0.7429689275436229,
+      "Joint delta": 0.03752394559912264,
+      "TAR delta": 0.05026861911466929
+    },
+    {
+      "model": "LightGBM",
+      "structured": 0.4815685267035567,
+      "unstructured": 0.622941600514746,
+      "joint_frozen": 0.6637717252663691,
+      "joint_tar": 0.7349131526820664,
+      "Joint delta": 0.040830124751623065,
+      "TAR delta": 0.07114142741569729
+    },
+    {
+      "model": "TabM",
+      "structured": 0.46905799067475334,
+      "unstructured": 0.690110255719633,
+      "joint_frozen": 0.7204665862767343,
+      "joint_tar": 0.7470347549726901,
+      "Joint delta": 0.030356330557101296,
+      "TAR delta": 0.026568168695955796
+    },
+    {
+      "model": "TabPFN-v2",
+      "structured": 0.4962817805976261,
+      "unstructured": 0.6705105606681254,
+      "joint_frozen": 0.6968661332689855,
+      "joint_tar": 0.7359917284615443,
+      "Joint delta": 0.026355572600860078,
+      "TAR delta": 0.03912559519255876
+    },
+    {
+      "model": "TabPFN-v2p5",
+      "structured": 0.504103660987113,
+      "unstructured": 0.6979383110277106,
+      "joint_frozen": 0.7228292220739254,
+      "joint_tar": 0.7454281980049393,
+      "Joint delta": 0.02489091104621477,
+      "TAR delta": 0.022598975931013898
+    }
+  ],
+  "per_fold": [
+    {
+      "fold": 0,
+      "model": "CatBoost",
+      "structured": 0.48049161697165077,
+      "unstructured": 0.6427420646183255,
+      "joint_frozen": 0.682991768133612,
+      "joint_tar": 0.7278314573691862,
+      "Joint delta": 0.04024970351528645,
+      "TAR delta": 0.04483968923557424
+    },
+    {
+      "fold": 0,
+      "model": "LightGBM",
+      "structured": 0.46864784199856857,
+      "unstructured": 0.6145529661683613,
+      "joint_frozen": 0.6535726483027127,
+      "joint_tar": 0.7220552896476669,
+      "Joint delta": 0.03901968213435136,
+      "TAR delta": 0.06848264134495419
+    },
+    {
+      "fold": 0,
+      "model": "TabM",
+      "structured": 0.4586949009251018,
+      "unstructured": 0.6793576565839171,
+      "joint_frozen": 0.7107105327493162,
+      "joint_tar": 0.7267742174908757,
+      "Joint delta": 0.03135287616539906,
+      "TAR delta": 0.016063684741559503
+    },
+    {
+      "fold": 0,
+      "model": "TabPFN-v2",
+      "structured": 0.48322475176457036,
+      "unstructured": 0.663317841130608,
+      "joint_frozen": 0.6922949799114457,
+      "joint_tar": 0.7226040353223758,
+      "Joint delta": 0.02897713878083774,
+      "TAR delta": 0.030309055410930097
+    },
+    {
+      "fold": 0,
+      "model": "TabPFN-v2p5",
+      "structured": 0.4905038749053243,
+      "unstructured": 0.6875927835576734,
+      "joint_frozen": 0.7140363795606597,
+      "joint_tar": 0.7298808772873575,
+      "Joint delta": 0.02644359600298629,
+      "TAR delta": 0.015844497726697826
+    },
+    {
+      "fold": 1,
+      "model": "CatBoost",
+      "structured": 0.49549711504548144,
+      "unstructured": 0.6623487791610768,
+      "joint_frozen": 0.6941175190020736,
+      "joint_tar": 0.7576074376980305,
+      "Joint delta": 0.03176873984099682,
+      "TAR delta": 0.06348991869595688
+    },
+    {
+      "fold": 1,
+      "model": "LightGBM",
+      "structured": 0.48916469386085837,
+      "unstructured": 0.630048690666416,
+      "joint_frozen": 0.6678871666789936,
+      "joint_tar": 0.7467190601443635,
+      "Joint delta": 0.037838476012577615,
+      "TAR delta": 0.0788318934653699
+    },
+    {
+      "fold": 1,
+      "model": "TabM",
+      "structured": 0.4737166009287509,
+      "unstructured": 0.6934308145424412,
+      "joint_frozen": 0.7325165521665828,
+      "joint_tar": 0.7597878426433605,
+      "Joint delta": 0.03908573762414169,
+      "TAR delta": 0.027271290476777676
+    },
+    {
+      "fold": 1,
+      "model": "TabPFN-v2",
+      "structured": 0.5060249834589713,
+      "unstructured": 0.679197530064346,
+      "joint_frozen": 0.7023953517894277,
+      "joint_tar": 0.7508071784298592,
+      "Joint delta": 0.02319782172508167,
+      "TAR delta": 0.04841182664043153
+    },
+    {
+      "fold": 1,
+      "model": "TabPFN-v2p5",
+      "structured": 0.513025061838249,
+      "unstructured": 0.7065931005888197,
+      "joint_frozen": 0.7322193333799294,
+      "joint_tar": 0.7596668812107525,
+      "Joint delta": 0.02562623279110965,
+      "TAR delta": 0.02744754783082315
+    },
+    {
+      "fold": 2,
+      "model": "CatBoost",
+      "structured": 0.5054309343857046,
+      "unstructured": 0.6606151554665418,
+      "joint_frozen": 0.6990472477032077,
+      "joint_tar": 0.7416919247929226,
+      "Joint delta": 0.03843209223666588,
+      "TAR delta": 0.042644677089714866
+    },
+    {
+      "fold": 2,
+      "model": "LightGBM",
+      "structured": 0.49050901861012697,
+      "unstructured": 0.6226817872780761,
+      "joint_frozen": 0.6681723041629104,
+      "joint_tar": 0.7356334245504361,
+      "Joint delta": 0.0454905168848343,
+      "TAR delta": 0.06746112038752572
+    },
+    {
+      "fold": 2,
+      "model": "TabM",
+      "structured": 0.4795827673663128,
+      "unstructured": 0.6954716131048487,
+      "joint_frozen": 0.7223523570503061,
+      "joint_tar": 0.7452271705340981,
+      "Joint delta": 0.026880743945457364,
+      "TAR delta": 0.022874813483792056
+    },
+    {
+      "fold": 2,
+      "model": "TabPFN-v2",
+      "structured": 0.5041472090237614,
+      "unstructured": 0.6719016895669883,
+      "joint_frozen": 0.6954323426807676,
+      "joint_tar": 0.7311868466926693,
+      "Joint delta": 0.023530653113779332,
+      "TAR delta": 0.03575450401190172
+    },
+    {
+      "fold": 2,
+      "model": "TabPFN-v2p5",
+      "structured": 0.513306433182171,
+      "unstructured": 0.7006178408834837,
+      "joint_frozen": 0.7254199316809651,
+      "joint_tar": 0.742181838083505,
+      "Joint delta": 0.024802090797481413,
+      "TAR delta": 0.01676190640253994
+    },
+    {
+      "fold": 3,
+      "model": "CatBoost",
+      "structured": 0.49892299805252616,
+      "unstructured": 0.6549855618698255,
+      "joint_frozen": 0.6970828007713541,
+      "joint_tar": 0.7505693680895384,
+      "Joint delta": 0.04209723890152861,
+      "TAR delta": 0.05348656731818435
+    },
+    {
+      "fold": 3,
+      "model": "LightGBM",
+      "structured": 0.49093203137441543,
+      "unstructured": 0.6255795508354256,
+      "joint_frozen": 0.6693380422938403,
+      "joint_tar": 0.7450193419152578,
+      "Joint delta": 0.043758491458414706,
+      "TAR delta": 0.07568129962141745
+    },
+    {
+      "fold": 3,
+      "model": "TabM",
+      "structured": 0.47765046568060143,
+      "unstructured": 0.6947391375534048,
+      "joint_frozen": 0.7233465274416387,
+      "joint_tar": 0.7555700375224604,
+      "Joint delta": 0.02860738988823397,
+      "TAR delta": 0.03222351008082169
+    },
+    {
+      "fold": 3,
+      "model": "TabPFN-v2",
+      "structured": 0.504427089515544,
+      "unstructured": 0.6713954642453712,
+      "joint_frozen": 0.7025164810649625,
+      "joint_tar": 0.7446257612930763,
+      "Joint delta": 0.03112101681959123,
+      "TAR delta": 0.04210928022811389
+    },
+    {
+      "fold": 3,
+      "model": "TabPFN-v2p5",
+      "structured": 0.5114384338552069,
+      "unstructured": 0.6998243937561605,
+      "joint_frozen": 0.7256199789702196,
+      "joint_tar": 0.7528563547288232,
+      "Joint delta": 0.025795585214059114,
+      "TAR delta": 0.027236375758603604
+    },
+    {
+      "fold": 4,
+      "model": "CatBoost",
+      "structured": 0.4834632583587526,
+      "unstructured": 0.6551902530333852,
+      "joint_frozen": 0.6902622065345203,
+      "joint_tar": 0.7371444497684365,
+      "Joint delta": 0.03507195350113512,
+      "TAR delta": 0.04688224323391621
+    },
+    {
+      "fold": 4,
+      "model": "LightGBM",
+      "structured": 0.46858904767381415,
+      "unstructured": 0.6218450076254507,
+      "joint_frozen": 0.6598884648933887,
+      "joint_tar": 0.7251386471526073,
+      "Joint delta": 0.03804345726793801,
+      "TAR delta": 0.06525018225921864
+    },
+    {
+      "fold": 4,
+      "model": "TabM",
+      "structured": 0.45564521847299977,
+      "unstructured": 0.6875520568135532,
+      "joint_frozen": 0.7134069619758278,
+      "joint_tar": 0.7478145066726561,
+      "Joint delta": 0.02585490516227451,
+      "TAR delta": 0.034407544696828385
+    },
+    {
+      "fold": 4,
+      "model": "TabPFN-v2",
+      "structured": 0.48358486922528343,
+      "unstructured": 0.6667402783333135,
+      "joint_frozen": 0.6916915108983239,
+      "joint_tar": 0.7307348205697405,
+      "Joint delta": 0.024951232565010417,
+      "TAR delta": 0.03904330967141656
+    },
+    {
+      "fold": 4,
+      "model": "TabPFN-v2p5",
+      "structured": 0.4922445011546136,
+      "unstructured": 0.6950634363524156,
+      "joint_frozen": 0.7168504867778536,
+      "joint_tar": 0.7425550387142579,
+      "Joint delta": 0.021787050425437937,
+      "TAR delta": 0.025704551936404307
+    }
+  ]
+}

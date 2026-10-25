@@ -1,0 +1,29 @@
+{
+  "dataset": "lendingclub_longdesc_no_purpose",
+  "model": "TabPFN-v2",
+  "short_name": "tabpfnv2",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 2,
+  "size": "10k",
+  "task": "binary",
+  "n_train": 10000,
+  "n_test": 5000,
+  "n_features": 12,
+  "timestamp": "2026-10-23 23:08:29",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "roc_auc",
+  "test_score": 0.7153359218595106,
+  "test_error": 0.28466407814048944,
+  "auroc": 0.7153359218595106,
+  "status": "ok",
+  "runtime_s": 175.7640416622162,
+  "tar_finetune": {
+    "best_val_loss": 0.4092893600463867,
+    "epochs": 10.0,
+    "finetune_seconds": 5307.341183900833,
+    "rows": 10000
+  }
+}

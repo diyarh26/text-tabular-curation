@@ -1,0 +1,29 @@
+{
+  "dataset": "fda_food_severity",
+  "model": "TabPFN-v2",
+  "short_name": "tabpfnv2",
+  "condition": "joint_tar",
+  "text_encoder": "e5-small-tar",
+  "fold": 0,
+  "size": "10k",
+  "task": "multiclass",
+  "n_train": 5278,
+  "n_test": 2640,
+  "n_features": 11,
+  "timestamp": "2026-10-24 01:48:29",
+  "device": "cuda",
+  "multabench_commit": "ff0c9c8b40a2085a06a7771190e53a261341802f",
+  "git": null,
+  "metric": "log_loss",
+  "test_score": -0.6624792609965864,
+  "test_error": 0.6624792609965864,
+  "auroc": 0.836736047223151,
+  "status": "ok",
+  "runtime_s": 56.98255944252014,
+  "tar_finetune": {
+    "best_val_loss": 0.8202787041664124,
+    "epochs": 25.0,
+    "finetune_seconds": 6702.483194112778,
+    "rows": 5278
+  }
+}

@@ -94,5 +94,6 @@
   },
   "full_grid_complete": false,
   "native_dataset_integration_complete": false,
-  "gpu_execution_performed_in_this_audit": false
+  "gpu_execution_performed_in_this_audit": false,
+  "snapshot_stage": "Initial audit before native dataset integration; see native_integration_validation.json for current integration status"
 }

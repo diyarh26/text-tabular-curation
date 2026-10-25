@@ -1,0 +1,16 @@
+{
+  "full_pool_rows": 115099,
+  "sample_rows": 15000,
+  "missing_cells_full_pool": 0,
+  "missing_cells_sample": 0,
+  "independent_seed_42_resampling_matches": true,
+  "unique_source_ids": true,
+  "all_class_counts_and_percentages_verified": true,
+  "previous_dataset_and_results_unchanged": true,
+  "models_fitted_for_new_version": true,
+  "screen_completed": {
+    "successful": 18,
+    "failed": 0,
+    "results": "results\\lendingclub_default_complete_screen_tfidf"
+  }
+}

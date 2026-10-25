@@ -1,0 +1,24 @@
+===== FOLD 1 COMPLETE: ALL 20 EVALUATIONS AUDITED =====
+FDA Food | completed folds [1] | 20/120 evaluations in this table
+PRELIMINARY until all six folds complete. No performance-based early exit.
+Primary curation metric: MACRO OvR AUROC (higher is better)
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM           0.598275      0.825938      0.789371   0.825227    -0.036568   0.035856
+CatBoost       0.637659      0.812746      0.819686   0.837580     0.006940   0.017895
+LightGBM       0.618980      0.815168      0.817686   0.839394     0.002518   0.021708
+TabPFN-v2      0.629554      0.833655      0.837157   0.847592     0.003502   0.010435
+TabPFN-v2p5    0.621236      0.840567      0.845573   0.858567     0.005006   0.012994
+Course rule: Joint Signal: 4/5 | TAR Gain: 5/5 | need >=3/5 independently; raw mean deltas >0.
+Joint delta = joint frozen - better unimodal; TAR delta = joint TAR - joint frozen.
+Paper rule on these course folds: 4/5 learners meet BOTH criteria; need >=3/5, each delta >=0.001 after rounding condition means to three decimals.
+Diagnostic repository score: NEGATIVE LOG LOSS (not used for the AUROC curation verdict):
+condition    structured  unstructured  joint_frozen  joint_tar  Joint delta  TAR delta
+model                                                                                 
+TabM          -1.198280     -0.698988     -0.734517  -0.655007    -0.035529   0.079510
+CatBoost      -0.871730     -0.686258     -0.670997  -0.636029     0.015260   0.034968
+LightGBM      -0.915941     -0.705122     -0.707496  -0.695765    -0.002374   0.011731
+TabPFN-v2     -0.880945     -0.649013     -0.640963  -0.614611     0.008050   0.026352
+TabPFN-v2p5   -0.885577     -0.635007     -0.625875  -0.594508     0.009132   0.031367
+Worker time for this fold in this session: 75.0 minutes (may include reused runs).
+TAR training metadata: {"best_val_loss": 0.8252902626991272, "epochs": 14.0, "finetune_seconds": 3704.8923592567444, "rows": 5279}
