@@ -285,9 +285,16 @@ def install(args) -> None:
     ).stdout.strip()
     if version != "3.11":
         raise RuntimeError("Historical setup requires Python 3.11")
-    venv = args.runtime / "venv"
+    venv = (args.venv_dir or args.runtime / "venv").resolve()
+    if venv.is_relative_to(Path(__file__).resolve().parents[1]):
+        raise RuntimeError("The environment must stay outside the final submission")
     if not venv.exists():
         command([args.python, "-m", "venv", venv])
+    alias = args.runtime / "venv"
+    if venv != alias.resolve():
+        if alias.exists() or alias.is_symlink():
+            raise RuntimeError("Runtime venv already points at a different environment")
+        alias.symlink_to(venv, target_is_directory=True)
     python = venv / "bin/python"
     command([python, "-m", "pip", "install", "uv"])
     # The checked-in complete lock is the source of truth, including its git pin.
@@ -1536,6 +1543,7 @@ def main() -> None:
         sub.add_parser(name)
     setup = sub.add_parser("install")
     setup.add_argument("--python", default="python3.11")
+    setup.add_argument("--venv-dir", type=Path, help="Optional local SSD environment; runtime/venv links to it")
     setup.add_argument(
         "--system-tools", action="store_true", help="Install tmux/git using apt as root"
     )
