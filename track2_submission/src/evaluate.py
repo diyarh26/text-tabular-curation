@@ -23,6 +23,7 @@ import statistics
 import subprocess
 import sys
 import tempfile
+import tarfile
 import time
 import urllib.request
 import uuid
@@ -1479,6 +1480,155 @@ def offers(args) -> None:
     print("Read-only availability query; no Pod has been created.")
 
 
+def completion_safe_to_stop(records: list[dict], gpu_pids: list[str]) -> bool:
+    expected = {job_key(j) for j in grid()}
+    return (
+        len(records) == 100
+        and {job_key(r) for r in records} == expected
+        and all(r["status"] == "completed" for r in records)
+        and not gpu_pids
+    )
+
+
+def monitor(args) -> None:
+    """Local, model-free supervisor: verified backups and optional completion-only stop.
+
+    This command does not launch/restart evaluations or change the Pod's source.
+    It can survive a chat interruption as a separate local process.
+    """
+    if not re.fullmatch(r"[A-Za-z0-9_.@-]+", args.ssh_host):
+        raise ValueError("Unexpected SSH host format")
+    if not re.fullmatch(r"/[A-Za-z0-9_./-]+", args.remote_runtime):
+        raise ValueError("Unexpected remote runtime path")
+    options = [
+        "-i",
+        str(args.identity.resolve()),
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=15",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "UserKnownHostsFile=" + str(args.known_hosts.resolve()),
+    ]
+    ssh = ["ssh", "-p", str(args.ssh_port), *options, args.ssh_host]
+    destination = args.runtime / "automatic-backup"
+    destination.mkdir(parents=True, exist_ok=True)
+    remote_code = """from pathlib import Path
+import tarfile,subprocess,json
+r=Path(REMOTE_ROOT)
+with tarfile.open(r/"supervisor-backup.tar.gz","w:gz",compresslevel=1) as t:
+ for name in ["production/manifest.json","integration.json","dataset-inspection.json","preflight.json","smoke-passed.json","coordinator.log"]:
+  p=r/name
+  if p.exists():t.add(p,arcname=name)
+ for name in ["status.json","job.json","gpu-identity.json","native-summary.json","console.log"]:
+  for p in (r/"production/jobs").glob("*/"+name):t.add(p,arcname=str(p.relative_to(r)))
+gpu=subprocess.run(["nvidia-smi","--query-compute-apps=pid","--format=csv,noheader"],capture_output=True,text=True,check=True)
+print(json.dumps({"gpu_pids":[s.strip() for s in gpu.stdout.splitlines() if s.strip()]}))
+""".replace("REMOTE_ROOT", repr(args.remote_runtime))
+
+    def api(query: str, variables: dict) -> dict:
+        if not os.environ.get("RUNPOD_API_KEY"):
+            raise RuntimeError("Missing RUNPOD_API_KEY for completion-only Pod stop")
+        request = urllib.request.Request(
+            "https://api.runpod.io/graphql",
+            data=json.dumps({"query": query, "variables": variables}).encode(),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + os.environ["RUNPOD_API_KEY"],
+            },
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            result = json.load(response)
+        if result.get("errors"):
+            raise RuntimeError(safe_error(result["errors"]))
+        return result["data"]
+
+    with lock(args.runtime / "local-supervisor.lock"):
+        while True:
+            try:
+                health = json.loads(
+                    command(
+                        ssh + [shlex.join(["python3", "-c", remote_code])], capture=True
+                    ).stdout
+                )
+                archive = destination / "supervisor-backup.tar.gz"
+                command(
+                    [
+                        "scp",
+                        "-P",
+                        str(args.ssh_port),
+                        *options,
+                        args.ssh_host
+                        + ":"
+                        + args.remote_runtime
+                        + "/supervisor-backup.tar.gz",
+                        archive,
+                    ]
+                )
+                with tarfile.open(archive) as stream:
+                    members = stream.getmembers()
+                    for member in members:
+                        target = (destination / member.name).resolve()
+                        if not target.is_relative_to(destination.resolve()) or not (
+                            member.isfile() or member.isdir()
+                        ):
+                            raise RuntimeError("Unsafe result-backup archive member")
+                    stream.extractall(destination, members=members)
+                manifest = read_json(destination / "production/manifest.json")
+                validate_manifest(manifest, False)
+                records = result_records(destination / "production", manifest)
+                write_results(records, args.output)
+                counts = {
+                    s: sum(r["status"] == s for r in records)
+                    for s in ("completed", "running", "failed", "pending")
+                }
+                receipt = {
+                    "timestamp_unix": time.time(),
+                    "pin": PIN,
+                    "counts": counts,
+                    "verified_native_summaries": counts["completed"],
+                    "archive_sha256": digest(archive),
+                    "pod_stopped": False,
+                }
+                atomic_json(destination / "verification.json", receipt)
+                print(json.dumps(receipt), flush=True)
+                if completion_safe_to_stop(records, health["gpu_pids"]):
+                    if args.stop_when_complete:
+                        # Verify the exact Pod is this task's six-GPU Pod, never another resource.
+                        details = api(
+                            "query($input:PodFilter!){pod(input:$input){id name gpuCount desiredStatus}}",
+                            {"input": {"podId": args.pod_id}},
+                        )["pod"]
+                        if (
+                            not details
+                            or details["name"] != args.pod_name
+                            or details["gpuCount"] != 6
+                        ):
+                            raise RuntimeError("Pod identity differs; refusing to stop")
+                        stopped = api(
+                            "mutation($input:PodStopInput!){podStop(input:$input){id desiredStatus}}",
+                            {"input": {"podId": args.pod_id}},
+                        )
+                        atomic_json(
+                            destination / "pod-stop-receipt.json",
+                            {"pod": stopped, "verification": receipt},
+                        )
+                        print(
+                            "All 100 native results backed up and verified; completion-only Pod stop requested.",
+                            flush=True,
+                        )
+                    return
+            except Exception as exc:
+                atomic_json(
+                    destination / "supervisor-error.json",
+                    {"timestamp_unix": time.time(), "error": safe_error(exc)},
+                )
+                print("Supervisor retry: " + safe_error(exc), flush=True)
+            time.sleep(args.interval)
+
+
 def self_test() -> None:
     flat = {
         "metrics_dict.score": 0.12345678901234567,
@@ -1552,6 +1702,12 @@ def self_test() -> None:
     )
     records[0]["status"] = "failed"
     assert learner_table(records)[0]["joint_delta"] is None
+    assert not completion_safe_to_stop(records, [])
+    records[0]["status"] = "completed"
+    assert completion_safe_to_stop(records, [])
+    assert not completion_safe_to_stop(records, ["1234"])
+    assert not completion_safe_to_stop(records[:-1], [])
+    records[0]["status"] = "failed"
     manifest = {
         "pin": PIN,
         "csv_sha256": CSV_SHA256,
@@ -1674,6 +1830,21 @@ def main() -> None:
     action.add_argument("--ssh-port", type=int, default=22)
     action.add_argument("--identity", type=Path)
     action.add_argument("--remote-runtime", required=True)
+    action = sub.add_parser("monitor")
+    action.add_argument("--ssh-host", required=True)
+    action.add_argument("--ssh-port", type=int, default=22)
+    action.add_argument("--identity", type=Path, required=True)
+    action.add_argument("--known-hosts", type=Path, required=True)
+    action.add_argument("--remote-runtime", required=True)
+    action.add_argument("--pod-id", required=True)
+    action.add_argument("--pod-name", default="linkedin-july-native-20261026")
+    action.add_argument("--stop-when-complete", action="store_true")
+    action.add_argument("--interval", type=int, default=60)
+    action.add_argument(
+        "--output",
+        type=Path,
+        default=Path(__file__).resolve().parents[1] / "evaluation_results.csv",
+    )
     action = sub.add_parser("offers")
     action.add_argument("--gpu-count", type=int, default=6)
     action.add_argument("--gpu-type", default="NVIDIA A40")
@@ -1729,6 +1900,8 @@ def main() -> None:
         status(args)
     elif args.action == "backup":
         backup(args)
+    elif args.action == "monitor":
+        monitor(args)
     elif args.action == "offers":
         offers(args)
     elif args.action == "self-test":
