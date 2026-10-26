@@ -490,7 +490,7 @@ def job_key(job: dict) -> str:
 
 
 def gpu_inventory() -> list[dict]:
-    fields = ("index", "uuid", "name", "memory.total", "driver_version")
+    fields = ("index", "uuid", "pci.bus_id", "name", "memory.total", "driver_version")
     output = command(
         [
             "nvidia-smi",
@@ -518,10 +518,26 @@ def selected_gpus(value: str) -> list[str]:
     return result
 
 
+def cuda_mask_for_uuid(gpu_uuid: str, inventory: list[dict]) -> str:
+    """Historical TabSTAR accepts numeric masks; derive CUDA PCI order explicitly."""
+    ordered = sorted(
+        inventory,
+        key=lambda row: tuple(
+            int(part, 16) for part in re.split(r"[:.]", row["pci.bus_id"])
+        ),
+    )
+    matches = [i for i, row in enumerate(ordered) if row["uuid"] == gpu_uuid]
+    if len(matches) != 1:
+        raise RuntimeError(
+            "Allocated GPU UUID is absent or duplicated in PCI inventory"
+        )
+    return str(matches[0])
+
+
 def isolated_environment(gpu_uuid: str, source: Path, work: Path) -> dict:
     env = os.environ.copy()
     env.update(
-        CUDA_VISIBLE_DEVICES=gpu_uuid,
+        CUDA_VISIBLE_DEVICES=cuda_mask_for_uuid(gpu_uuid, gpu_inventory()),
         CUDA_DEVICE_ORDER="PCI_BUS_ID",
         GPU="0",
         PYTHONPATH=str(source),
@@ -538,7 +554,7 @@ def isolated_environment(gpu_uuid: str, source: Path, work: Path) -> dict:
 
 def verify_one_gpu(expected: str) -> dict:
     if (
-        os.environ.get("CUDA_VISIBLE_DEVICES") != expected
+        not os.environ.get("CUDA_VISIBLE_DEVICES", "").isdigit()
         or os.environ.get("GPU") != "0"
     ):
         raise RuntimeError("GPU mask was not set before worker imports")
@@ -558,6 +574,7 @@ def verify_one_gpu(expected: str) -> dict:
     torch.cuda.synchronize()
     report = {
         "uuid": expected,
+        "cuda_visible_devices": os.environ["CUDA_VISIBLE_DEVICES"],
         "visible_devices": 1,
         "device": "cuda:0",
         "name": properties.name,
@@ -1433,6 +1450,12 @@ def offers(args) -> None:
 
 
 def self_test() -> None:
+    fixture = [
+        {"uuid": "GPU-second", "pci.bus_id": "00000000:20:00.0"},
+        {"uuid": "GPU-first", "pci.bus_id": "00000000:03:00.0"},
+    ]
+    assert cuda_mask_for_uuid("GPU-first", fixture) == "0"
+    assert cuda_mask_for_uuid("GPU-second", fixture) == "1"
     jobs = grid()
     assert len(jobs) == len({job_key(j) for j in jobs}) == 100
     assert sum(j["condition"] == "joint_tar" for j in jobs) == 25
@@ -1543,7 +1566,11 @@ def main() -> None:
         sub.add_parser(name)
     setup = sub.add_parser("install")
     setup.add_argument("--python", default="python3.11")
-    setup.add_argument("--venv-dir", type=Path, help="Optional local SSD environment; runtime/venv links to it")
+    setup.add_argument(
+        "--venv-dir",
+        type=Path,
+        help="Optional local SSD environment; runtime/venv links to it",
+    )
     setup.add_argument(
         "--system-tools", action="store_true", help="Install tmux/git using apt as root"
     )
