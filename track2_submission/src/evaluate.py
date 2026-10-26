@@ -1596,7 +1596,7 @@ print(json.dumps({"gpu_pids":[s.strip() for s in gpu.stdout.splitlines() if s.st
                 print(json.dumps(receipt), flush=True)
                 if completion_safe_to_stop(records, health["gpu_pids"]):
                     if args.stop_when_complete:
-                        # Verify the exact Pod is this task's six-GPU Pod, never another resource.
+                        # Verify the exact task Pod and its approved GPU allocation.
                         details = api(
                             "query($input:PodFilter!){pod(input:$input){id name gpuCount desiredStatus}}",
                             {"input": {"podId": args.pod_id}},
@@ -1604,7 +1604,7 @@ print(json.dumps({"gpu_pids":[s.strip() for s in gpu.stdout.splitlines() if s.st
                         if (
                             not details
                             or details["name"] != args.pod_name
-                            or details["gpuCount"] != 6
+                            or details["gpuCount"] != args.pod_gpu_count
                         ):
                             raise RuntimeError("Pod identity differs; refusing to stop")
                         stopped = api(
@@ -1838,6 +1838,7 @@ def main() -> None:
     action.add_argument("--remote-runtime", required=True)
     action.add_argument("--pod-id", required=True)
     action.add_argument("--pod-name", default="linkedin-july-native-20261026")
+    action.add_argument("--pod-gpu-count", type=int, choices=range(1, 17), default=6)
     action.add_argument("--stop-when-complete", action="store_true")
     action.add_argument("--interval", type=int, default=60)
     action.add_argument(
