@@ -2,7 +2,7 @@
 
 Technion NLP 097215, Track 2. Official source: [MulTaBench](https://github.com/alanarazi7/MulTaBench/tree/599bd6a5631c96f8aef297cc4cb6e4c197ae0dca), detached commit `599bd6a5631c96f8aef297cc4cb6e4c197ae0dca` (26 July 2026, 21:26:40 +03:00). Install its complete `requirements.txt` with Python 3.11; no newer installed MulTaBench modules are used.
 
-**Status:** preparation reproduces the supplied CSV byte-for-byte after LF normalization on Windows and Linux. Native registry/curation/loading and CLI imports pass in the locked Linux environment. No GPU evaluation has run yet; there are no experimental scores to report. `evaluation_results.csv` is created by actual runs. The separately written `final_report.pdf` has not been supplied or fabricated.
+**Status:** full native production is running on six A40 GPUs under tmux. The current backed-up CSV is a partial snapshot with 31/100 completed evaluations; pending/running rows have no scores, and there is no final curation verdict. No experiment was interrupted by the chat usage limit. Dataset reproduction, native loading, actual CUDA checks on all six UUIDs, both TabPFN regression checkpoints and isolated structured/text/TAR smoke evaluations passed. The separately written `final_report.pdf` has not been supplied or fabricated.
 
 The 15,000-row CSV is unchanged. SHA-256 after LF normalization: `8880f84563535c60eda01be5b52010dea6f80e318f228ade00166d7cb66d57fa`. It contains mixed-language descriptions; no language filtering or translation is performed. Inputs are `title`, `description`, and the twelve supplied structured columns; target is natural-log USD salary, `log_salary`. Source: [LinkedIn Job Postings](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings).
 
