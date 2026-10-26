@@ -2,7 +2,17 @@
 
 Technion NLP 097215, Track 2. Official source: [MulTaBench](https://github.com/alanarazi7/MulTaBench/tree/599bd6a5631c96f8aef297cc4cb6e4c197ae0dca), detached commit `599bd6a5631c96f8aef297cc4cb6e4c197ae0dca` (26 July 2026, 21:26:40 +03:00). Install its complete `requirements.txt` with Python 3.11; no newer installed MulTaBench modules are used.
 
-**Status:** 99 native production evaluations are complete and backed up. The original six-A40 Pod stopped when its prepaid balance ran out during the final TabPFN-v2.5 joint-TAR evaluation (fold ID 4). A separately authorized single-A40 Pod is recovering only this evaluation at unchanged native settings, with a new W&B run ID; all 99 completed evaluations are preserved. This is a DRAFT package: the CSV explicitly marks the incomplete evaluation. Final packaging will refresh the results after all 100 finish and include the separately supplied report PDF. A local supervisor makes verified external backups automatically.
+**Status:** all 100 native evaluations are complete, backed up and verified. Both Joint Signal and TAR Gain are positive for 5/5 learners using unrounded scores, meeting the staff requirement of at least 3/5 independently. Only the separately written `final_report.pdf` remains to be supplied. The original six-A40 Pod exhausted its prepaid balance during the final evaluation; its 99 completed results were preserved unchanged. Only TabPFN-v2.5 joint TAR, fold ID 4, was rerun on one A40 with identical native settings and a new W&B ID. Native early stopping ended that TAR fit at epoch 28. The interrupted attempt is excluded. Both temporary Pods were stopped and removed after verified external backups.
+
+Mean native R^2 across five repetitions (display rounded; CSV retains full precision):
+
+| Learner | Structured | Text only | Joint frozen | Joint TAR | Joint gain | TAR gain |
+|---|---:|---:|---:|---:|---:|---:|
+| TabM | 0.452062 | 0.685794 | 0.712217 | 0.746061 | +0.026423 | +0.033845 |
+| CatBoost | 0.484192 | 0.654352 | 0.686998 | 0.736704 | +0.032645 | +0.049706 |
+| LightGBM | 0.470307 | 0.626776 | 0.662384 | 0.729198 | +0.035608 | +0.066814 |
+| TabPFN-v2 | 0.487042 | 0.667419 | 0.690777 | 0.731955 | +0.023358 | +0.041178 |
+| TabPFN-v2.5 | 0.484076 | 0.692584 | 0.717093 | 0.740511 | +0.024509 | +0.023418 |
 
 The 15,000-row CSV is unchanged. SHA-256 after LF normalization: `8880f84563535c60eda01be5b52010dea6f80e318f228ade00166d7cb66d57fa`. It contains mixed-language descriptions; no language filtering or translation is performed. Inputs are `title`, `description`, and the twelve supplied structured columns; target is natural-log USD salary, `log_salary`. Source: [LinkedIn Job Postings](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings).
 
