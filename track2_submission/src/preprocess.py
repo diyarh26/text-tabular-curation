@@ -22,6 +22,12 @@ MAX_ROWS = 15000
 MAX_WORDS = 500
 RARE_COUNT = 20
 APPROVED_SHA256 = "8880f84563535c60eda01be5b52010dea6f80e318f228ade00166d7cb66d57fa"
+SUBMISSION_DIR = Path(__file__).resolve().parent
+if SUBMISSION_DIR.name == "src" and not (SUBMISSION_DIR / "dataset.csv").is_file():
+    SUBMISSION_DIR = SUBMISSION_DIR.parent
+DATASET_PATH = SUBMISSION_DIR / "dataset.csv"
+if not DATASET_PATH.is_file():
+    DATASET_PATH = SUBMISSION_DIR / "data/dataset.csv"
 TEXT_COLUMNS = ["title", "description"]
 COLUMNS = [
     "title",
@@ -205,7 +211,7 @@ def main() -> None:
     parser.add_argument(
         "--reference",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "data/dataset.csv",
+        default=DATASET_PATH,
     )
     parser.add_argument(
         "--output",
@@ -224,7 +230,7 @@ def main() -> None:
     audit["parity"] = compare(candidate, args.reference.resolve())
     print(json.dumps(audit, indent=2))
     if args.audit:
-        if args.audit.resolve().is_relative_to(Path(__file__).resolve().parents[1]):
+        if args.audit.resolve().is_relative_to(SUBMISSION_DIR):
             raise ValueError("Audit artifacts must stay outside the final submission")
         args.audit.parent.mkdir(parents=True, exist_ok=True)
         args.audit.write_text(json.dumps(audit, indent=2) + "\n", encoding="utf-8")

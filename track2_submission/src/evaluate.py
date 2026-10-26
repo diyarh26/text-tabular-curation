@@ -32,6 +32,12 @@ PIN = "599bd6a5631c96f8aef297cc4cb6e4c197ae0dca"
 OFFICIAL = "https://github.com/alanarazi7/MulTaBench.git"
 DATASET = "REG_TEXT_LINKEDIN_SALARY"
 CSV_SHA256 = "8880f84563535c60eda01be5b52010dea6f80e318f228ade00166d7cb66d57fa"
+SUBMISSION_DIR = Path(__file__).resolve().parent
+if SUBMISSION_DIR.name == "src" and not (SUBMISSION_DIR / "dataset.csv").is_file():
+    SUBMISSION_DIR = SUBMISSION_DIR.parent
+DATASET_PATH = SUBMISSION_DIR / "dataset.csv"
+if not DATASET_PATH.is_file():
+    DATASET_PATH = SUBMISSION_DIR / "data/dataset.csv"
 FOLDS = tuple(range(5))  # July leaderboard/analysis/pass_matrix.py: _FOLDS = range(5).
 MODELS = ("tabm", "cat", "light", "tabpfnv2", "tabpfnv2p5")
 CONDITIONS = {
@@ -287,7 +293,7 @@ def install(args) -> None:
     if version != "3.11":
         raise RuntimeError("Historical setup requires Python 3.11")
     venv = (args.venv_dir or args.runtime / "venv").resolve()
-    if venv.is_relative_to(Path(__file__).resolve().parents[1]):
+    if venv.is_relative_to(SUBMISSION_DIR):
         raise RuntimeError("The environment must stay outside the final submission")
     if not venv.exists():
         command([args.python, "-m", "venv", venv])
@@ -1775,7 +1781,7 @@ def main() -> None:
     parser.add_argument(
         "--dataset",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "data/dataset.csv",
+        default=DATASET_PATH,
     )
     parser.add_argument("--secrets", type=Path)
     sub = parser.add_subparsers(dest="action", required=True)
@@ -1810,7 +1816,7 @@ def main() -> None:
         action.add_argument(
             "--output",
             type=Path,
-            default=Path(__file__).resolve().parents[1] / "evaluation_results.csv",
+            default=SUBMISSION_DIR / "evaluation_results.csv",
         )
         action.add_argument(
             "--retry-failed", action="store_true", help=argparse.SUPPRESS
@@ -1821,7 +1827,7 @@ def main() -> None:
     action.add_argument(
         "--output",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "evaluation_results.csv",
+        default=SUBMISSION_DIR / "evaluation_results.csv",
     )
     action = sub.add_parser("reconcile")
     action.add_argument("--smoke", action="store_true")
@@ -1844,7 +1850,7 @@ def main() -> None:
     action.add_argument(
         "--output",
         type=Path,
-        default=Path(__file__).resolve().parents[1] / "evaluation_results.csv",
+        default=SUBMISSION_DIR / "evaluation_results.csv",
     )
     action = sub.add_parser("offers")
     action.add_argument("--gpu-count", type=int, default=6)
@@ -1868,7 +1874,7 @@ def main() -> None:
     args.source = (args.source or args.runtime / "MulTaBench").resolve()
     args.dataset = args.dataset.resolve()
     args.runtime.mkdir(parents=True, exist_ok=True)
-    if args.runtime.is_relative_to(Path(__file__).resolve().parents[1]):
+    if args.runtime.is_relative_to(SUBMISSION_DIR):
         raise RuntimeError(
             "Runtime artifacts must stay outside the final submission directory"
         )
