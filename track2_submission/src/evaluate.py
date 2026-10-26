@@ -806,8 +806,21 @@ def export_native(job: dict, destination: Path) -> dict:
     return summary
 
 
+def native_metrics(summary: dict) -> dict:
+    """Read official W&B exports without rounding; preserve their raw JSON separately."""
+    if isinstance(summary.get("metrics_dict"), dict):
+        return summary["metrics_dict"]
+    prefix = "metrics_dict.metrics."
+    return {
+        "score": summary.get("metrics_dict.score"),
+        "metrics": {
+            k[len(prefix) :]: v for k, v in summary.items() if k.startswith(prefix)
+        },
+    }
+
+
 def validate_native_summary(job: dict, summary: dict) -> None:
-    metrics = summary.get("metrics_dict", {})
+    metrics = native_metrics(summary)
     scores = metrics.get("metrics", {})
     if (
         summary.get("dataset") != DATASET
@@ -847,7 +860,8 @@ def validate_native_summary(job: dict, summary: dict) -> None:
         "no_text": "no_text",
         "text_only": "text_only",
     }[state]
-    if not str(summary.get("multimodal_state", "")).startswith(expected_state_prefix):
+    encoded_state = str(summary.get("multimodal_state", "")).lower().split(" ", 1)[0]
+    if encoded_state != expected_state_prefix:
         raise RuntimeError("Native feature ablation does not match the job")
     if not smoke and (summary.get("n_train"), summary.get("n_test")) != (10000, 1500):
         raise RuntimeError("Native result has unexpected split counts")
@@ -1054,7 +1068,7 @@ def write_results(records: list[dict], output: Path) -> None:
         writer.writeheader()
         for job in records:
             summary = job.get("summary", {}) if job["status"] == "completed" else {}
-            metrics = summary.get("metrics_dict", {}).get("metrics", {})
+            metrics = native_metrics(summary).get("metrics", {})
             group = table[job["model"]]
             writer.writerow(
                 {
@@ -1076,7 +1090,7 @@ def write_results(records: list[dict], output: Path) -> None:
                     "official_commit": PIN,
                     "dataset_sha256": CSV_SHA256,
                     "native_metrics_json": json.dumps(
-                        summary.get("metrics_dict", {}), ensure_ascii=False
+                        native_metrics(summary), ensure_ascii=False
                     ),
                 }
             )
@@ -1308,9 +1322,25 @@ def reconcile(args) -> None:
                     **status,
                     "status": "completed",
                     "recovered_from_official_wandb": True,
+                    "previous_collection_error": status.get("error"),
+                    "error": None,
                 },
             )
             print(f"Recovered {job['id']} from official W&B export", flush=True)
+        records = result_records(experiment, manifest)
+        if args.smoke and all(r["status"] == "completed" for r in records):
+            atomic_json(
+                args.runtime / "smoke-passed.json",
+                {
+                    "pin": PIN,
+                    "evaluator_sha256": digest(Path(__file__)),
+                    "execution_evaluator_sha256": manifest["evaluator_sha256"],
+                    "experiment": manifest["experiment"],
+                    "reconciled_from_official_wandb": True,
+                    "production_results_included": False,
+                    "overrides": {"train_examples": 512, "e5_epochs": 1},
+                },
+            )
 
 
 def start_durable(args) -> None:
@@ -1450,6 +1480,44 @@ def offers(args) -> None:
 
 
 def self_test() -> None:
+    flat = {
+        "metrics_dict.score": 0.12345678901234567,
+        "metrics_dict.metrics.r2": 0.12345678901234567,
+        "metrics_dict.metrics.mse": 0.321,
+        "metrics_dict.metrics.rmse": 0.5665686189686118,
+    }
+    expected_metrics = {
+        "score": 0.12345678901234567,
+        "metrics": {
+            "r2": 0.12345678901234567,
+            "mse": 0.321,
+            "rmse": 0.5665686189686118,
+        },
+    }
+    assert native_metrics(flat) == expected_metrics
+    assert native_metrics({"metrics_dict": expected_metrics}) == expected_metrics
+    summary = {
+        **flat,
+        "dataset": DATASET,
+        "fold": 0,
+        "git": PIN[:7],
+        "model": "LightGBM",
+        "train_examples": 10000,
+        "e5_model_name": "intfloat/e5-small-v2",
+        "tune_dino": False,
+        "request_memory": "32G",
+        "tune_e5": False,
+        "pca_components": 30,
+        "no_pca": False,
+        "multimodal_state": "NO_TEXT",
+        "n_train": 10000,
+        "n_test": 1500,
+        "test_score": 0.12345678901234567,
+    }
+    validate_native_summary(
+        {"fold": 0, "model": "light", "condition": "structured", "smoke": False},
+        summary,
+    )
     fixture = [
         {"uuid": "GPU-second", "pci.bus_id": "00000000:20:00.0"},
         {"uuid": "GPU-first", "pci.bus_id": "00000000:03:00.0"},
